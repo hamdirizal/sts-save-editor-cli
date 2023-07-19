@@ -24,3 +24,17 @@ export const readAppState = (): AppState => {
 export const writeAppState = (appState: AppState) => {
   fs.writeFileSync(`./${APP_STATE_FILENAME}`, JSON.stringify(appState));
 };
+
+export const renderArrayAsGrid = (arr: string[], colWidth: number, colsCount: number) => {
+  let result = '';
+  let col = 0;
+  for (let i = 0; i < arr.length; i++) {
+    if (col === colsCount) {
+      result += '\n';
+      col = 0;
+    }
+    result += arr[i].padEnd(colWidth, ' ');
+    col++;
+  }
+  console.info(result)
+}

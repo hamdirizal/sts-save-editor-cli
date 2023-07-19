@@ -2,6 +2,7 @@ import inquirer from 'inquirer';
 import { readAppState, writeAppState } from './utils.js';
 import { AppState } from './types.js';
 import fs, { existsSync } from 'fs';
+import { getCardList } from './cards.js';
 
 const processTheGivenSavePath = (savePath) => {
   if(existsSync(savePath)) {
@@ -45,15 +46,36 @@ const noSaveFile = () => {
 
 const success = () => {}
 
+const viewCardsPage = () => {}
+
+const homePage = () => {
+  console.info('What do you want to do?');
+  inquirer
+    .prompt({
+      type: 'list',
+      name: 'action',
+      message: 'Pick one',
+      choices: [
+        {value: 'view_cards', name: 'View all cards'},
+        {value: 'view_relics', name: 'View all relics'},
+        {value: 'presets', name: 'View presets'},
+        {value: 'inject_save_file', name: 'Inject preset to a save file'},
+      ],
+    })
+    .then((answers) => {
+      console.log(answers);
+    });
+}
+
 const main = () => {  
   const appState:AppState = readAppState();
-  if(appState.gameSavePath) {
-    console.log("Save path:", appState.gameSavePath);
-  }
-  else{
-    noSavePath();
-  }
-  
+  homePage();
+  // if(appState.gameSavePath) {
+  //   console.log("Save path:", appState.gameSavePath);
+  // }
+  // else{
+  //   noSavePath();
+  // }  
 }
 
 main();
