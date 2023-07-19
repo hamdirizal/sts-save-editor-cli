@@ -1,0 +1,20 @@
+{
+  "name": "sts-save-editor-cli",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "start": "node ./src/app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hamdirizal/sts-save-editor-cli.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hamdirizal/sts-save-editor-cli/issues"
+  },
+  "homepage": "https://github.com/hamdirizal/sts-save-editor-cli#readme"
+}
