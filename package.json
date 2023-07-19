@@ -16,6 +16,7 @@
   },
   "homepage": "https://github.com/hamdirizal/sts-save-editor-cli#readme",
   "devDependencies": {
+    "@types/node": "^20.4.2",
     "typescript": "^5.1.6"
   },
   "type": "module",

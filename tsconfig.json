@@ -4,9 +4,10 @@
     "target": "es2020",
     "outDir": "dist",
     "rootDir": "src",
-    "moduleResolution": "node",
-    "esModuleInterop": true
+    "allowJs": true,
+    "esModuleInterop": true,
+    "moduleResolution": "node"
   },
-  "include": ["src/*.ts"],
+  "include": ["src/**/*.ts", "src/**/*.js"],
   "exclude": ["node_modules"]
 }

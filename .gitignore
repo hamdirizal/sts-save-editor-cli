@@ -1,6 +1,7 @@
 .data/
 .presets/
 .data.json
+.app-state.json
 
 
 # Logs

@@ -1,0 +1,1 @@
+export const APP_STATE_FILENAME: string = '.app-state.json';
