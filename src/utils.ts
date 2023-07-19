@@ -25,6 +25,19 @@ export const writeAppState = (appState: AppState) => {
   fs.writeFileSync(`./${APP_STATE_FILENAME}`, JSON.stringify(appState));
 };
 
+export const renderHr = () => {
+  console.info('_'.repeat(120))
+}
+
+export const renderAppHeader = () => {
+  console.clear();
+  const title = 'Slay the Spire save editor. v0.0.1';
+  const totalLength = 120;
+  const beforeLength = Math.floor((totalLength - title.length) / 2);
+  const afterLength = totalLength - (title.length + beforeLength);
+  console.info(`${'='.repeat(beforeLength)}${title}${'='.repeat(afterLength)}`);
+}
+
 export const renderArrayAsGrid = (arr: string[], colWidth: number, colsCount: number) => {
   let result = '';
   let col = 0;

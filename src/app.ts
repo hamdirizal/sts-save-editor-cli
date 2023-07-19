@@ -1,6 +1,6 @@
 import inquirer from 'inquirer';
-import { readAppState, writeAppState } from './utils.js';
-import { AppState } from './types.js';
+import { readAppState, renderAppHeader, renderArrayAsGrid, renderHr, writeAppState } from './utils.js';
+import { AppState, Card } from './types.js';
 import fs, { existsSync } from 'fs';
 import { getCardList } from './cards.js';
 
@@ -46,24 +46,47 @@ const noSaveFile = () => {
 
 const success = () => {}
 
-const viewCardsPage = () => {}
-
-const homePage = () => {
-  console.info('What do you want to do?');
+const viewCardsPage = () => {
+  renderAppHeader();
+  console.info('All available cards');
+  const cards: Card[] = getCardList();
+  console.info(renderArrayAsGrid(cards.map(c=>`[${c.id}] ${c.title}`), 24, 5));
   inquirer
     .prompt({
       type: 'list',
       name: 'action',
-      message: 'Pick one',
+      message: 'Back to main page?',
+      choices: [
+        {value: 'ok', name: 'OK'},
+      ],
+    })
+    .then((answers) => {
+      homePage();
+    });
+}
+
+const homePage = () => {
+  renderAppHeader();
+  inquirer
+    .prompt({
+      type: 'list',
+      name: 'action',
+      message: 'What do you want to do?',
       choices: [
         {value: 'view_cards', name: 'View all cards'},
         {value: 'view_relics', name: 'View all relics'},
         {value: 'presets', name: 'View presets'},
         {value: 'inject_save_file', name: 'Inject preset to a save file'},
+        {value: 'exit', name: 'Exit'},
       ],
     })
     .then((answers) => {
-      console.log(answers);
+      if(answers.action === 'view_cards') {
+        viewCardsPage();
+      }
+      else{
+        console.log('done');
+      }
     });
 }
 
