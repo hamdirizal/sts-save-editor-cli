@@ -18,25 +18,62 @@ export const displayAsGrid = (stringArray, colWidth, numberOfCols) => {
   console.info(result)
 }
 
+const getLastPresetId = () => {
+  const allPresets = getAllPresets();
+  if(allPresets.length === 0) {
+    return 0;
+  }
+  else {
+    const lastPresetName = allPresets[allPresets.length-1];
+    const lastNumber = lastPresetName.split('.')[0];
+    return parseInt(lastNumber);
+  }
+}
+
 export const encodePresetName = (presetName) => {
   const allowedCharacters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_';
-  let newName = '';
+  let newName = presetName;
 
   // Make uppercase
-  newName = presetName.toUpperCase();
+  newName = newName.toUpperCase();
 
   // Spaces with underscores
-  newName = presetName.replace(/ /g, '_');
+  newName = newName.replace(/ /g, '_');
 
   // Remove non-allowed characters
   newName = newName.split('').filter(c => allowedCharacters.includes(c)).join('');
+
+  const lastPresetId = getLastPresetId();
+  const finalName = `${lastPresetId+1}.${newName}.json`;
   
   // Return final name
-  return ``;
+  return finalName;
 }
 
 export const createPresetsFolderIfNotExists = () => {
   if(!fs.existsSync('./.presets')) {
     fs.mkdirSync('./.presets');
+  }
+}
+
+export const getAllPresets = () => {
+  createPresetsFolderIfNotExists();
+  const files = fs.readdirSync('./.presets');
+
+  // Order filename correctly
+  files.sort((a, b) => {
+    const aNumber = parseInt(a.split('.')[0]);
+    const bNumber = parseInt(b.split('.')[0]);
+    return aNumber - bNumber;
+  });
+
+  return files;
+}
+
+export const getDefaultPresetContent = () => {
+  return {
+    gold: 99,
+    cards: [],
+    relics: [],
   }
 }
