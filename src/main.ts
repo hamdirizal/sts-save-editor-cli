@@ -4,94 +4,87 @@ import inquirer from 'inquirer';
 
 console.log('Hi, welcome to Node Pizza');
 
-const questions = [
-  {
-    type: 'confirm',
-    name: 'toBeDelivered',
-    message: 'Is this for delivery?',
-    default: false,
-    transformer: (answer) => (answer ? '👍' : '👎'),
-  },
-  {
-    type: 'input',
-    name: 'phone',
-    message: "What's your phone number?",
-    validate(value) {
-      const pass = value.match(
-        /^([01]{1})?[-.\s]?\(?(\d{3})\)?[-.\s]?(\d{3})[-.\s]?(\d{4})\s?((?:#|ext\.?\s?|x\.?\s?){1}(?:\d+)?)?$/i,
+const directionsPrompt = {
+  type: 'list',
+  name: 'direction',
+  message: 'Which direction would you like to go?',
+  choices: ['Forward', 'Right', 'Left', 'Back'],
+};
+
+function main() {
+  console.log('You find youself in a small room, there is a door in front of you.');
+  exitHouse();
+}
+
+function exitHouse() {
+  inquirer.prompt(directionsPrompt).then((answers) => {
+    if (answers.direction === 'Forward') {
+      console.log('You find yourself in a forest');
+      console.log(
+        'There is a wolf in front of you; a friendly looking dwarf to the right and an impasse to the left.',
       );
-      if (pass) {
-        return true;
-      }
+      encounter1();
+    } else {
+      console.log('You cannot go that way. Try again');
+      exitHouse();
+    }
+  });
+}
 
-      return 'Please enter a valid phone number';
-    },
-  },
-  {
-    type: 'list',
-    name: 'size',
-    message: 'What size do you need?',
-    choices: ['Large', 'Medium', 'Small'],
-    filter(val) {
-      return val.toLowerCase();
-    },
-  },
-  {
-    type: 'input',
-    name: 'quantity',
-    message: 'How many do you need?',
-    validate(value) {
-      const valid = !isNaN(parseFloat(value));
-      return valid || 'Please enter a number';
-    },
-    filter: Number,
-  },
-  {
-    type: 'expand',
-    name: 'toppings',
-    message: 'What about the toppings?',
-    choices: [
-      {
-        key: 'p',
-        name: 'Pepperoni and cheese',
-        value: 'PepperoniCheese',
-      },
-      {
-        key: 'a',
-        name: 'All dressed',
-        value: 'alldressed',
-      },
-      {
-        key: 'w',
-        name: 'Hawaiian',
-        value: 'hawaiian',
-      },
-    ],
-  },
-  {
-    type: 'rawlist',
-    name: 'beverage',
-    message: 'You also get a free 2L beverage',
-    choices: ['Pepsi', '7up', 'Coke'],
-  },
-  {
-    type: 'input',
-    name: 'comments',
-    message: 'Any comments on your purchase experience?',
-    default: 'Nope, all good!',
-  },
-  {
-    type: 'list',
-    name: 'prize',
-    message: 'For leaving a comment, you get a freebie',
-    choices: ['cake', 'fries'],
-    when(answers) {
-      return answers.comments !== 'Nope, all good!';
-    },
-  },
-];
+function encounter1() {
+  inquirer.prompt(directionsPrompt).then((answers) => {
+    const { direction } = answers;
+    if (direction === 'Forward') {
+      console.log('You attempt to fight the wolf');
+      console.log(
+        'Theres a stick and some stones lying around you could use as a weapon',
+      );
+      encounter2b();
+    } else if (direction === 'Right') {
+      console.log('You befriend the dwarf');
+      console.log('He helps you kill the wolf. You can now move forward');
+      encounter2a();
+    } else {
+      console.log('You cannot go that way');
+      encounter1();
+    }
+  });
+}
 
-inquirer.prompt(questions).then((answers) => {
-  console.log('\nOrder receipt:');
-  console.log(JSON.stringify(answers, null, '  '));
-});
+function encounter2a() {
+  inquirer.prompt(directionsPrompt).then((answers) => {
+    const { direction } = answers;
+    if (direction === 'Forward') {
+      let output = 'You find a painted wooden sign that says:';
+      output += ' \n';
+      output += ' ____  _____  ____  _____ \n';
+      output += '(_  _)(  _  )(  _ \\(  _  ) \n';
+      output += '  )(   )(_)(  )(_) ))(_)(  \n';
+      output += ' (__) (_____)(____/(_____) \n';
+      console.log(output);
+    } else {
+      console.log('You cannot go that way');
+      encounter2a();
+    }
+  });
+}
+
+function encounter2b() {
+  inquirer
+    .prompt({
+      type: 'list',
+      name: 'weapon',
+      message: 'Pick one',
+      choices: [
+        'Use the stick',
+        'Grab a large rock',
+        'Try and make a run for it',
+        'Attack the wolf unarmed',
+      ],
+    })
+    .then(() => {
+      console.log('The wolf mauls you. You die. The end.');
+    });
+}
+
+main();
