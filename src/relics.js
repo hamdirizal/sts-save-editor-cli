@@ -1,7 +1,12 @@
-import relics from "./relics.json" assert { type: "json" };
+'use strict';
+
 import { displayAsGrid } from "./utils.js";
+import fs from 'fs';
 
 export const getRelicList = () => {
+  let rawdata = fs.readFileSync('./src/relics.json');
+  let relics = JSON.parse(rawdata);
+
   // Convert to array
   const keys = Object.keys(relics);
   const arr = [];
@@ -38,5 +43,5 @@ export const renderRelicList = () => {
   console.info(`
 AVAILABLE RELICS
   `)
-  displayAsGrid(getRelicList().map(r=>`${r.id}. ${r.title}`), 30, 3);
+  displayAsGrid(getRelicList().map(r=>`${r.id}. ${r.title}`), 30, 4);
 }

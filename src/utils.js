@@ -1,7 +1,5 @@
-import relics from "./relics.json" assert { type: "json" };
-
 export const renderHr = () => {
-  console.info('_'.repeat(90))
+  console.info('_'.repeat(120))
 }
 
 export const displayAsGrid = (stringArray, colWidth, numberOfCols) => {
