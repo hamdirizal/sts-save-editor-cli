@@ -25,12 +25,14 @@ const run = () => {
 
   console.info(`
   PRESET DETAILS:
+  
   NAME: ${TEXTCOLOR.GREEN}${selectedPresetName}${TEXTCOLOR.DEFAULT}
+
   GOLD: ${TEXTCOLOR.GREEN}${100}${TEXTCOLOR.DEFAULT} 
-  RELICS: ${TEXTCOLOR.GREEN}
-  ${presetObject.relics.join(', ')}${TEXTCOLOR.DEFAULT}
-  ${TEXTCOLOR.DEFAULT}${TEXTCOLOR.DEFAULT}CARDS: ${TEXTCOLOR.GREEN}
-  ${presetObject.cards.join(', ')}${TEXTCOLOR.DEFAULT}
+
+  RELICS: ${TEXTCOLOR.GREEN}${presetObject.relics.join(', ')}${TEXTCOLOR.DEFAULT}
+  
+  CARDS: ${TEXTCOLOR.GREEN}${presetObject.cards.join(', ')}${TEXTCOLOR.DEFAULT}
   `);
   renderHr();
 }
