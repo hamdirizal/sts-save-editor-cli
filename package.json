@@ -2,18 +2,24 @@
   "name": "sts-save-editor-cli",
   "version": "1.0.0",
   "description": "",
-  "type": "module",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/hamdirizal/sts-save-editor-cli.git"
   },
   "scripts": {
-    "start": "node ./app.js"
+    "build": "tsc"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/hamdirizal/sts-save-editor-cli/issues"
   },
-  "homepage": "https://github.com/hamdirizal/sts-save-editor-cli#readme"
+  "homepage": "https://github.com/hamdirizal/sts-save-editor-cli#readme",
+  "devDependencies": {
+    "typescript": "^5.1.6"
+  },
+  "type": "module",
+  "dependencies": {
+    "inquirer": "^9.2.8"
+  }
 }
