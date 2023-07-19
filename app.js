@@ -1,5 +1,6 @@
 import { helpCommand } from "./src/commands/helpCommand.js";
 import { seeRelicsCommand } from "./src/commands/seeRelicsCommand.js";
+import { displayAsGrid } from "./src/utils.js";
 
 const renderHr = () => {
   console.info('_'.repeat(90))
