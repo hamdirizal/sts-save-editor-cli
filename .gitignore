@@ -1,5 +1,6 @@
 .data/
 .presets/
+.data.json
 
 
 # Logs

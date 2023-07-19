@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { displayAsGrid } from "./utils.js";
 
-const getCardList = () => {
+export const getCardList = () => {
   let rawdata = fs.readFileSync('./src/cards.json');
   let cards = JSON.parse(rawdata);
 
