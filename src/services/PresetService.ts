@@ -3,6 +3,9 @@ import { PRESET_FOLDER_NAME } from "../constants.js";
 import { Preset } from '../types.js';
 
 export class PresetService {
+
+  private defaultPresetContent: Preset = {gold: 99, cards: [], relics: []}
+
   private readAllPresetNamesFromDisk(){
     // If preset folder not exists, then return empty array, and create the folder
     if(!fs.existsSync(`./${PRESET_FOLDER_NAME}`)) {
@@ -50,7 +53,7 @@ export class PresetService {
     let newName = rawName;
   
     // Make uppercase
-    newName = newName.toUpperCase();
+    newName = newName.trim().toUpperCase();
   
     // Spaces with underscores
     newName = newName.replace(/ /g, '_');
@@ -76,5 +79,11 @@ export class PresetService {
     }
     
     return this.readOnePresetFromDisk(filename);
+  }
+
+  public writePresetToDisk(presetName: string, content: Preset){}
+
+  public writeDefaultPresetToDisk (presetName: string) {
+    fs.writeFileSync(`./${PRESET_FOLDER_NAME}/${presetName}`, JSON.stringify(this.defaultPresetContent));
   }
 }

@@ -37,7 +37,7 @@ export class Page{
     .prompt({
       type: 'list',
       name: 'action',
-      message: 'What do you want to do?',
+      message: 'Navigate to:',
       choices: [
         {value: 'view_cards', name: 'Cards'},
         {value: 'view_relics', name: 'Relics'},
@@ -133,7 +133,7 @@ export class Page{
     .prompt({
       type: 'list',
       name: 'action',
-      message: `You are going to create a preset called ${generatedName}, are you sure?`,
+      message: `You are going to create a preset called "${generatedName}", are you sure?`,
       choices: [
         {value: 'confirm', name: 'Yes. Create the preset'},
         {value: 'change_name', name: 'No. Change name'},
@@ -142,6 +142,7 @@ export class Page{
     })
     .then((answers) => {
       if(answers.action === 'confirm') {
+        this.presetService.writeDefaultPresetToDisk(generatedName);
         this.showPresetListingPage();
       }
       else if(answers.action === 'change_name') {
@@ -158,10 +159,17 @@ export class Page{
     inquirer
     .prompt({
       type: 'input',
-      name: 'preset_name',
+      name: 'action',
       message: "Enter the preset name: ",
     })
-    .then((answers) => this.render_confirmPresetName(answers.preset_name));
+    .then((answers) => {
+      if(!(answers.action.trim())) {
+        this.render_createPresetForm();
+      }
+      else{
+        this.render_confirmPresetName(answers.action)
+      }
+    });
   }
 
   public showSinglePreset(presetId: number) {
