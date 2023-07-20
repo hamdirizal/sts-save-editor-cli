@@ -85,8 +85,7 @@ export class PresetService {
     return this.readOnePresetFromDisk(filename);
   }
 
-  public writePresetToDisk(presetId: number, content: Preset){
-    const presetName = this.getPresetNameById(presetId);
+  public writePresetToDisk(presetName: string, content: Preset){
     fs.writeFileSync(`./${PRESET_FOLDER_NAME}/${presetName}`, JSON.stringify(content));
   }
 
@@ -96,6 +95,21 @@ export class PresetService {
 
   public deletePresetFromDisk (presetName: string) {
     fs.unlinkSync(`./${PRESET_FOLDER_NAME}/${presetName}`);
+  }
+
+  public removeCardsFromPreset(cardIdsToBeRemoved: number[], presetId: number): Preset {
+    const presetName = this.getPresetNameById(presetId);
+    let presetObj = this.getPresetDataByFilename(presetName);
+
+    // For each card id to be removed, remove it from the preset object
+    for(let i = 0; i < cardIdsToBeRemoved.length; i++) {
+      const cardId = cardIdsToBeRemoved[i];
+      const index = presetObj.cards.indexOf(cardId);
+      if(index > -1) {
+        presetObj.cards.splice(index, 1);
+      }
+    }
+    return presetObj;
   }
 
   public pushCardIdsToPreset(idsToBeAdded: number[], presetId: number, allCards: CardWithTitle[]): Preset {

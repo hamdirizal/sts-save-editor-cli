@@ -192,8 +192,32 @@ export class Page{
     }
     
     const cards: CardWithTitle[] = this.cardService.getCardList();
-    const obj = this.presetService.pushCardIdsToPreset(idsToBeAdded, presetId, cards);    
-    this.presetService.writePresetToDisk(presetId, obj);
+    const obj = this.presetService.pushCardIdsToPreset(idsToBeAdded, presetId, cards);
+    const presetName = this.presetService.getPresetNameById(presetId);
+    this.presetService.writePresetToDisk(presetName, obj);
+  }
+
+  private screen__removeCardsFromPreset(presetId: number){
+    this.utility.renderAppHeader();
+    const presetName = this.presetService.getPresetNameById(presetId);
+    const presetObj = this.presetService.getPresetDataByFilename(presetName);
+    const cards: CardWithTitle[] = this.cardService.getCardList();
+    console.info('Cards in this preset')
+    console.info(this.cardService.transformIdsToReadableNames(presetObj.cards).join('  '));
+    inquirer
+    .prompt({
+      type: 'input',
+      name: 'action',
+      message: `Enter card IDs to be removed from the "${presetName}". separate ids by spaces`,
+    })
+    .then((answers) => {
+      const selectedCardIds = answers.action.trim().split(' ').filter((item) => {
+        return parseInt(item) >= 0;
+      }).map(item=>parseInt(item));
+      const newPresetObj = this.presetService.removeCardsFromPreset(selectedCardIds, presetId);
+      this.presetService.writePresetToDisk(presetName, newPresetObj);
+      this.screen__viewSinglePreset(presetId);
+    });
   }
 
   private screen__addCardsToPreset(presetId: number) {
@@ -245,6 +269,9 @@ export class Page{
       }
       else if(answers.action === 'add_cards') {
         this.screen__addCardsToPreset(presetId);
+      }
+      else if(answers.action === 'remove_cards') {
+        this.screen__removeCardsFromPreset(presetId);
       }
       else{
         this.showPresetListingPage()
