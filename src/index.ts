@@ -14,7 +14,7 @@ const presetService: PresetService = new PresetService();
 
 const page: Page = new Page(translation, utility, cardService, relicService, presetService);
 
-page.showHomePage();
+page.render_home();
 
 // const processTheGivenSavePath = (savePath) => {
 //   if(existsSync(savePath)) {

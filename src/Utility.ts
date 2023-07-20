@@ -1,7 +1,9 @@
+import { APP_TITLE, APP_VERSION } from "./constants.js";
+
 export class Utility {
   public renderAppHeader() {
     console.clear();
-    const title = 'Slay the Spire save editor. v0.0.1';
+    const title = ` ${APP_TITLE} v.${APP_VERSION} `;
     const totalLength = 120;
     const beforeLength = Math.floor((totalLength - title.length) / 2);
     const afterLength = totalLength - (title.length + beforeLength);

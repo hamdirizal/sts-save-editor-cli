@@ -5,6 +5,7 @@ import { CardWithTitle, InquirerListOption, RelicWithTitle } from './types.js';
 import { RelicService } from './RelicService.js';
 import { PresetService } from './services/PresetService.js';
 import { Translation } from './Translation.js';
+import { APP_TITLE, APP_VERSION } from './constants.js';
 
 export class Page{
 
@@ -24,8 +25,13 @@ export class Page{
     private presetService: PresetService
     ){};
 
+  private render_exit(){
+    console.clear();
+    console.info(`${APP_TITLE} v.${APP_VERSION} closed!`);
+  }
+
   /** Showing the homepage */
-  public showHomePage(){
+  public render_home(){
     this.utility.renderAppHeader();
     inquirer
     .prompt({
@@ -33,10 +39,9 @@ export class Page{
       name: 'action',
       message: 'What do you want to do?',
       choices: [
-        {value: 'view_cards', name: 'View all cards'},
-        {value: 'view_relics', name: 'View all relics'},
-        {value: 'view_presets', name: 'View all presets'},
-        {value: 'inject_save_file', name: 'Inject preset to a save file'},
+        {value: 'view_cards', name: 'Cards'},
+        {value: 'view_relics', name: 'Relics'},
+        {value: 'view_presets', name: 'Presets'},
         {value: 'exit', name: 'Exit'},
       ],
     })
@@ -51,7 +56,7 @@ export class Page{
         this.showPresetListingPage();
       }
       else{
-        console.log('done');
+        this.render_exit();
       }
     });
   }
@@ -70,7 +75,7 @@ export class Page{
       name: 'action',
       message: this.trans.get('press_enter_back_to_main'),
     })
-    .then(() => this.showHomePage());
+    .then(() => this.render_home());
   }
 
   /** Show the relic listing page */
@@ -87,7 +92,7 @@ export class Page{
       name: 'action',
       message: this.trans.get('press_enter_back_to_main'),
     })
-    .then(() => this.showHomePage());
+    .then(() => this.render_home());
   }
 
   /** Show all available presets */
@@ -111,7 +116,7 @@ export class Page{
     })
     .then((answers) => {
       if(answers.action === 'back') {
-        this.showHomePage();
+        this.render_home();
       }
       else if(answers.action === 'create_new_preset') {
         this.render_createPresetForm();
