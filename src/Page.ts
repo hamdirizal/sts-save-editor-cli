@@ -1,22 +1,13 @@
 import inquirer from 'inquirer';
 import { Utility } from "./Utility.js";
 import { CardService } from './CardService.js';
-import { CardWithTitle, InquirerListOption, RelicWithTitle } from './types.js';
+import { CardWithTitle, InquirerListOption, Preset, RelicWithTitle } from './types.js';
 import { RelicService } from './RelicService.js';
 import { PresetService } from './services/PresetService.js';
 import { Translation } from './Translation.js';
 import { APP_TITLE, APP_VERSION } from './constants.js';
 
 export class Page{
-
-  private Actions = {
-    VIEW_CARDS: 'view_cards',
-    VIEW_RELICS: 'view_relics',
-    VIEW_PRESETS: 'view_presets',
-    INJECT_SAVE_FILE: 'inject_save_file',
-    EXIT: 'exit',
-  }
-
   constructor(
     private trans: Translation,
     private utility: Utility,
@@ -174,29 +165,11 @@ export class Page{
         this.render_confirmPresetName(answers.action)
       }
     });
-  }
+  }  
 
-
-  /** 
-   * Add array of card ids to a preset 
+  /**
+   * Screen for removing cards from a preset
    */
-  private addCardsToPreset(cardIds: number[] | string, presetId: number) {    
-    let idsToBeAdded: number[];
-    if(typeof cardIds === 'string') {
-      idsToBeAdded = cardIds.trim().split(' ').filter((item) => {
-        return parseInt(item) >= 0;
-      }).map(item=>parseInt(item));
-    }
-    else{
-      idsToBeAdded = cardIds;
-    }
-    
-    const cards: CardWithTitle[] = this.cardService.getCardList();
-    const obj = this.presetService.pushCardIdsToPreset(idsToBeAdded, presetId, cards);
-    const presetName = this.presetService.getPresetNameById(presetId);
-    this.presetService.writePresetToDisk(presetName, obj);
-  }
-
   private screen__removeCardsFromPreset(presetId: number){
     this.utility.renderAppHeader();
     const presetName = this.presetService.getPresetNameById(presetId);
@@ -220,6 +193,9 @@ export class Page{
     });
   }
 
+  /**
+   * Screen for adding cards to a preset
+   */
   private screen__addCardsToPreset(presetId: number) {
     this.utility.renderAppHeader();
     const presetName = this.presetService.getPresetNameById(presetId);
@@ -234,11 +210,22 @@ export class Page{
       message: `Enter card IDs to be added to the "${presetName}", separated by spaces`,
     })
     .then((answers) => {
-      this.addCardsToPreset(answers.action, presetId);
+      
+      let idsToBeAdded: number[] = answers.action.trim().split(' ').filter((item) => {
+        return parseInt(item) >= 0;
+      }).map(item=>parseInt(item));
+      const cards: CardWithTitle[] = this.cardService.getCardList();
+      const newPresetObj: Preset = this.presetService.pushCardIdsToPreset(idsToBeAdded, presetId, cards);
+      const presetName: string = this.presetService.getPresetNameById(presetId);
+      this.presetService.writePresetToDisk(presetName, newPresetObj);
+
       this.screen__viewSinglePreset(presetId);
     });
   }
 
+  /**
+   * Screen for viewing a single preset
+   */
   private screen__viewSinglePreset(presetId: number) {
     this.utility.renderAppHeader();
     const presetName = this.presetService.getPresetNameById(presetId);
