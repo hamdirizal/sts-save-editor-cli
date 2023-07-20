@@ -1,27 +1,17 @@
 import inquirer from 'inquirer';
-import { readAppState, renderAppHeader, renderArrayAsGrid, renderHr, writeAppState } from './utils.js';
-import { AppState, Card } from './types.js';
-import fs, { existsSync } from 'fs';
-import { getCardList } from './cards.js';
-import { viewCardsPage } from './pages/viewCardsPage.js';
-import { MyApp } from './MyApp.js';
-import { InitialPage } from './InitialPage.js';
+import { readAppState, renderAppHeader, writeAppState } from './utils.js';
+import { AppState } from './types.js';
+import { existsSync } from 'fs';
 import { Utility } from './Utility.js';
 import { CardService } from './CardService.js';
-import { CardsPage } from './CardsPage.js';
 import { Page } from './Page.js';
+import { RelicService } from './RelicService.js';
 
 
 const utility: Utility = new Utility();
 const cardService: CardService = new CardService();
-const page: Page = new Page(utility, cardService);
-// const cardsPage: CardsPage = new CardsPage(utility, cardService);
-// const initialPage: InitialPage = new InitialPage(utility, cardsPage);
-
-
-// initialPage.setCloseFunc(() => { console.log('closing')});
-
-// initialPage.run();
+const relicService: RelicService = new RelicService();
+const page: Page = new Page(utility, cardService, relicService);
 page.showHomePage();
 
 const processTheGivenSavePath = (savePath) => {

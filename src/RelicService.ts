@@ -1,22 +1,20 @@
 import fs from 'fs';
-// import { renderArrayAsGrid } from "./utils.js";
-import { Card } from '../types.js';
+import { Relic } from './types.js';
 
-
-export class CardsController{
-  private readCardsFromFile(){
-    let rawdata: any = fs.readFileSync('./src/cards.json');
+export class RelicService {
+  private readRelicsFromFile(){
+    let rawdata: any = fs.readFileSync('./src/relics.json');
     return JSON.parse(rawdata);
   }
-  
-  public getCardList():Card[] {
-    const cards = this.readCardsFromFile();
-    const keys = Object.keys(cards);
+
+  public getRelicList(): Relic[] {
+    const relics = this.readRelicsFromFile();
+    const keys = Object.keys(relics);
     const arr = [];
     keys.forEach(key => {
       arr.push({
         identifier: key,
-        title: cards[key].NAME
+        title: relics[key].NAME
       });
     });
   
@@ -31,7 +29,7 @@ export class CardsController{
       return 0;
     });
   
-    const indexed: Card[] = sorted.map((item, index) => {
+    const indexed: Relic[] = sorted.map((item, index) => {
       return {
         id: index,
         title: item.title,
@@ -40,9 +38,5 @@ export class CardsController{
     })
   
     return indexed;
-  }
-
-  public renderCardListingPage() {
-    
   }
 }

@@ -12,3 +12,9 @@ export interface Card {
   title: string;
   identifier: string;
 }
+
+export interface Relic {
+  id: number;
+  title: string;
+  identifier: string;
+}

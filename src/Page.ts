@@ -1,12 +1,14 @@
 import inquirer from 'inquirer';
 import { Utility } from "./Utility";
 import { CardService } from './CardService';
-import { Card } from './types';
+import { Card, Relic } from './types';
+import { RelicService } from './RelicService';
 
 export class Page{
   constructor(
     private utility: Utility,
-    private cardService: CardService
+    private cardService: CardService,
+    private relicService: RelicService
     ){};
 
   /** Showing the homepage */
@@ -29,6 +31,9 @@ export class Page{
       if(answers.action === 'view_cards') {
         this.showCardListingPage();
       }
+      else if(answers.action === 'view_relics') {
+        this.showRelicListingPage();
+      }
       else{
         console.log('done');
       }
@@ -42,6 +47,23 @@ export class Page{
     const colWidth = 24;
     this.utility.renderArrayAsGrid(
       cards.map(c=>`[${c.id}] ${c.identifier}`.substring(0, colWidth - 2)), colWidth, 5
+    );
+    inquirer
+    .prompt({
+      type: 'input',
+      name: 'action',
+      message: 'Press [Enter] to go back to the main page',
+    })
+    .then(() => this.showHomePage());
+  }
+
+  /** Show the relic listing page */
+  public showRelicListingPage(){
+    this.utility.renderAppHeader();
+    const relics: Relic[] = this.relicService.getRelicList();
+    const colWidth = 30;
+    this.utility.renderArrayAsGrid(
+      relics.map(c=>`[${c.id}] ${c.identifier}`.substring(0, colWidth - 2)), colWidth, 4
     );
     inquirer
     .prompt({
