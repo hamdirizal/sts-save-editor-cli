@@ -85,7 +85,9 @@ export class PresetService {
     return this.readOnePresetFromDisk(filename);
   }
 
-  public writePresetToDisk(presetName: string, content: Preset){}
+  public writePresetToDisk(presetName: string, content: Preset){
+    fs.writeFileSync(`./${PRESET_FOLDER_NAME}/${presetName}`, JSON.stringify(content));
+  }
 
   public writeDefaultPresetToDisk (presetName: string) {
     fs.writeFileSync(`./${PRESET_FOLDER_NAME}/${presetName}`, JSON.stringify(this.defaultPresetContent));

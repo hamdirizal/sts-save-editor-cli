@@ -126,7 +126,7 @@ export class Page{
         this.showCreatePresetNameInput();
       }
       else{
-        this.renderSinglePresetPage(parseInt(answers.action));
+        this.screen__viewSinglePreset(parseInt(answers.action));
       }
     });
   }
@@ -180,21 +180,37 @@ export class Page{
   /** 
    * Add array of card ids to a preset 
    */
-  private addCardIdsToPreset(cardIds: number[] | string, presetId: number) {
-    let idsToBeAdded;
+  private pushCardIdsToPreset(cardIds: number[] | string, presetId: number) {
+    let idsToBeAdded: number[];
     if(typeof cardIds === 'string') {
       idsToBeAdded = cardIds.trim().split(' ').filter((item) => {
         return parseInt(item) >= 0;
-      });
+      }).map(item=>parseInt(item));
     }
     else{
       idsToBeAdded = cardIds;
     }
 
+    // All available cards
     const cards: CardWithTitle[] = this.cardService.getCardList();
+
+    // Check the ids, filter out the invalid ones
+    const validCardIds = idsToBeAdded.filter((id: number) => {
+      return cards.some((c) => c.id === id);
+    });
+
+    // Get the preset object data
+    const presetName = this.presetService.getPresetNameById(presetId);
+    let presetObj = this.presetService.getPresetDataByFilename(presetName);
+
+    // Add the valid card ids to the preset object
+    presetObj.cards = [...presetObj.cards, ...validCardIds];
+
+    // Write the preset object to disk
+    this.presetService.writePresetToDisk(presetName, presetObj);
   }
 
-  private renderAddCardsPage(presetId: number) {
+  private screen__addCardsToPreset(presetId: number) {
     this.utility.renderAppHeader();
     const presetName = this.presetService.getPresetNameById(presetId);
     const presetObj = this.presetService.getPresetDataByFilename(presetName);
@@ -208,12 +224,12 @@ export class Page{
       message: `Enter card IDs to be added to the "${presetName}", separated by spaces`,
     })
     .then((answers) => {
-      this.addCardIdsToPreset(answers.action, presetId);
+      this.pushCardIdsToPreset(answers.action, presetId);
       console.log(answers.action);
     });
   }
 
-  private renderSinglePresetPage(presetId: number) {
+  private screen__viewSinglePreset(presetId: number) {
     this.utility.renderAppHeader();
     const presetName = this.presetService.getPresetNameById(presetId);
     const presetObj = this.presetService.getPresetDataByFilename(presetName);
@@ -242,7 +258,7 @@ export class Page{
         this.showDeletePresetConfirmation(presetId);
       }
       else if(answers.action === 'add_cards') {
-        this.renderAddCardsPage(presetId);
+        this.screen__addCardsToPreset(presetId);
       }
       else{
         this.showPresetListingPage()
@@ -269,7 +285,7 @@ export class Page{
         this.showPresetListingPage();
       }
       else {
-        this.renderSinglePresetPage(presetId);
+        this.screen__viewSinglePreset(presetId);
       }
     });
   }
