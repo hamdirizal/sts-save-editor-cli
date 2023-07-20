@@ -60,14 +60,19 @@ export class Page{
     });
   }
 
+  private renderCardAsGrid(cards: CardWithTitle[]) {
+    const colWidth = 24;
+    this.utility.renderArrayAsGrid(
+      cards.map(c=>`[${c.id}] ${c.identifier}`.substring(0, colWidth - 2)), colWidth, 5
+    );
+  }
+
   /** Show the card listing page */
   private render_cardListing(){
     this.utility.renderAppHeader();
     const cards: CardWithTitle[] = this.cardService.getCardList();
     const colWidth = 24;
-    this.utility.renderArrayAsGrid(
-      cards.map(c=>`[${c.id}] ${c.identifier}`.substring(0, colWidth - 2)), colWidth, 5
-    );
+    this.renderCardAsGrid(cards);
     inquirer
     .prompt({
       type: 'input',
@@ -121,7 +126,7 @@ export class Page{
         this.showCreatePresetNameInput();
       }
       else{
-        this.viewSinglePreset(parseInt(answers.action));
+        this.renderSinglePresetPage(parseInt(answers.action));
       }
     });
   }
@@ -171,12 +176,51 @@ export class Page{
     });
   }
 
-  private viewSinglePreset(presetId: number) {
+
+  /** 
+   * Add array of card ids to a preset 
+   */
+  private addCardIdsToPreset(cardIds: number[] | string, presetId: number) {
+    let idsToBeAdded;
+    if(typeof cardIds === 'string') {
+      idsToBeAdded = cardIds.trim().split(' ').filter((item) => {
+        return parseInt(item) >= 0;
+      });
+    }
+    else{
+      idsToBeAdded = cardIds;
+    }
+
+    const cards: CardWithTitle[] = this.cardService.getCardList();
+  }
+
+  private renderAddCardsPage(presetId: number) {
     this.utility.renderAppHeader();
     const presetName = this.presetService.getPresetNameById(presetId);
     const presetObj = this.presetService.getPresetDataByFilename(presetName);
-    console.info(`Preset name: ${presetName}`);
-    console.info(`Preset data: ${presetObj}`);
+    const cards: CardWithTitle[] = this.cardService.getCardList();
+    console.log('Available cards:');
+    this.renderCardAsGrid(cards);
+    inquirer
+    .prompt({
+      type: 'input',
+      name: 'action',
+      message: `Enter card IDs to be added to the "${presetName}", separated by spaces`,
+    })
+    .then((answers) => {
+      this.addCardIdsToPreset(answers.action, presetId);
+      console.log(answers.action);
+    });
+  }
+
+  private renderSinglePresetPage(presetId: number) {
+    this.utility.renderAppHeader();
+    const presetName = this.presetService.getPresetNameById(presetId);
+    const presetObj = this.presetService.getPresetDataByFilename(presetName);
+    console.info(`Name:`, presetName);
+    console.info(`Gold:`, presetObj.gold);
+    console.info(`Cards:`, presetObj.cards);
+    console.info(`Relics:`, presetObj.relics);
     inquirer
     .prompt({
       type: 'list',
@@ -196,6 +240,9 @@ export class Page{
     .then((answers) => {
       if(answers.action === 'delete_preset') {
         this.showDeletePresetConfirmation(presetId);
+      }
+      else if(answers.action === 'add_cards') {
+        this.renderAddCardsPage(presetId);
       }
       else{
         this.showPresetListingPage()
@@ -222,7 +269,7 @@ export class Page{
         this.showPresetListingPage();
       }
       else {
-        this.viewSinglePreset(presetId);
+        this.renderSinglePresetPage(presetId);
       }
     });
   }
