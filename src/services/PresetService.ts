@@ -90,4 +90,8 @@ export class PresetService {
   public writeDefaultPresetToDisk (presetName: string) {
     fs.writeFileSync(`./${PRESET_FOLDER_NAME}/${presetName}`, JSON.stringify(this.defaultPresetContent));
   }
+
+  public deletePresetFromDisk (presetName: string) {
+    fs.unlinkSync(`./${PRESET_FOLDER_NAME}/${presetName}`);
+  }
 }

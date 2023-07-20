@@ -37,11 +37,11 @@ export class Page{
     .prompt({
       type: 'list',
       name: 'action',
-      message: 'Navigate to:',
+      message: 'What do you want to do?',
       choices: [
-        {value: 'view_cards', name: 'Cards'},
-        {value: 'view_relics', name: 'Relics'},
-        {value: 'view_presets', name: 'Presets'},
+        {value: 'view_cards', name: 'View cards'},
+        {value: 'view_relics', name: 'View relics'},
+        {value: 'manage_presets', name: 'Manage presets'},
         {value: 'exit', name: 'Exit'},
       ],
     })
@@ -52,7 +52,7 @@ export class Page{
       else if(answers.action === 'view_relics') {
         this.render_relicListing();
       }
-      else if(answers.action === 'view_presets') {
+      else if(answers.action === 'manage_presets') {
         this.showPresetListingPage();
       }
       else{
@@ -111,7 +111,7 @@ export class Page{
     .prompt({
       type: 'list',
       name: 'action',
-      message: 'Select a preset to view ',
+      message: presets.length ? 'Select a preset to view' : 'You don\'t have any preset',
       choices: options,
     })
     .then((answers) => {
@@ -137,7 +137,7 @@ export class Page{
       choices: [
         {value: 'confirm', name: 'Yes. Create the preset'},
         {value: 'change_name', name: 'No. Change name'},
-        {value: 'cancel', name: 'Cancel. Go back to the presets page'},
+        {value: 'cancel', name: 'Cancel. Back to the preset list page'},
       ],
     })
     .then((answers) => {
@@ -191,7 +191,7 @@ export class Page{
         {value: 'set_gold', name: 'Set gold amount'},
         {value: 'delete_preset', name: 'Delete this preset'},
         {value: 'inject_savefile', name: 'Inject this preset to a save file'},
-        {value: 'back', name: 'Back to the preset listing page'},
+        {value: 'back', name: 'Back to the preset list page'},
       ],
     })
     .then((answers) => {
@@ -211,14 +211,15 @@ export class Page{
     .prompt({
       type: 'list',
       name: 'action',
-      message: `Are you sure you want to delete the preset "${presetName}"?`,
+      message: `Are you sure you want to permanently delete the preset "${presetName}"?`,
       choices: [
         {value: 'cancel', name: 'Cancel'},
-        {value: 'confirm', name: 'Yes. Delete the preset'},
+        {value: 'confirm', name: 'Yes. Delete it'},
       ],
     })
     .then((answers) => {
       if(answers.action === 'confirm') {
+        this.presetService.deletePresetFromDisk(presetName);
         this.showPresetListingPage();
       }
       else {
