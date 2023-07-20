@@ -168,6 +168,36 @@ export class Page{
   }  
 
   /**
+   * Screen for setting gold amount to a preset
+   */
+  private screen__setGoldToPreset(presetId: number) {
+    this.utility.renderAppHeader();
+    const presetName = this.presetService.getPresetNameById(presetId);
+    const presetObj = this.presetService.getPresetDataByFilename(presetName);
+    console.info(`Current amount: ${presetObj.gold} gold`);
+    inquirer
+    .prompt({
+      type: 'input',
+      name: 'action',
+      message: `Enter gold amount to be set to the "${presetName}"`,
+    })
+    .then((answers) => {
+      const amount = parseInt(answers.action);
+
+      if(isNaN(amount)) {
+        this.screen__setGoldToPreset(presetId);
+        return;
+      }
+      else{
+        const newPresetObj: Preset = { ...presetObj, gold: amount };
+        this.presetService.writePresetToDisk(presetName, newPresetObj);
+        this.screen__viewSinglePreset(presetId);
+        return;
+      }
+    });
+  }
+
+  /**
    * Screen for removing cards from a preset
    */
   private screen__removeCardsFromPreset(presetId: number){
@@ -259,6 +289,9 @@ export class Page{
       }
       else if(answers.action === 'remove_cards') {
         this.screen__removeCardsFromPreset(presetId);
+      }
+      else if(answers.action === 'set_gold') {
+        this.screen__setGoldToPreset(presetId);
       }
       else{
         this.showPresetListingPage()
