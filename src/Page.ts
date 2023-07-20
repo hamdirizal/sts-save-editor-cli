@@ -4,7 +4,6 @@ import { CardService } from './CardService.js';
 import { CardWithTitle, InquirerListOption, RelicWithTitle } from './types.js';
 import { RelicService } from './RelicService.js';
 import { PresetService } from './services/PresetService.js';
-import { TEXTCOLOR } from './constants.js';
 import { Translation } from './Translation.js';
 
 export class Page{
@@ -43,10 +42,10 @@ export class Page{
     })
     .then((answers) => {
       if(answers.action === 'view_cards') {
-        this.showCardListingPage();
+        this.render_cardListing();
       }
       else if(answers.action === 'view_relics') {
-        this.showRelicListingPage();
+        this.render_relicListing();
       }
       else if(answers.action === 'view_presets') {
         this.showPresetListingPage();
@@ -58,7 +57,7 @@ export class Page{
   }
 
   /** Show the card listing page */
-  public showCardListingPage(){
+  private render_cardListing(){
     this.utility.renderAppHeader();
     const cards: CardWithTitle[] = this.cardService.getCardList();
     const colWidth = 24;
@@ -69,13 +68,13 @@ export class Page{
     .prompt({
       type: 'input',
       name: 'action',
-      message: this.trans.get('press_enter_to_go_back'),
+      message: this.trans.get('press_enter_back_to_main'),
     })
     .then(() => this.showHomePage());
   }
 
   /** Show the relic listing page */
-  public showRelicListingPage(){
+  private render_relicListing(){
     this.utility.renderAppHeader();
     const relics: RelicWithTitle[] = this.relicService.getRelicList();
     const colWidth = 30;
@@ -86,7 +85,7 @@ export class Page{
     .prompt({
       type: 'input',
       name: 'action',
-      message: this.trans.get('press_enter_to_go_back'),
+      message: this.trans.get('press_enter_back_to_main'),
     })
     .then(() => this.showHomePage());
   }
@@ -102,7 +101,7 @@ export class Page{
       }
     });
     options.push({value: "create_new_preset", name: this.trans.get('create_new_preset')});
-    options.push({value: "back", name: this.trans.get('go_back')});
+    options.push({value: "back", name: this.trans.get('back_to_main')});
     inquirer
     .prompt({
       type: 'list',
@@ -115,22 +114,21 @@ export class Page{
         this.showHomePage();
       }
       else if(answers.action === 'create_new_preset') {
-        this.createPresetPage();
+        this.render_createPresetForm();
       }
       else{
         this.showSinglePreset(parseInt(answers.action));
       }
     });
   }
-
-  private createPresetConfirmName(rawName: string) {
+  private render_confirmPresetName(rawName: string) {
     this.utility.renderAppHeader();
     const generatedName = this.presetService.generatePresetName(rawName);
     inquirer
     .prompt({
       type: 'list',
       name: 'action',
-      message: `You are going to create a preset ${TEXTCOLOR.YELLOW}${generatedName}${TEXTCOLOR.DEFAULT}. Are you sure?`,
+      message: `You are going to create a preset called ${generatedName}, are you sure?`,
       choices: [
         {value: 'confirm', name: 'Yes. Create the preset'},
         {value: 'change_name', name: 'No. Change name'},
@@ -142,7 +140,7 @@ export class Page{
         this.showPresetListingPage();
       }
       else if(answers.action === 'change_name') {
-        this.createPresetPage();
+        this.render_createPresetForm();
       }
       else {
         this.showPresetListingPage();
@@ -150,7 +148,7 @@ export class Page{
     });
   }
 
-  public createPresetPage() {
+  private render_createPresetForm() {
     this.utility.renderAppHeader();
     inquirer
     .prompt({
@@ -158,7 +156,7 @@ export class Page{
       name: 'preset_name',
       message: "Enter the preset name: ",
     })
-    .then((answers) => this.createPresetConfirmName(answers.preset_name));
+    .then((answers) => this.render_confirmPresetName(answers.preset_name));
   }
 
   public showSinglePreset(presetId: number) {
