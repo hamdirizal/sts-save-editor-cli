@@ -13,8 +13,8 @@ import { Page } from './Page.js';
 
 
 const utility: Utility = new Utility();
-const page: Page = new Page(utility);
-// const cardService: CardService = new CardService();
+const cardService: CardService = new CardService();
+const page: Page = new Page(utility, cardService);
 // const cardsPage: CardsPage = new CardsPage(utility, cardService);
 // const initialPage: InitialPage = new InitialPage(utility, cardsPage);
 

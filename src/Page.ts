@@ -1,9 +1,15 @@
 import inquirer from 'inquirer';
 import { Utility } from "./Utility";
+import { CardService } from './CardService';
+import { Card } from './types';
 
 export class Page{
-  constructor(private utility: Utility){};
+  constructor(
+    private utility: Utility,
+    private cardService: CardService
+    ){};
 
+  /** Showing the homepage */
   public showHomePage(){
     this.utility.renderAppHeader();
     inquirer
@@ -21,7 +27,7 @@ export class Page{
     })
     .then((answers) => {
       if(answers.action === 'view_cards') {
-        // this.cardsController.renderCardListingPage();
+        this.showCardListingPage();
       }
       else{
         console.log('done');
@@ -29,7 +35,22 @@ export class Page{
     });
   }
 
-  public showCardListingPage(){}
+  /** Show the card listing page */
+  public showCardListingPage(){
+    this.utility.renderAppHeader();
+    const cards: Card[] = this.cardService.getCardList();
+    const colWidth = 24;
+    this.utility.renderArrayAsGrid(
+      cards.map(c=>`[${c.id}] ${c.identifier}`.substring(0, colWidth - 2)), colWidth, 5
+    );
+    inquirer
+    .prompt({
+      type: 'input',
+      name: 'action',
+      message: 'Press [Enter] to go back to the main page',
+    })
+    .then(() => this.showHomePage());
+  }
 
 
 }
