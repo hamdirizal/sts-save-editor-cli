@@ -68,7 +68,7 @@ export class PresetService {
     return finalName;
   }
 
-  public getSinglePresetById (id: number): any {
+  public getPresetNameById (id: number): string {
     const filenames = this.getAllPresets();
     if(filenames.length === 0) {
       return null;
@@ -77,7 +77,11 @@ export class PresetService {
     if(!filename) {
       return null;
     }
-    
+
+    return filename;
+  }
+
+  public getPresetDataByFilename (filename: string): Preset {
     return this.readOnePresetFromDisk(filename);
   }
 

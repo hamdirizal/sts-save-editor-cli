@@ -119,10 +119,10 @@ export class Page{
         this.render_home();
       }
       else if(answers.action === 'create_new_preset') {
-        this.render_createPresetForm();
+        this.showCreatePresetNameInput();
       }
       else{
-        this.showSinglePreset(parseInt(answers.action));
+        this.viewSinglePreset(parseInt(answers.action));
       }
     });
   }
@@ -146,7 +146,7 @@ export class Page{
         this.showPresetListingPage();
       }
       else if(answers.action === 'change_name') {
-        this.render_createPresetForm();
+        this.showCreatePresetNameInput();
       }
       else {
         this.showPresetListingPage();
@@ -154,7 +154,7 @@ export class Page{
     });
   }
 
-  private render_createPresetForm() {
+  private showCreatePresetNameInput() {
     this.utility.renderAppHeader();
     inquirer
     .prompt({
@@ -164,7 +164,7 @@ export class Page{
     })
     .then((answers) => {
       if(!(answers.action.trim())) {
-        this.render_createPresetForm();
+        this.showCreatePresetNameInput();
       }
       else{
         this.render_confirmPresetName(answers.action)
@@ -172,16 +172,59 @@ export class Page{
     });
   }
 
-  public showSinglePreset(presetId: number) {
+  private viewSinglePreset(presetId: number) {
     this.utility.renderAppHeader();
-    console.log(this.presetService.getSinglePresetById(presetId));
+    const presetName = this.presetService.getPresetNameById(presetId);
+    const presetObj = this.presetService.getPresetDataByFilename(presetName);
+    console.info(`Preset name: ${presetName}`);
+    console.info(`Preset data: ${presetObj}`);
     inquirer
     .prompt({
-      type: 'input',
+      type: 'list',
       name: 'action',
-      message: this.trans.get('press_enter_to_go_back'),
+      message: 'Action:',
+      choices: [
+        {value: 'add_cards', name: 'Add cards'},
+        {value: 'remove_cards', name: 'Remove cards'},
+        {value: 'add_relics', name: 'Add relics'},
+        {value: 'remove_relics', name: 'Remove relics'},
+        {value: 'set_gold', name: 'Set gold amount'},
+        {value: 'delete_preset', name: 'Delete this preset'},
+        {value: 'inject_savefile', name: 'Inject this preset to a save file'},
+        {value: 'back', name: 'Back to the preset listing page'},
+      ],
     })
-    .then(() => this.showPresetListingPage());
+    .then((answers) => {
+      if(answers.action === 'delete_preset') {
+        this.showDeletePresetConfirmation(presetId);
+      }
+      else{
+        this.showPresetListingPage()
+      }
+    });
+  }
+
+  private showDeletePresetConfirmation(presetId: number) {
+    this.utility.renderAppHeader();
+    const presetName = this.presetService.getPresetNameById(presetId);
+    inquirer
+    .prompt({
+      type: 'list',
+      name: 'action',
+      message: `Are you sure you want to delete the preset "${presetName}"?`,
+      choices: [
+        {value: 'cancel', name: 'Cancel'},
+        {value: 'confirm', name: 'Yes. Delete the preset'},
+      ],
+    })
+    .then((answers) => {
+      if(answers.action === 'confirm') {
+        this.showPresetListingPage();
+      }
+      else {
+        this.viewSinglePreset(presetId);
+      }
+    });
   }
 
 
