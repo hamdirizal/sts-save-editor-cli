@@ -3,6 +3,26 @@ import { readAppState, renderAppHeader, renderArrayAsGrid, renderHr, writeAppSta
 import { AppState, Card } from './types.js';
 import fs, { existsSync } from 'fs';
 import { getCardList } from './cards.js';
+import { viewCardsPage } from './pages/viewCardsPage.js';
+import { MyApp } from './MyApp.js';
+import { InitialPage } from './InitialPage.js';
+import { Utility } from './Utility.js';
+import { CardService } from './CardService.js';
+import { CardsPage } from './CardsPage.js';
+import { Page } from './Page.js';
+
+
+const utility: Utility = new Utility();
+const page: Page = new Page(utility);
+// const cardService: CardService = new CardService();
+// const cardsPage: CardsPage = new CardsPage(utility, cardService);
+// const initialPage: InitialPage = new InitialPage(utility, cardsPage);
+
+
+// initialPage.setCloseFunc(() => { console.log('closing')});
+
+// initialPage.run();
+page.showHomePage();
 
 const processTheGivenSavePath = (savePath) => {
   if(existsSync(savePath)) {
@@ -46,26 +66,7 @@ const noSaveFile = () => {
 
 const success = () => {}
 
-const viewCardsPage = () => {
-  renderAppHeader();
-  console.info('All available cards');
-  const cards: Card[] = getCardList();
-  console.info(renderArrayAsGrid(cards.map(c=>`[${c.id}] ${c.title}`), 24, 5));
-  inquirer
-    .prompt({
-      type: 'list',
-      name: 'action',
-      message: 'Back to main page?',
-      choices: [
-        {value: 'ok', name: 'OK'},
-      ],
-    })
-    .then((answers) => {
-      homePage();
-    });
-}
-
-const homePage = () => {
+const homePagex = () => {
   renderAppHeader();
   inquirer
     .prompt({
@@ -82,7 +83,7 @@ const homePage = () => {
     })
     .then((answers) => {
       if(answers.action === 'view_cards') {
-        viewCardsPage();
+        // viewCardsPage(homePage());
       }
       else{
         console.log('done');
@@ -92,7 +93,7 @@ const homePage = () => {
 
 const main = () => {  
   const appState:AppState = readAppState();
-  homePage();
+  // homePage();
   // if(appState.gameSavePath) {
   //   console.log("Save path:", appState.gameSavePath);
   // }
@@ -101,4 +102,4 @@ const main = () => {
   // }  
 }
 
-main();
+// main();
