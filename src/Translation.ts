@@ -7,7 +7,8 @@ export class Translation {
   private entries = {
     en: {
       get_all_cards: "Get all cards",
-      press_enter_to_go_back: `${TEXTCOLOR.YELLOW}Press [Enter] to go back to the main page${TEXTCOLOR.DEFAULT}`,
+      press_enter_to_go_back: `${TEXTCOLOR.CYAN}Press [Enter] to go back to the previous page${TEXTCOLOR.DEFAULT}`,
+      go_back: "Go back",
     }
   }
 

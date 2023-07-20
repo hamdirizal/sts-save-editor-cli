@@ -1,7 +1,7 @@
 import inquirer from 'inquirer';
 import { Utility } from "./Utility.js";
 import { CardService } from './CardService.js';
-import { CardWithTitle, RelicWithTitle } from './types.js';
+import { CardWithTitle, InquirerListOption, RelicWithTitle } from './types.js';
 import { RelicService } from './RelicService.js';
 import { PresetService } from './services/PresetService.js';
 import { TEXTCOLOR } from './constants.js';
@@ -95,14 +95,28 @@ export class Page{
   public showPresetListingPage() {    
     this.utility.renderAppHeader();
     const presets: string[] = this.presetService.getAllPresets();
-    console.info(presets.join('\n'));
+    const options: InquirerListOption[] = presets.map((p) => {
+      return {
+        value: p.split('.')[0],
+        name: p,
+      }
+    });
+    options.push({value: "back", name: this.trans.get('go_back')});
     inquirer
     .prompt({
-      type: 'input',
+      type: 'list',
       name: 'action',
-      message: this.trans.get('press_enter_to_go_back'),
+      message: 'Select a preset to view',
+      choices: options,
     })
-    .then(() => this.showHomePage());
+    .then((answers) => {
+      if(answers.action === 'back') {
+        this.showHomePage();
+      }
+      else{
+        this.showSinglePreset(parseInt(answers.action));
+      }
+    });
   }
 
   public showSinglePreset(presetId: number) {
@@ -112,7 +126,7 @@ export class Page{
       name: 'action',
       message: this.trans.get('press_enter_to_go_back'),
     })
-    .then(() => this.showHomePage());
+    .then(() => this.showPresetListingPage());
   }
 
 

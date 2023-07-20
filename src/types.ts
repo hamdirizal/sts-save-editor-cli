@@ -24,3 +24,8 @@ export interface Preset {
   cards: number[];
   relics: number[];
 }
+
+export interface InquirerListOption {
+  value: string;
+  name: string;
+}
