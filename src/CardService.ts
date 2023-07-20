@@ -7,6 +7,15 @@ export class CardService {
     let rawdata: any = fs.readFileSync('./src/cards.json');
     return JSON.parse(rawdata);
   }
+
+  public transformIdsToReadableNames(cardIds: number[]): string[] {
+    const cards: CardWithTitle[] = this.getCardList();
+    const names: string[] = cardIds.map((id:number) => {
+      return `[${id}] ${cards[id].title}`;
+    });
+
+    return names;
+  }
   
   public getCardList():CardWithTitle[] {
     const cards = this.readCardsFromFile();

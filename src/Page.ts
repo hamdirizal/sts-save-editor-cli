@@ -201,7 +201,7 @@ export class Page{
     const presetName = this.presetService.getPresetNameById(presetId);
     const presetObj = this.presetService.getPresetDataByFilename(presetName);
     const cards: CardWithTitle[] = this.cardService.getCardList();
-    console.log('Available cards:');
+    console.info('Available cards:');
     this.renderCardAsGrid(cards);
     inquirer
     .prompt({
@@ -221,7 +221,7 @@ export class Page{
     const presetObj = this.presetService.getPresetDataByFilename(presetName);
     console.info(`Name:`, presetName);
     console.info(`Gold:`, presetObj.gold);
-    console.info(`Cards:`, presetObj.cards);
+    console.info(`Cards:`, this.cardService.transformIdsToReadableNames(presetObj.cards).join('  '));
     console.info(`Relics:`, presetObj.relics);
     inquirer
     .prompt({
