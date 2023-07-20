@@ -6,15 +6,20 @@ export interface Person {
   name: string;
   age: number;
 }
-
-export interface Card {
+export interface CardWithTitle {
   id: number; 
   title: string;
   identifier: string;
 }
 
-export interface Relic {
+export interface RelicWithTitle {
   id: number;
   title: string;
   identifier: string;
+}
+
+export interface Preset {
+  gold: number;
+  cards: CardWithTitle[];
+  relics: RelicWithTitle[];
 }

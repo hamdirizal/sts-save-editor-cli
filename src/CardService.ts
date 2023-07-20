@@ -1,6 +1,6 @@
 import fs from 'fs';
 // import { renderArrayAsGrid } from "./utils.js";
-import { Card } from './types.js';
+import { CardWithTitle } from './types.js';
 
 export class CardService {
   private readCardsFromFile(){
@@ -8,7 +8,7 @@ export class CardService {
     return JSON.parse(rawdata);
   }
   
-  public getCardList():Card[] {
+  public getCardList():CardWithTitle[] {
     const cards = this.readCardsFromFile();
     const keys = Object.keys(cards);
     const arr = [];
@@ -30,7 +30,7 @@ export class CardService {
       return 0;
     });
   
-    const indexed: Card[] = sorted.map((item, index) => {
+    const indexed: CardWithTitle[] = sorted.map((item, index) => {
       return {
         id: index,
         title: item.title,

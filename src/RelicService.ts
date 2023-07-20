@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { Relic } from './types.js';
+import { RelicWithTitle } from './types.js';
 
 export class RelicService {
   private readRelicsFromFile(){
@@ -7,7 +7,7 @@ export class RelicService {
     return JSON.parse(rawdata);
   }
 
-  public getRelicList(): Relic[] {
+  public getRelicList(): RelicWithTitle[] {
     const relics = this.readRelicsFromFile();
     const keys = Object.keys(relics);
     const arr = [];
@@ -29,7 +29,7 @@ export class RelicService {
       return 0;
     });
   
-    const indexed: Relic[] = sorted.map((item, index) => {
+    const indexed: RelicWithTitle[] = sorted.map((item, index) => {
       return {
         id: index,
         title: item.title,
