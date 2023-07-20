@@ -2,7 +2,7 @@ import { Utility } from './Utility.js';
 import { CardService } from './CardService.js';
 import { Page } from './Page.js';
 import { RelicService } from './RelicService.js';
-import { PresetService } from './PresetService.js';
+import { PresetService } from './services/PresetService.js';
 
 
 const utility: Utility = new Utility();

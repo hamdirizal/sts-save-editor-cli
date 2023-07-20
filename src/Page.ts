@@ -1,9 +1,9 @@
 import inquirer from 'inquirer';
-import { Utility } from "./Utility";
-import { CardService } from './CardService';
-import { CardWithTitle, RelicWithTitle } from './types';
-import { RelicService } from './RelicService';
-import { PresetService } from './PresetService';
+import { Utility } from "./Utility.js";
+import { CardService } from './CardService.js';
+import { CardWithTitle, RelicWithTitle } from './types.js';
+import { RelicService } from './RelicService.js';
+import { PresetService } from './services/PresetService.js';
 
 export class Page{
   constructor(
@@ -24,7 +24,7 @@ export class Page{
       choices: [
         {value: 'view_cards', name: 'View all cards'},
         {value: 'view_relics', name: 'View all relics'},
-        {value: 'presets', name: 'View presets'},
+        {value: 'view_presets', name: 'View all presets'},
         {value: 'inject_save_file', name: 'Inject preset to a save file'},
         {value: 'exit', name: 'Exit'},
       ],
@@ -35,6 +35,9 @@ export class Page{
       }
       else if(answers.action === 'view_relics') {
         this.showRelicListingPage();
+      }
+      else if(answers.action === 'view_presets') {
+        this.showPresetListingPage();
       }
       else{
         console.log('done');
@@ -79,6 +82,15 @@ export class Page{
   /** Show all available presets */
   public showPresetListingPage() {    
     this.utility.renderAppHeader();
+    const presets: string[] = this.presetService.getAllPresets();
+    console.info(presets.join('\n'));
+    inquirer
+    .prompt({
+      type: 'input',
+      name: 'action',
+      message: 'Press [Enter] to go back to the main page',
+    })
+    .then(() => this.showHomePage());
   }
 
 

@@ -21,6 +21,6 @@ export interface RelicWithTitle {
 
 export interface Preset {
   gold: number;
-  cards: CardWithTitle[];
-  relics: RelicWithTitle[];
+  cards: number[];
+  relics: number[];
 }
