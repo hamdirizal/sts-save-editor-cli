@@ -27,7 +27,6 @@ export class Page{
 
   private render_exit(){
     console.clear();
-    console.info(`${APP_TITLE} v.${APP_VERSION} closed!`);
   }
 
   /** Showing the homepage */
