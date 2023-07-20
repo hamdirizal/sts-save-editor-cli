@@ -180,7 +180,7 @@ export class Page{
   /** 
    * Add array of card ids to a preset 
    */
-  private pushCardIdsToPreset(cardIds: number[] | string, presetId: number) {
+  private addCardsToPreset(cardIds: number[] | string, presetId: number) {    
     let idsToBeAdded: number[];
     if(typeof cardIds === 'string') {
       idsToBeAdded = cardIds.trim().split(' ').filter((item) => {
@@ -190,24 +190,10 @@ export class Page{
     else{
       idsToBeAdded = cardIds;
     }
-
-    // All available cards
+    
     const cards: CardWithTitle[] = this.cardService.getCardList();
-
-    // Check the ids, filter out the invalid ones
-    const validCardIds = idsToBeAdded.filter((id: number) => {
-      return cards.some((c) => c.id === id);
-    });
-
-    // Get the preset object data
-    const presetName = this.presetService.getPresetNameById(presetId);
-    let presetObj = this.presetService.getPresetDataByFilename(presetName);
-
-    // Add the valid card ids to the preset object
-    presetObj.cards = [...presetObj.cards, ...validCardIds];
-
-    // Write the preset object to disk
-    this.presetService.writePresetToDisk(presetName, presetObj);
+    const obj = this.presetService.pushCardIdsToPreset(idsToBeAdded, presetId, cards);    
+    this.presetService.writePresetToDisk(presetId, obj);
   }
 
   private screen__addCardsToPreset(presetId: number) {
@@ -224,8 +210,8 @@ export class Page{
       message: `Enter card IDs to be added to the "${presetName}", separated by spaces`,
     })
     .then((answers) => {
-      this.pushCardIdsToPreset(answers.action, presetId);
-      console.log(answers.action);
+      this.addCardsToPreset(answers.action, presetId);
+      this.screen__viewSinglePreset(presetId);
     });
   }
 

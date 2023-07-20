@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { PRESET_FOLDER_NAME } from "../constants.js";
-import { Preset } from '../types.js';
+import { CardWithTitle, Preset } from '../types.js';
 
 export class PresetService {
 
@@ -85,7 +85,8 @@ export class PresetService {
     return this.readOnePresetFromDisk(filename);
   }
 
-  public writePresetToDisk(presetName: string, content: Preset){
+  public writePresetToDisk(presetId: number, content: Preset){
+    const presetName = this.getPresetNameById(presetId);
     fs.writeFileSync(`./${PRESET_FOLDER_NAME}/${presetName}`, JSON.stringify(content));
   }
 
@@ -95,5 +96,21 @@ export class PresetService {
 
   public deletePresetFromDisk (presetName: string) {
     fs.unlinkSync(`./${PRESET_FOLDER_NAME}/${presetName}`);
+  }
+
+  public pushCardIdsToPreset(idsToBeAdded: number[], presetId: number, allCards: CardWithTitle[]): Preset {
+    // Check the ids, filter out the invalid ones
+    const validCardIds = idsToBeAdded.filter((id: number) => {
+      return allCards.some((c) => c.id === id);
+    });
+
+    // Get the preset object data
+    const presetName = this.getPresetNameById(presetId);
+    const presetObj = this.getPresetDataByFilename(presetName);
+
+    // Create new preset object with the new card ids
+    const newPreset = {...presetObj, cards: [...presetObj.cards, ...validCardIds]};
+
+    return newPreset;
   }
 }
