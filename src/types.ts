@@ -6,8 +6,9 @@ export interface Person {
   name: string;
   age: number;
 }
+
 export interface CardWithTitle {
-  id: number; 
+  id: number;
   title: string;
   identifier: string;
 }
