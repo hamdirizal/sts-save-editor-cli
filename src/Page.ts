@@ -101,17 +101,21 @@ export class Page{
         name: p,
       }
     });
+    options.push({value: "create_new_preset", name: this.trans.get('create_new_preset')});
     options.push({value: "back", name: this.trans.get('go_back')});
     inquirer
     .prompt({
       type: 'list',
       name: 'action',
-      message: 'Select a preset to view',
+      message: 'Select a preset to view ',
       choices: options,
     })
     .then((answers) => {
       if(answers.action === 'back') {
         this.showHomePage();
+      }
+      else if(answers.action === 'create_new_preset') {
+        this.createPresetPage();
       }
       else{
         this.showSinglePreset(parseInt(answers.action));
@@ -119,7 +123,47 @@ export class Page{
     });
   }
 
+  private createPresetConfirmName(rawName: string) {
+    this.utility.renderAppHeader();
+    const generatedName = this.presetService.generatePresetName(rawName);
+    inquirer
+    .prompt({
+      type: 'list',
+      name: 'action',
+      message: `You are going to create a preset ${TEXTCOLOR.YELLOW}${generatedName}${TEXTCOLOR.DEFAULT}. Are you sure?`,
+      choices: [
+        {value: 'confirm', name: 'Yes. Create the preset'},
+        {value: 'change_name', name: 'No. Change name'},
+        {value: 'cancel', name: 'Cancel. Go back to the presets page'},
+      ],
+    })
+    .then((answers) => {
+      if(answers.action === 'confirm') {
+        this.showPresetListingPage();
+      }
+      else if(answers.action === 'change_name') {
+        this.createPresetPage();
+      }
+      else {
+        this.showPresetListingPage();
+      }
+    });
+  }
+
+  public createPresetPage() {
+    this.utility.renderAppHeader();
+    inquirer
+    .prompt({
+      type: 'input',
+      name: 'preset_name',
+      message: "Enter the preset name: ",
+    })
+    .then((answers) => this.createPresetConfirmName(answers.preset_name));
+  }
+
   public showSinglePreset(presetId: number) {
+    this.utility.renderAppHeader();
+    console.log(this.presetService.getSinglePresetById(presetId));
     inquirer
     .prompt({
       type: 'input',
