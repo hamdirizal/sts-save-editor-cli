@@ -3,13 +3,16 @@ import { CardService } from './CardService.js';
 import { Page } from './Page.js';
 import { RelicService } from './RelicService.js';
 import { PresetService } from './services/PresetService.js';
+import { Translation } from './Translation.js';
 
 
 const utility: Utility = new Utility();
+const translation: Translation = new Translation("en");
 const cardService: CardService = new CardService();
 const relicService: RelicService = new RelicService();
 const presetService: PresetService = new PresetService();
-const page: Page = new Page(utility, cardService, relicService, presetService);
+
+const page: Page = new Page(translation, utility, cardService, relicService, presetService);
 
 page.showHomePage();
 

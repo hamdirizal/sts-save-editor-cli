@@ -4,9 +4,21 @@ import { CardService } from './CardService.js';
 import { CardWithTitle, RelicWithTitle } from './types.js';
 import { RelicService } from './RelicService.js';
 import { PresetService } from './services/PresetService.js';
+import { TEXTCOLOR } from './constants.js';
+import { Translation } from './Translation.js';
 
 export class Page{
+
+  private Actions = {
+    VIEW_CARDS: 'view_cards',
+    VIEW_RELICS: 'view_relics',
+    VIEW_PRESETS: 'view_presets',
+    INJECT_SAVE_FILE: 'inject_save_file',
+    EXIT: 'exit',
+  }
+
   constructor(
+    private trans: Translation,
     private utility: Utility,
     private cardService: CardService,
     private relicService: RelicService,
@@ -57,7 +69,7 @@ export class Page{
     .prompt({
       type: 'input',
       name: 'action',
-      message: 'Press [Enter] to go back to the main page',
+      message: this.trans.get('press_enter_to_go_back'),
     })
     .then(() => this.showHomePage());
   }
@@ -74,7 +86,7 @@ export class Page{
     .prompt({
       type: 'input',
       name: 'action',
-      message: 'Press [Enter] to go back to the main page',
+      message: this.trans.get('press_enter_to_go_back'),
     })
     .then(() => this.showHomePage());
   }
@@ -88,7 +100,17 @@ export class Page{
     .prompt({
       type: 'input',
       name: 'action',
-      message: 'Press [Enter] to go back to the main page',
+      message: this.trans.get('press_enter_to_go_back'),
+    })
+    .then(() => this.showHomePage());
+  }
+
+  public showSinglePreset(presetId: number) {
+    inquirer
+    .prompt({
+      type: 'input',
+      name: 'action',
+      message: this.trans.get('press_enter_to_go_back'),
     })
     .then(() => this.showHomePage());
   }
