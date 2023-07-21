@@ -20,62 +20,41 @@ export class Page{
     console.clear();
   }
 
-  /** Showing the homepage */
-  public render_home(){
-    this.utility.renderAppHeader();
-    inquirer
-    .prompt({
-      type: 'list',
-      name: 'action',
-      message: 'What do you want to do?',
-      choices: [
-        {value: 'view_cards', name: 'View cards'},
-        {value: 'view_relics', name: 'View relics'},
-        {value: 'manage_presets', name: 'Manage presets'},
-        {value: 'exit', name: 'Exit'},
-      ],
-    })
-    .then((answers) => {
-      if(answers.action === 'view_cards') {
-        this.render_cardListing();
-      }
-      else if(answers.action === 'view_relics') {
-        this.render_relicListing();
-      }
-      else if(answers.action === 'manage_presets') {
-        this.showPresetListingPage();
-      }
-      else{
-        this.render_exit();
-      }
-    });
+  public renderAppHeader() {
+    console.clear();
+    const title = ` ${APP_TITLE} v.${APP_VERSION} `;
+    const totalLength = 120;
+    const beforeLength = Math.floor((totalLength - title.length) / 2);
+    const afterLength = totalLength - (title.length + beforeLength);
+    console.info(`${'='.repeat(beforeLength)}${title}${'='.repeat(afterLength)}`);
   }
 
-  private renderCardAsGrid(cards: CardWithTitle[]) {
+  private renderCardsAsGrid(cards: CardWithTitle[]) {
     const colWidth = 24;
+    const cardNames: string[] = cards.map(c=>this.cardService.getDisplayNameById(c.id, cards).substring(0, colWidth - 2));
     this.utility.renderArrayAsGrid(
-      cards.map(c=>`[${c.id}] ${c.identifier}`.substring(0, colWidth - 2)), colWidth, 5
+      cardNames, colWidth, 5
     );
   }
 
   /** Show the card listing page */
-  private render_cardListing(){
-    this.utility.renderAppHeader();
+  private showScreen__cardList(){
+    this.renderAppHeader();
     const cards: CardWithTitle[] = this.cardService.getCardList();
     const colWidth = 24;
-    this.renderCardAsGrid(cards);
+    this.renderCardsAsGrid(cards);
     inquirer
     .prompt({
       type: 'input',
       name: 'action',
       message: this.trans.get('press_enter_back_to_main'),
     })
-    .then(() => this.render_home());
+    .then(() => this.showScreen__home());
   }
 
   /** Show the relic listing page */
   private render_relicListing(){
-    this.utility.renderAppHeader();
+    this.renderAppHeader();
     const relics: RelicWithTitle[] = this.relicService.getRelicList();
     const colWidth = 30;
     this.utility.renderArrayAsGrid(
@@ -87,12 +66,12 @@ export class Page{
       name: 'action',
       message: this.trans.get('press_enter_back_to_main'),
     })
-    .then(() => this.render_home());
+    .then(() => this.showScreen__home());
   }
 
   /** Show all available presets */
   public showPresetListingPage() {    
-    this.utility.renderAppHeader();
+    this.renderAppHeader();
     const presets: string[] = this.presetService.getAllPresets();
     const options: InquirerListOption[] = presets.map((p) => {
       return {
@@ -111,18 +90,18 @@ export class Page{
     })
     .then((answers) => {
       if(answers.action === 'back') {
-        this.render_home();
+        this.showScreen__home();
       }
       else if(answers.action === 'create_new_preset') {
         this.showCreatePresetNameInput();
       }
       else{
-        this.screen__viewSinglePreset(parseInt(answers.action));
+        this.showScreen__viewSinglePreset(parseInt(answers.action));
       }
     });
   }
   private render_confirmPresetName(rawName: string) {
-    this.utility.renderAppHeader();
+    this.renderAppHeader();
     const generatedName = this.presetService.generatePresetName(rawName);
     inquirer
     .prompt({
@@ -150,7 +129,7 @@ export class Page{
   }
 
   private showCreatePresetNameInput() {
-    this.utility.renderAppHeader();
+    this.renderAppHeader();
     inquirer
     .prompt({
       type: 'input',
@@ -170,8 +149,8 @@ export class Page{
   /**
    * Screen for setting gold amount to a preset
    */
-  private screen__setGoldToPreset(presetId: number) {
-    this.utility.renderAppHeader();
+  private showScreen__setGoldToPreset(presetId: number) {
+    this.renderAppHeader();
     const presetName = this.presetService.getPresetNameById(presetId);
     const presetObj = this.presetService.getPresetDataByFilename(presetName);
     console.info(`Current amount: ${presetObj.gold} gold`);
@@ -185,13 +164,13 @@ export class Page{
       const amount = parseInt(answers.action);
 
       if(isNaN(amount)) {
-        this.screen__setGoldToPreset(presetId);
+        this.showScreen__setGoldToPreset(presetId);
         return;
       }
       else{
         const newPresetObj: Preset = { ...presetObj, gold: amount };
         this.presetService.writePresetToDisk(presetName, newPresetObj);
-        this.screen__viewSinglePreset(presetId);
+        this.showScreen__viewSinglePreset(presetId);
         return;
       }
     });
@@ -200,8 +179,8 @@ export class Page{
   /**
    * Screen for removing cards from a preset
    */
-  private screen__removeCardsFromPreset(presetId: number){
-    this.utility.renderAppHeader();
+  private showScreen__removeCardsFromPreset(presetId: number){
+    this.renderAppHeader();
     const presetName = this.presetService.getPresetNameById(presetId);
     const presetObj = this.presetService.getPresetDataByFilename(presetName);
     const cards: CardWithTitle[] = this.cardService.getCardList();
@@ -219,20 +198,20 @@ export class Page{
       }).map(item=>parseInt(item));
       const newPresetObj = this.presetService.removeCardsFromPreset(selectedCardIds, presetId);
       this.presetService.writePresetToDisk(presetName, newPresetObj);
-      this.screen__viewSinglePreset(presetId);
+      this.showScreen__viewSinglePreset(presetId);
     });
   }
 
   /**
    * Screen for adding cards to a preset
    */
-  private screen__addCardsToPreset(presetId: number) {
-    this.utility.renderAppHeader();
+  private showScreen__addCardsToPreset(presetId: number) {
+    this.renderAppHeader();
     const presetName = this.presetService.getPresetNameById(presetId);
     const presetObj = this.presetService.getPresetDataByFilename(presetName);
     const cards: CardWithTitle[] = this.cardService.getCardList();
     console.info('Available cards:');
-    this.renderCardAsGrid(cards);
+    this.renderCardsAsGrid(cards);
     inquirer
     .prompt({
       type: 'input',
@@ -249,15 +228,31 @@ export class Page{
       const presetName: string = this.presetService.getPresetNameById(presetId);
       this.presetService.writePresetToDisk(presetName, newPresetObj);
 
-      this.screen__viewSinglePreset(presetId);
+      this.showScreen__viewSinglePreset(presetId);
     });
+  }
+
+  private showScreen__addRelicsToPreset(presetId: number) {    
+    this.renderAppHeader();
+  }
+
+  private showScreen__removeRelicsFromPreset(presetId: number) {
+    this.renderAppHeader();
+  }
+
+  private showScreen__injectPresetToTheSaveFile(presetId: number) {
+    this.renderAppHeader();
+  }
+
+  private showScreen__inputSaveFilePath() {
+    this.renderAppHeader();
   }
 
   /**
    * Screen for viewing a single preset
    */
-  private screen__viewSinglePreset(presetId: number) {
-    this.utility.renderAppHeader();
+  private showScreen__viewSinglePreset(presetId: number) {
+    this.renderAppHeader();
     const presetName = this.presetService.getPresetNameById(presetId);
     const presetObj = this.presetService.getPresetDataByFilename(presetName);
     console.info(`Name:`, presetName);
@@ -285,13 +280,13 @@ export class Page{
         this.showDeletePresetConfirmation(presetId);
       }
       else if(answers.action === 'add_cards') {
-        this.screen__addCardsToPreset(presetId);
+        this.showScreen__addCardsToPreset(presetId);
       }
       else if(answers.action === 'remove_cards') {
-        this.screen__removeCardsFromPreset(presetId);
+        this.showScreen__removeCardsFromPreset(presetId);
       }
       else if(answers.action === 'set_gold') {
-        this.screen__setGoldToPreset(presetId);
+        this.showScreen__setGoldToPreset(presetId);
       }
       else{
         this.showPresetListingPage()
@@ -300,7 +295,7 @@ export class Page{
   }
 
   private showDeletePresetConfirmation(presetId: number) {
-    this.utility.renderAppHeader();
+    this.renderAppHeader();
     const presetName = this.presetService.getPresetNameById(presetId);
     inquirer
     .prompt({
@@ -318,10 +313,41 @@ export class Page{
         this.showPresetListingPage();
       }
       else {
-        this.screen__viewSinglePreset(presetId);
+        this.showScreen__viewSinglePreset(presetId);
       }
     });
   }
 
+
+  /** Showing the homepage */
+  public showScreen__home(){
+    this.renderAppHeader();
+    inquirer
+    .prompt({
+      type: 'list',
+      name: 'action',
+      message: 'What do you want to do?',
+      choices: [
+        {value: 'view_cards', name: 'View cards'},
+        {value: 'view_relics', name: 'View relics'},
+        {value: 'manage_presets', name: 'Manage presets'},
+        {value: 'exit', name: 'Exit'},
+      ],
+    })
+    .then((answers) => {
+      if(answers.action === 'view_cards') {
+        this.showScreen__cardList();
+      }
+      else if(answers.action === 'view_relics') {
+        this.render_relicListing();
+      }
+      else if(answers.action === 'manage_presets') {
+        this.showPresetListingPage();
+      }
+      else{
+        this.render_exit();
+      }
+    });
+  }
 
 }

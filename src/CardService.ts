@@ -8,10 +8,15 @@ export class CardService {
     return JSON.parse(rawdata);
   }
 
+  public getDisplayNameById(id: number, cards: CardWithTitle[]): string {
+    const name = cards.find(c => c.id === id).title;
+    return `[${id}] ${name}`;
+  }
+
   public transformIdsToReadableNames(cardIds: number[]): string[] {
     const cards: CardWithTitle[] = this.getCardList();
     const names: string[] = cardIds.map((id:number) => {
-      return `[${id}] ${cards[id].title}`;
+      return this.getDisplayNameById(id, cards);
     });
 
     return names;
