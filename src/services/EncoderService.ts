@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { ENCRYPTION_KEY } from '../constants.js';
-import { CardWithTitle, Preset, RelicWithTitle, SaveObject } from '../types.js';
+import { CardWithTitle, Preset, RelicWithTitle, SaveCard, SaveObject } from '../types.js';
 export class EncoderService {
   public isSaveFileExists(path: string): boolean {
     return fs.existsSync(path);
@@ -22,6 +22,10 @@ export class EncoderService {
     }
 
     return result;
+  }
+
+  public writeSaveDataToDisk(path: string, saveObject: SaveObject): void {
+    fs.writeFileSync(path, this.encode(JSON.stringify(saveObject), ENCRYPTION_KEY));
   }
 
   private stringToByteArray(str: string): Uint8Array {
@@ -71,12 +75,28 @@ export class EncoderService {
     return this.byteArrayToString(decodedBytes);
   }
 
-  public injectPresetToSaveObject(
+  public getInjectedSaveObject(
     presetObject: Preset,
     saveObject: SaveObject,
-    cards: CardWithTitle,
-    relics: RelicWithTitle
+    cards: CardWithTitle[],
+    relics: RelicWithTitle[]
   ): SaveObject {
-    return;
+
+    const relicsToBeInjected: string[] = presetObject.relics.map((id: number) => {
+      return relics.find((r) => r.id === id).identifier;
+    });
+
+    const cardsToBeInjected: SaveCard[] = presetObject.cards.map((id: number) => {
+      const card = cards.find((c) => c.id === id);
+      return {
+        id: card.identifier,
+        upgrades: 0,
+        misc: 0,
+      };
+    });
+
+    const newSaveObject = { ...saveObject, gold: presetObject.gold, relics: relicsToBeInjected, cards: cardsToBeInjected };
+    
+    return newSaveObject;
   }
 }

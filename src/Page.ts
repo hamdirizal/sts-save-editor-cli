@@ -1,7 +1,7 @@
 import inquirer from 'inquirer';
 import { Utility } from './Utility.js';
 import { CardService } from './services/CardService.js';
-import { CardWithTitle, InquirerListOption, Preset, RelicWithTitle } from './types.js';
+import { CardWithTitle, InquirerListOption, Preset, RelicWithTitle, SaveObject } from './types.js';
 import { RelicService } from './services/RelicService.js';
 import { PresetService } from './services/PresetService.js';
 import { Translation } from './Translation.js';
@@ -340,8 +340,24 @@ export class Page {
           this.showScreen__inputSaveFilePath(presetId, 'Broken save file.');
           return;
         }
-        console.log(saveDataObject);
+
+        
+        this.injectPresetToSaveFile(presetId, saveDataObject);
       });
+  }
+
+  private injectPresetToSaveFile(presetId: number, saveDataObject: SaveObject) {
+    console.info('Injecting...');
+    const presetName = this.presetService.getPresetNameById(presetId);
+    const presetObj = this.presetService.getPresetDataByFilename(presetName);
+    const cards = this.cardService.getCardList();
+    const relics = this.relicService.getRelicList();
+
+    const newSaveObject = this.encoderService.getInjectedSaveObject(presetObj, saveDataObject, cards, relics);
+
+    this.encoderService.writeSaveDataToDisk(this.saveFilePath, newSaveObject);
+
+    console.info('Done.')
   }
 
   /**
