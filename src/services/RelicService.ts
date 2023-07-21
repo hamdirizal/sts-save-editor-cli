@@ -1,9 +1,9 @@
 import fs from 'fs';
-import { RelicWithTitle } from './types.js';
+import { RelicWithTitle } from '../types.js';
 
 export class RelicService {
   private readRelicsFromFile() {
-    let rawdata: any = fs.readFileSync('./src/relics.json');
+    let rawdata: any = fs.readFileSync('./src/data/relics.json');
     return JSON.parse(rawdata);
   }
 

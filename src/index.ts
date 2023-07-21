@@ -1,7 +1,7 @@
 import { Utility } from './Utility.js';
-import { CardService } from './CardService.js';
+import { CardService } from './services/CardService.js';
 import { Page } from './Page.js';
-import { RelicService } from './RelicService.js';
+import { RelicService } from './services/RelicService.js';
 import { PresetService } from './services/PresetService.js';
 import { Translation } from './Translation.js';
 

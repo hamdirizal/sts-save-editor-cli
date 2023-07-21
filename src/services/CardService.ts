@@ -1,10 +1,10 @@
 import fs from 'fs';
 // import { renderArrayAsGrid } from "./utils.js";
-import { CardWithTitle } from './types.js';
+import { CardWithTitle } from '../types.js';
 
 export class CardService {
   private readCardsFromFile() {
-    let rawdata: any = fs.readFileSync('./src/cards.json');
+    let rawdata: any = fs.readFileSync('./src/data/cards.json');
     return JSON.parse(rawdata);
   }
 
