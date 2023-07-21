@@ -1,5 +1,6 @@
 import fs from 'fs';
 import { ENCRYPTION_KEY } from '../constants.js';
+import { CardWithTitle, Preset, RelicWithTitle, SaveObject } from '../types.js';
 export class EncoderService {
   public isSaveFileExists(path: string): boolean {
     return fs.existsSync(path);
@@ -68,5 +69,14 @@ export class EncoderService {
       this.stringToByteArray(key)
     );
     return this.byteArrayToString(decodedBytes);
+  }
+
+  public injectPresetToSaveObject(
+    presetObject: Preset,
+    saveObject: SaveObject,
+    cards: CardWithTitle,
+    relics: RelicWithTitle
+  ): SaveObject {
+    return;
   }
 }

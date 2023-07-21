@@ -29,3 +29,16 @@ export interface InquirerListOption {
   value: string;
   name: string;
 }
+
+export interface SaveCard {
+  upgrades: number;
+  misc: number;
+  id: string;
+}
+
+export interface SaveObject {
+  name: string;
+  gold: number;
+  relics: string[];
+  cards: SaveCard[];
+}
