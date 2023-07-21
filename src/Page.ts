@@ -308,12 +308,16 @@ export class Page {
       });
   }
 
-  private showScreen__injectPresetToTheSaveFile(presetId: number) {
+  private showScreen__inputSaveFilePath(presetId: number) {
     this.renderAppHeader();
-  }
-
-  private showScreen__inputSaveFilePath() {
-    this.renderAppHeader();
+    inquirer
+      .prompt({
+        type: 'input',
+        name: 'action',
+        message: 'Enter the path to the save file',
+        default: 'D:/hello/world/file.sav'
+      })
+      .then(() => this.showScreen__viewSinglePreset(presetId));
   }
 
   /**
@@ -339,14 +343,14 @@ export class Page {
         name: 'action',
         message: 'Action:',
         choices: [
-          { value: 'add_cards', name: 'Add cards' },
-          { value: 'remove_cards', name: 'Remove cards' },
-          { value: 'add_relics', name: 'Add relics' },
-          { value: 'remove_relics', name: 'Remove relics' },
-          { value: 'set_gold', name: 'Set gold amount' },
-          { value: 'delete_preset', name: 'Delete this preset' },
-          { value: 'inject_savefile', name: 'Inject this preset to a save file' },
-          { value: 'back', name: 'Back to the preset list page' },
+          { value: 'add_cards', name: '1) Add cards' },
+          { value: 'remove_cards', name: '2) Remove cards' },
+          { value: 'add_relics', name: '3) Add relics' },
+          { value: 'remove_relics', name: '4) Remove relics' },
+          { value: 'set_gold', name: '5) Set gold amount' },
+          { value: 'delete_preset', name: '6) Delete this preset' },
+          { value: 'inject_savefile', name: '7) Inject this preset to a save file' },
+          { value: 'back', name: '8) Back to the preset list page' },
         ],
       })
       .then((answers) => {
@@ -363,7 +367,7 @@ export class Page {
         } else if (answers.action === 'set_gold') {
           this.showScreen__setGoldToPreset(presetId);
         } else if (answers.action === 'inject_savefile') {
-          this.showScreen__inputSaveFilePath();
+          this.showScreen__inputSaveFilePath(presetId);
         } else {
           this.showPresetListingPage();
         }
@@ -402,10 +406,10 @@ export class Page {
         name: 'action',
         message: 'What do you want to do?',
         choices: [
-          { value: 'view_cards', name: 'View cards' },
-          { value: 'view_relics', name: 'View relics' },
-          { value: 'manage_presets', name: 'Manage presets' },
-          { value: 'exit', name: 'Exit' },
+          { value: 'view_cards', name: '1) View cards' },
+          { value: 'view_relics', name: '2) View relics' },
+          { value: 'manage_presets', name: '3) Manage presets' },
+          { value: 'exit', name: '4) Exit' },
         ],
       })
       .then((answers) => {
