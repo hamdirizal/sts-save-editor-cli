@@ -315,9 +315,12 @@ export class Page {
         type: 'input',
         name: 'action',
         message: 'Enter the path to the save file',
-        default: 'D:/hello/world/file.sav'
+        default: 'D:\\program-files\\Steam\\steamapps\\common\\SlayTheSpire\\saves\\1_IRONCLAD.autosave'
       })
-      .then(() => this.showScreen__viewSinglePreset(presetId));
+      .then((answers) => {
+        console.log('isSaveexuists', this.presetService.isSaveFileExists(answers.action));
+        // this.showScreen__viewSinglePreset(presetId)
+      });
   }
 
   /**
