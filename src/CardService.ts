@@ -15,7 +15,8 @@ export class CardService {
 
   public transformIdsToReadableNames(cardIds: number[]): string[] {
     const cards: CardWithTitle[] = this.getCardList();
-    const names: string[] = cardIds.map((id: number) => {
+    const sortedIds = cardIds.sort((a, b) => a - b);
+    const names: string[] = sortedIds.map((id: number) => {
       return this.getDisplayNameById(id, cards);
     });
 

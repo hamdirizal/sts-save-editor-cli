@@ -283,6 +283,29 @@ export class Page {
 
   private showScreen__removeRelicsFromPreset(presetId: number) {
     this.renderAppHeader();
+    const presetName = this.presetService.getPresetNameById(presetId);
+    const presetObj = this.presetService.getPresetDataByFilename(presetName);
+    const relics: RelicWithTitle[] = this.relicService.getRelicList();
+    console.info('Relics in this preset');
+    console.info(this.relicService.transformIdsToReadableNames(presetObj.relics).join('  '));
+    inquirer
+      .prompt({
+        type: 'input',
+        name: 'action',
+        message: `Enter relic IDs to be removed. Separate by spaces:`,
+      })
+      .then((answers) => {
+        const selectedRelicIds = answers.action
+          .trim()
+          .split(' ')
+          .filter((item) => {
+            return parseInt(item) >= 0;
+          })
+          .map((item) => parseInt(item));
+        const newPresetObj = this.presetService.removeRelicsFromPreset(selectedRelicIds, presetId);
+        this.presetService.writePresetToDisk(presetName, newPresetObj);
+        this.showScreen__viewSinglePreset(presetId);
+      });
   }
 
   private showScreen__injectPresetToTheSaveFile(presetId: number) {
@@ -306,7 +329,10 @@ export class Page {
       `Cards:`,
       this.cardService.transformIdsToReadableNames(presetObj.cards).join('  ')
     );
-    console.info(`Relics:`, presetObj.relics);
+    console.info(
+      `Relics:`,
+      this.relicService.transformIdsToReadableNames(presetObj.relics).join('  ')
+    );
     inquirer
       .prompt({
         type: 'list',

@@ -12,6 +12,16 @@ export class RelicService {
     return `[${id}] ${name}`;
   }
 
+  public transformIdsToReadableNames(relicIds: number[]): string[] {
+    const relics: RelicWithTitle[] = this.getRelicList();    
+    const sortedIds = relicIds.sort((a, b) => a - b);
+    const names: string[] = relicIds.map((id: number) => {
+      return this.getDisplayNameById(id, relics);
+    });
+
+    return names;
+  }
+
   public getRelicList(): RelicWithTitle[] {
     const relics = this.readRelicsFromFile();
     const keys = Object.keys(relics);

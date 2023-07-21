@@ -116,6 +116,21 @@ export class PresetService {
     return presetObj;
   }
 
+  public removeRelicsFromPreset(relicIdsToBeRemoved: number[], presetId: number): Preset {
+    const presetName = this.getPresetNameById(presetId);
+    let presetObj = this.getPresetDataByFilename(presetName);
+
+    // For each card id to be removed, remove it from the preset object
+    for (let i = 0; i < relicIdsToBeRemoved.length; i++) {
+      const cardId = relicIdsToBeRemoved[i];
+      const index = presetObj.relics.indexOf(cardId);
+      if (index > -1) {
+        presetObj.relics.splice(index, 1);
+      }
+    }
+    return presetObj;
+  }
+
   public pushRelicIdsToPreset(
     idsToBeAdded: number[],
     presetId: number,
