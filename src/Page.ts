@@ -1,5 +1,5 @@
 import inquirer from 'inquirer';
-import { Utility } from "./Utility.js";
+import { Utility } from './Utility.js';
 import { CardService } from './CardService.js';
 import { CardWithTitle, InquirerListOption, Preset, RelicWithTitle } from './types.js';
 import { RelicService } from './RelicService.js';
@@ -7,16 +7,16 @@ import { PresetService } from './services/PresetService.js';
 import { Translation } from './Translation.js';
 import { APP_TITLE, APP_VERSION } from './constants.js';
 
-export class Page{
+export class Page {
   constructor(
     private trans: Translation,
     private utility: Utility,
     private cardService: CardService,
     private relicService: RelicService,
     private presetService: PresetService
-    ){};
+  ) {}
 
-  private render_exit(){
+  private render_exit() {
     console.clear();
   }
 
@@ -31,120 +31,117 @@ export class Page{
 
   private renderCardsAsGrid(cards: CardWithTitle[]) {
     const colWidth = 24;
-    const cardNames: string[] = cards.map(c=>this.cardService.getDisplayNameById(c.id, cards).substring(0, colWidth - 2));
-    this.utility.renderArrayAsGrid(
-      cardNames, colWidth, 5
+    const cardNames: string[] = cards.map((c) =>
+      this.cardService.getDisplayNameById(c.id, cards).substring(0, colWidth - 2)
     );
+    this.utility.renderArrayAsGrid(cardNames, colWidth, 5);
   }
 
   /** Show the card listing page */
-  private showScreen__cardList(){
+  private showScreen__cardList() {
     this.renderAppHeader();
     const cards: CardWithTitle[] = this.cardService.getCardList();
     const colWidth = 24;
     this.renderCardsAsGrid(cards);
     inquirer
-    .prompt({
-      type: 'input',
-      name: 'action',
-      message: this.trans.get('press_enter_back_to_main'),
-    })
-    .then(() => this.showScreen__home());
+      .prompt({
+        type: 'input',
+        name: 'action',
+        message: this.trans.get('press_enter_back_to_main'),
+      })
+      .then(() => this.showScreen__home());
   }
 
   /** Show the relic listing page */
-  private render_relicListing(){
+  private render_relicListing() {
     this.renderAppHeader();
     const relics: RelicWithTitle[] = this.relicService.getRelicList();
     const colWidth = 30;
     this.utility.renderArrayAsGrid(
-      relics.map(c=>`[${c.id}] ${c.identifier}`.substring(0, colWidth - 2)), colWidth, 4
+      relics.map((c) => `[${c.id}] ${c.identifier}`.substring(0, colWidth - 2)),
+      colWidth,
+      4
     );
     inquirer
-    .prompt({
-      type: 'input',
-      name: 'action',
-      message: this.trans.get('press_enter_back_to_main'),
-    })
-    .then(() => this.showScreen__home());
+      .prompt({
+        type: 'input',
+        name: 'action',
+        message: this.trans.get('press_enter_back_to_main'),
+      })
+      .then(() => this.showScreen__home());
   }
 
   /** Show all available presets */
-  public showPresetListingPage() {    
+  public showPresetListingPage() {
     this.renderAppHeader();
     const presets: string[] = this.presetService.getAllPresets();
     const options: InquirerListOption[] = presets.map((p) => {
       return {
         value: p.split('.')[0],
         name: p,
-      }
+      };
     });
-    options.push({value: "create_new_preset", name: this.trans.get('create_new_preset')});
-    options.push({value: "back", name: this.trans.get('back_to_main')});
+    options.push({ value: 'create_new_preset', name: this.trans.get('create_new_preset') });
+    options.push({ value: 'back', name: this.trans.get('back_to_main') });
     inquirer
-    .prompt({
-      type: 'list',
-      name: 'action',
-      message: presets.length ? 'Select a preset to view' : 'You don\'t have any preset',
-      choices: options,
-    })
-    .then((answers) => {
-      if(answers.action === 'back') {
-        this.showScreen__home();
-      }
-      else if(answers.action === 'create_new_preset') {
-        this.showCreatePresetNameInput();
-      }
-      else{
-        this.showScreen__viewSinglePreset(parseInt(answers.action));
-      }
-    });
+      .prompt({
+        type: 'list',
+        name: 'action',
+        message: presets.length ? 'Select a preset to view' : "You don't have any preset",
+        choices: options,
+      })
+      .then((answers) => {
+        if (answers.action === 'back') {
+          this.showScreen__home();
+        } else if (answers.action === 'create_new_preset') {
+          this.showCreatePresetNameInput();
+        } else {
+          this.showScreen__viewSinglePreset(parseInt(answers.action));
+        }
+      });
   }
   private render_confirmPresetName(rawName: string) {
     this.renderAppHeader();
     const generatedName = this.presetService.generatePresetName(rawName);
     inquirer
-    .prompt({
-      type: 'list',
-      name: 'action',
-      message: `You are going to create a preset called "${generatedName}", are you sure?`,
-      choices: [
-        {value: 'confirm', name: 'Yes. Create the preset'},
-        {value: 'change_name', name: 'No. Change name'},
-        {value: 'cancel', name: 'Cancel. Back to the preset list page'},
-      ],
-    })
-    .then((answers) => {
-      if(answers.action === 'confirm') {
-        this.presetService.writeDefaultPresetToDisk(generatedName);
-        this.showPresetListingPage();
-      }
-      else if(answers.action === 'change_name') {
-        this.showCreatePresetNameInput();
-      }
-      else {
-        this.showPresetListingPage();
-      }
-    });
+      .prompt({
+        type: 'list',
+        name: 'action',
+        message: `You are going to create a preset called "${generatedName}", are you sure?`,
+        choices: [
+          { value: 'confirm', name: 'Yes. Create the preset' },
+          { value: 'change_name', name: 'No. Change name' },
+          { value: 'cancel', name: 'Cancel. Back to the preset list page' },
+        ],
+      })
+      .then((answers) => {
+        if (answers.action === 'confirm') {
+          this.presetService.writeDefaultPresetToDisk(generatedName);
+          this.showPresetListingPage();
+        } else if (answers.action === 'change_name') {
+          this.showCreatePresetNameInput();
+        } else {
+          this.showPresetListingPage();
+        }
+      });
   }
 
   private showCreatePresetNameInput() {
     this.renderAppHeader();
     inquirer
-    .prompt({
-      type: 'input',
-      name: 'action',
-      message: "Enter the preset name: ",
-    })
-    .then((answers) => {
-      if(!(answers.action.trim())) {
-        this.showCreatePresetNameInput();
-      }
-      else{
-        this.render_confirmPresetName(answers.action)
-      }
-    });
-  }  
+      .prompt({
+        type: 'input',
+        name: 'action',
+        message: 'Enter the preset name: ',
+      })
+      .then((answers) => {
+        if (!answers.action.trim()) {
+          this.showCreatePresetNameInput();
+        } else {
+          this.render_confirmPresetName(answers.action);
+        }
+      });
+  }
 
   /**
    * Screen for setting gold amount to a preset
@@ -155,51 +152,54 @@ export class Page{
     const presetObj = this.presetService.getPresetDataByFilename(presetName);
     console.info(`Current amount: ${presetObj.gold} gold`);
     inquirer
-    .prompt({
-      type: 'input',
-      name: 'action',
-      message: `Enter gold amount to be set to the "${presetName}"`,
-    })
-    .then((answers) => {
-      const amount = parseInt(answers.action);
+      .prompt({
+        type: 'input',
+        name: 'action',
+        message: `Enter gold amount to be set to the "${presetName}"`,
+      })
+      .then((answers) => {
+        const amount = parseInt(answers.action);
 
-      if(isNaN(amount)) {
-        this.showScreen__setGoldToPreset(presetId);
-        return;
-      }
-      else{
-        const newPresetObj: Preset = { ...presetObj, gold: amount };
-        this.presetService.writePresetToDisk(presetName, newPresetObj);
-        this.showScreen__viewSinglePreset(presetId);
-        return;
-      }
-    });
+        if (isNaN(amount)) {
+          this.showScreen__setGoldToPreset(presetId);
+          return;
+        } else {
+          const newPresetObj: Preset = { ...presetObj, gold: amount };
+          this.presetService.writePresetToDisk(presetName, newPresetObj);
+          this.showScreen__viewSinglePreset(presetId);
+          return;
+        }
+      });
   }
 
   /**
    * Screen for removing cards from a preset
    */
-  private showScreen__removeCardsFromPreset(presetId: number){
+  private showScreen__removeCardsFromPreset(presetId: number) {
     this.renderAppHeader();
     const presetName = this.presetService.getPresetNameById(presetId);
     const presetObj = this.presetService.getPresetDataByFilename(presetName);
     const cards: CardWithTitle[] = this.cardService.getCardList();
-    console.info('Cards in this preset')
+    console.info('Cards in this preset');
     console.info(this.cardService.transformIdsToReadableNames(presetObj.cards).join('  '));
     inquirer
-    .prompt({
-      type: 'input',
-      name: 'action',
-      message: `Enter card IDs to be removed from the "${presetName}". separate ids by spaces`,
-    })
-    .then((answers) => {
-      const selectedCardIds = answers.action.trim().split(' ').filter((item) => {
-        return parseInt(item) >= 0;
-      }).map(item=>parseInt(item));
-      const newPresetObj = this.presetService.removeCardsFromPreset(selectedCardIds, presetId);
-      this.presetService.writePresetToDisk(presetName, newPresetObj);
-      this.showScreen__viewSinglePreset(presetId);
-    });
+      .prompt({
+        type: 'input',
+        name: 'action',
+        message: `Enter card IDs to be removed from the "${presetName}". separate ids by spaces`,
+      })
+      .then((answers) => {
+        const selectedCardIds = answers.action
+          .trim()
+          .split(' ')
+          .filter((item) => {
+            return parseInt(item) >= 0;
+          })
+          .map((item) => parseInt(item));
+        const newPresetObj = this.presetService.removeCardsFromPreset(selectedCardIds, presetId);
+        this.presetService.writePresetToDisk(presetName, newPresetObj);
+        this.showScreen__viewSinglePreset(presetId);
+      });
   }
 
   /**
@@ -213,26 +213,33 @@ export class Page{
     console.info('Available cards:');
     this.renderCardsAsGrid(cards);
     inquirer
-    .prompt({
-      type: 'input',
-      name: 'action',
-      message: `Enter card IDs to be added to the "${presetName}", separated by spaces`,
-    })
-    .then((answers) => {
-      
-      let idsToBeAdded: number[] = answers.action.trim().split(' ').filter((item) => {
-        return parseInt(item) >= 0;
-      }).map(item=>parseInt(item));
-      const cards: CardWithTitle[] = this.cardService.getCardList();
-      const newPresetObj: Preset = this.presetService.pushCardIdsToPreset(idsToBeAdded, presetId, cards);
-      const presetName: string = this.presetService.getPresetNameById(presetId);
-      this.presetService.writePresetToDisk(presetName, newPresetObj);
+      .prompt({
+        type: 'input',
+        name: 'action',
+        message: `Enter card IDs to be added to the "${presetName}", separated by spaces`,
+      })
+      .then((answers) => {
+        let idsToBeAdded: number[] = answers.action
+          .trim()
+          .split(' ')
+          .filter((item) => {
+            return parseInt(item) >= 0;
+          })
+          .map((item) => parseInt(item));
+        const cards: CardWithTitle[] = this.cardService.getCardList();
+        const newPresetObj: Preset = this.presetService.pushCardIdsToPreset(
+          idsToBeAdded,
+          presetId,
+          cards
+        );
+        const presetName: string = this.presetService.getPresetNameById(presetId);
+        this.presetService.writePresetToDisk(presetName, newPresetObj);
 
-      this.showScreen__viewSinglePreset(presetId);
-    });
+        this.showScreen__viewSinglePreset(presetId);
+      });
   }
 
-  private showScreen__addRelicsToPreset(presetId: number) {    
+  private showScreen__addRelicsToPreset(presetId: number) {
     this.renderAppHeader();
   }
 
@@ -257,97 +264,90 @@ export class Page{
     const presetObj = this.presetService.getPresetDataByFilename(presetName);
     console.info(`Name:`, presetName);
     console.info(`Gold:`, presetObj.gold);
-    console.info(`Cards:`, this.cardService.transformIdsToReadableNames(presetObj.cards).join('  '));
+    console.info(
+      `Cards:`,
+      this.cardService.transformIdsToReadableNames(presetObj.cards).join('  ')
+    );
     console.info(`Relics:`, presetObj.relics);
     inquirer
-    .prompt({
-      type: 'list',
-      name: 'action',
-      message: 'Action:',
-      choices: [
-        {value: 'add_cards', name: 'Add cards'},
-        {value: 'remove_cards', name: 'Remove cards'},
-        {value: 'add_relics', name: 'Add relics'},
-        {value: 'remove_relics', name: 'Remove relics'},
-        {value: 'set_gold', name: 'Set gold amount'},
-        {value: 'delete_preset', name: 'Delete this preset'},
-        {value: 'inject_savefile', name: 'Inject this preset to a save file'},
-        {value: 'back', name: 'Back to the preset list page'},
-      ],
-    })
-    .then((answers) => {
-      if(answers.action === 'delete_preset') {
-        this.showDeletePresetConfirmation(presetId);
-      }
-      else if(answers.action === 'add_cards') {
-        this.showScreen__addCardsToPreset(presetId);
-      }
-      else if(answers.action === 'remove_cards') {
-        this.showScreen__removeCardsFromPreset(presetId);
-      }
-      else if(answers.action === 'set_gold') {
-        this.showScreen__setGoldToPreset(presetId);
-      }
-      else{
-        this.showPresetListingPage()
-      }
-    });
+      .prompt({
+        type: 'list',
+        name: 'action',
+        message: 'Action:',
+        choices: [
+          { value: 'add_cards', name: 'Add cards' },
+          { value: 'remove_cards', name: 'Remove cards' },
+          { value: 'add_relics', name: 'Add relics' },
+          { value: 'remove_relics', name: 'Remove relics' },
+          { value: 'set_gold', name: 'Set gold amount' },
+          { value: 'delete_preset', name: 'Delete this preset' },
+          { value: 'inject_savefile', name: 'Inject this preset to a save file' },
+          { value: 'back', name: 'Back to the preset list page' },
+        ],
+      })
+      .then((answers) => {
+        if (answers.action === 'delete_preset') {
+          this.showDeletePresetConfirmation(presetId);
+        } else if (answers.action === 'add_cards') {
+          this.showScreen__addCardsToPreset(presetId);
+        } else if (answers.action === 'remove_cards') {
+          this.showScreen__removeCardsFromPreset(presetId);
+        } else if (answers.action === 'set_gold') {
+          this.showScreen__setGoldToPreset(presetId);
+        } else {
+          this.showPresetListingPage();
+        }
+      });
   }
 
   private showDeletePresetConfirmation(presetId: number) {
     this.renderAppHeader();
     const presetName = this.presetService.getPresetNameById(presetId);
     inquirer
-    .prompt({
-      type: 'list',
-      name: 'action',
-      message: `Are you sure you want to permanently delete the preset "${presetName}"?`,
-      choices: [
-        {value: 'cancel', name: 'Cancel'},
-        {value: 'confirm', name: 'Yes. Delete it'},
-      ],
-    })
-    .then((answers) => {
-      if(answers.action === 'confirm') {
-        this.presetService.deletePresetFromDisk(presetName);
-        this.showPresetListingPage();
-      }
-      else {
-        this.showScreen__viewSinglePreset(presetId);
-      }
-    });
+      .prompt({
+        type: 'list',
+        name: 'action',
+        message: `Are you sure you want to permanently delete the preset "${presetName}"?`,
+        choices: [
+          { value: 'cancel', name: 'Cancel' },
+          { value: 'confirm', name: 'Yes. Delete it' },
+        ],
+      })
+      .then((answers) => {
+        if (answers.action === 'confirm') {
+          this.presetService.deletePresetFromDisk(presetName);
+          this.showPresetListingPage();
+        } else {
+          this.showScreen__viewSinglePreset(presetId);
+        }
+      });
   }
-
 
   /** Showing the homepage */
-  public showScreen__home(){
+  public showScreen__home() {
     this.renderAppHeader();
     inquirer
-    .prompt({
-      type: 'list',
-      name: 'action',
-      message: 'What do you want to do?',
-      choices: [
-        {value: 'view_cards', name: 'View cards'},
-        {value: 'view_relics', name: 'View relics'},
-        {value: 'manage_presets', name: 'Manage presets'},
-        {value: 'exit', name: 'Exit'},
-      ],
-    })
-    .then((answers) => {
-      if(answers.action === 'view_cards') {
-        this.showScreen__cardList();
-      }
-      else if(answers.action === 'view_relics') {
-        this.render_relicListing();
-      }
-      else if(answers.action === 'manage_presets') {
-        this.showPresetListingPage();
-      }
-      else{
-        this.render_exit();
-      }
-    });
+      .prompt({
+        type: 'list',
+        name: 'action',
+        message: 'What do you want to do?',
+        choices: [
+          { value: 'view_cards', name: 'View cards' },
+          { value: 'view_relics', name: 'View relics' },
+          { value: 'manage_presets', name: 'Manage presets' },
+          { value: 'exit', name: 'Exit' },
+        ],
+      })
+      .then((answers) => {
+        if (answers.action === 'view_cards') {
+          this.showScreen__cardList();
+        } else if (answers.action === 'view_relics') {
+          this.render_relicListing();
+        } else if (answers.action === 'manage_presets') {
+          this.showPresetListingPage();
+        } else {
+          this.render_exit();
+        }
+      });
   }
-
 }

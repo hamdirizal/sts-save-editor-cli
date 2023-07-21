@@ -5,9 +5,8 @@ import { RelicService } from './RelicService.js';
 import { PresetService } from './services/PresetService.js';
 import { Translation } from './Translation.js';
 
-
 const utility: Utility = new Utility();
-const translation: Translation = new Translation("en");
+const translation: Translation = new Translation('en');
 const cardService: CardService = new CardService();
 const relicService: RelicService = new RelicService();
 const presetService: PresetService = new PresetService();
@@ -28,7 +27,6 @@ page.showScreen__home();
 //   else {
 //     console.log('Directory does not exist');
 //   }
-  
 
 // }
 
