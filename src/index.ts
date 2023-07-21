@@ -4,14 +4,16 @@ import { Page } from './Page.js';
 import { RelicService } from './services/RelicService.js';
 import { PresetService } from './services/PresetService.js';
 import { Translation } from './Translation.js';
+import { EncoderService } from './services/EncoderService.js';
 
 const utility: Utility = new Utility();
 const translation: Translation = new Translation('en');
 const cardService: CardService = new CardService();
 const relicService: RelicService = new RelicService();
 const presetService: PresetService = new PresetService();
+const encoderService: EncoderService = new EncoderService();
 
-const page: Page = new Page(translation, utility, cardService, relicService, presetService);
+const page: Page = new Page(translation, utility, cardService, relicService, presetService, encoderService);
 
 page.showScreen__home();
 

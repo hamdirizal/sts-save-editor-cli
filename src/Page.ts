@@ -6,6 +6,7 @@ import { RelicService } from './services/RelicService.js';
 import { PresetService } from './services/PresetService.js';
 import { Translation } from './Translation.js';
 import { APP_TITLE, APP_VERSION } from './constants.js';
+import { EncoderService } from './services/EncoderService.js';
 
 export class Page {
   constructor(
@@ -13,7 +14,8 @@ export class Page {
     private utility: Utility,
     private cardService: CardService,
     private relicService: RelicService,
-    private presetService: PresetService
+    private presetService: PresetService,
+    private encoderService: EncoderService
   ) {}
 
   private render_exit() {
@@ -315,10 +317,11 @@ export class Page {
         type: 'input',
         name: 'action',
         message: 'Enter the path to the save file',
-        default: 'D:\\program-files\\Steam\\steamapps\\common\\SlayTheSpire\\saves\\1_IRONCLAD.autosave'
+        default:
+          'D:\\program-files\\Steam\\steamapps\\common\\SlayTheSpire\\saves\\1_IRONCLAD.autosave',
       })
       .then((answers) => {
-        console.log('isSaveexuists', this.presetService.isSaveFileExists(answers.action));
+        console.log('isSaveexuists', this.encoderService.isSaveFileExists(answers.action));
         // this.showScreen__viewSinglePreset(presetId)
       });
   }

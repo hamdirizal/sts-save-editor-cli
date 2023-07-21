@@ -5,10 +5,6 @@ import { CardWithTitle, Preset } from '../types.js';
 export class PresetService {
   private defaultPresetContent: Preset = { gold: 99, cards: [], relics: [] };
 
-  public isSaveFileExists(path:string){
-    return fs.existsSync(path);
-  }
-
   private readAllPresetNamesFromDisk() {
     // If preset folder not exists, then return empty array, and create the folder
     if (!fs.existsSync(`./${PRESET_FOLDER_NAME}`)) {
