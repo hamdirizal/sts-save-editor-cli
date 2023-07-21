@@ -37,7 +37,17 @@ export class Page {
     this.utility.renderArrayAsGrid(cardNames, colWidth, 5);
   }
 
-  /** Show the card listing page */
+  private renderRelicsAsGrid(relics: RelicWithTitle[]) {
+    const colWidth = 30;
+    const relicNames: string[] = relics.map((c) =>
+      this.relicService.getDisplayNameById(c.id, relics).substring(0, colWidth - 2)
+    );
+    this.utility.renderArrayAsGrid(relicNames, colWidth, 4);
+  }
+
+  /**
+   * Show the card listing page
+   */
   private showScreen__cardList() {
     this.renderAppHeader();
     const cards: CardWithTitle[] = this.cardService.getCardList();
@@ -52,16 +62,14 @@ export class Page {
       .then(() => this.showScreen__home());
   }
 
-  /** Show the relic listing page */
-  private render_relicListing() {
+  /**
+   * Show the relic listing page
+   */
+  private showScreen__relicList() {
     this.renderAppHeader();
     const relics: RelicWithTitle[] = this.relicService.getRelicList();
     const colWidth = 30;
-    this.utility.renderArrayAsGrid(
-      relics.map((c) => `[${c.id}] ${c.identifier}`.substring(0, colWidth - 2)),
-      colWidth,
-      4
-    );
+    this.renderRelicsAsGrid(relics);
     inquirer
       .prompt({
         type: 'input',
@@ -186,7 +194,7 @@ export class Page {
       .prompt({
         type: 'input',
         name: 'action',
-        message: `Enter card IDs to be removed from the "${presetName}". separate ids by spaces`,
+        message: `Enter card IDs to be removed. Separate by spaces:`,
       })
       .then((answers) => {
         const selectedCardIds = answers.action
@@ -216,7 +224,7 @@ export class Page {
       .prompt({
         type: 'input',
         name: 'action',
-        message: `Enter card IDs to be added to the "${presetName}", separated by spaces`,
+        message: `Enter card IDs to be added, separate by spaces:`,
       })
       .then((answers) => {
         let idsToBeAdded: number[] = answers.action
@@ -241,6 +249,36 @@ export class Page {
 
   private showScreen__addRelicsToPreset(presetId: number) {
     this.renderAppHeader();
+    const presetName = this.presetService.getPresetNameById(presetId);
+    const presetObj = this.presetService.getPresetDataByFilename(presetName);
+    const relics: RelicWithTitle[] = this.relicService.getRelicList();
+    console.info('Available relics:');
+    this.renderRelicsAsGrid(relics);
+    inquirer
+      .prompt({
+        type: 'input',
+        name: 'action',
+        message: `Enter relic IDs to be added. Separate by spaces:`,
+      })
+      .then((answers) => {
+        let idsToBeAdded: number[] = answers.action
+          .trim()
+          .split(' ')
+          .filter((item) => {
+            return parseInt(item) >= 0;
+          })
+          .map((item) => parseInt(item));
+        const relics: RelicWithTitle[] = this.relicService.getRelicList();
+        const newPresetObj: Preset = this.presetService.pushRelicIdsToPreset(
+          idsToBeAdded,
+          presetId,
+          relics
+        );
+        const presetName: string = this.presetService.getPresetNameById(presetId);
+        this.presetService.writePresetToDisk(presetName, newPresetObj);
+
+        this.showScreen__viewSinglePreset(presetId);
+      });
   }
 
   private showScreen__removeRelicsFromPreset(presetId: number) {
@@ -287,20 +325,26 @@ export class Page {
       })
       .then((answers) => {
         if (answers.action === 'delete_preset') {
-          this.showDeletePresetConfirmation(presetId);
+          this.showScreen__deletePresetConfirmation(presetId);
         } else if (answers.action === 'add_cards') {
           this.showScreen__addCardsToPreset(presetId);
         } else if (answers.action === 'remove_cards') {
           this.showScreen__removeCardsFromPreset(presetId);
+        } else if (answers.action === 'add_relics') {
+          this.showScreen__addRelicsToPreset(presetId);
+        } else if (answers.action === 'remove_relics') {
+          this.showScreen__removeRelicsFromPreset(presetId);
         } else if (answers.action === 'set_gold') {
           this.showScreen__setGoldToPreset(presetId);
+        } else if (answers.action === 'inject_savefile') {
+          this.showScreen__inputSaveFilePath();
         } else {
           this.showPresetListingPage();
         }
       });
   }
 
-  private showDeletePresetConfirmation(presetId: number) {
+  private showScreen__deletePresetConfirmation(presetId: number) {
     this.renderAppHeader();
     const presetName = this.presetService.getPresetNameById(presetId);
     inquirer
@@ -342,7 +386,7 @@ export class Page {
         if (answers.action === 'view_cards') {
           this.showScreen__cardList();
         } else if (answers.action === 'view_relics') {
-          this.render_relicListing();
+          this.showScreen__relicList();
         } else if (answers.action === 'manage_presets') {
           this.showPresetListingPage();
         } else {

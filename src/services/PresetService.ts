@@ -116,6 +116,26 @@ export class PresetService {
     return presetObj;
   }
 
+  public pushRelicIdsToPreset(
+    idsToBeAdded: number[],
+    presetId: number,
+    allRelics: CardWithTitle[]
+  ): Preset {
+    // Check the ids, filter out the invalid ones
+    const validRelicIds = idsToBeAdded.filter((id: number) => {
+      return allRelics.some((c) => c.id === id);
+    });
+
+    // Get the preset object data
+    const presetName = this.getPresetNameById(presetId);
+    const presetObj = this.getPresetDataByFilename(presetName);
+
+    // Create new preset object with the new relic ids
+    const newPreset = { ...presetObj, relics: [...presetObj.relics, ...validRelicIds] };
+
+    return newPreset;
+  }
+
   public pushCardIdsToPreset(
     idsToBeAdded: number[],
     presetId: number,

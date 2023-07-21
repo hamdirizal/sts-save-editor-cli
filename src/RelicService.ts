@@ -7,6 +7,11 @@ export class RelicService {
     return JSON.parse(rawdata);
   }
 
+  public getDisplayNameById(id: number, relics: RelicWithTitle[]): string {
+    const name = relics.find((c) => c.id === id).title;
+    return `[${id}] ${name}`;
+  }
+
   public getRelicList(): RelicWithTitle[] {
     const relics = this.readRelicsFromFile();
     const keys = Object.keys(relics);
