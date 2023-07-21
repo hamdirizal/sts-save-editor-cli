@@ -2,7 +2,7 @@ import fs from 'fs';
 import { RelicWithTitle } from './types.js';
 
 export class RelicService {
-  private readRelicsFromFile(){
+  private readRelicsFromFile() {
     let rawdata: any = fs.readFileSync('./src/relics.json');
     return JSON.parse(rawdata);
   }
@@ -11,13 +11,13 @@ export class RelicService {
     const relics = this.readRelicsFromFile();
     const keys = Object.keys(relics);
     const arr = [];
-    keys.forEach(key => {
+    keys.forEach((key) => {
       arr.push({
         identifier: key,
-        title: relics[key].NAME
+        title: relics[key].NAME,
       });
     });
-  
+
     // Sort by name
     const sorted = arr.sort((a, b) => {
       if (a.title < b.title) {
@@ -28,15 +28,15 @@ export class RelicService {
       }
       return 0;
     });
-  
+
     const indexed: RelicWithTitle[] = sorted.map((item, index) => {
       return {
         id: index,
         title: item.title,
-        identifier: item.identifier
-      }
-    })
-  
+        identifier: item.identifier,
+      };
+    });
+
     return indexed;
   }
 }

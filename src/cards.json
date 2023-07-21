@@ -132,10 +132,7 @@
     "NAME": "Blizzard",
     "DESCRIPTION": "Deal damage equal to !M! times the number of Frost Channeled this combat to ALL enemies.",
     "UPGRADE_DESCRIPTION": "",
-    "EXTENDED_DESCRIPTION": [
-      " NL (Deals !D! damage.)",
-      ""
-    ]
+    "EXTENDED_DESCRIPTION": [" NL (Deals !D! damage.)", ""]
   },
   "Blood for Blood": {
     "NAME": "Blood for Blood",
@@ -239,9 +236,7 @@
   "Clash": {
     "NAME": "Clash",
     "DESCRIPTION": "Can only be played if every card in your hand is an Attack. NL Deal !D! damage.",
-    "EXTENDED_DESCRIPTION": [
-      "I have non-Attack cards in my hand."
-    ]
+    "EXTENDED_DESCRIPTION": ["I have non-Attack cards in my hand."]
   },
   "Cleave": {
     "NAME": "Cleave",
@@ -484,11 +479,7 @@
   "FTL": {
     "NAME": "FTL",
     "DESCRIPTION": "Deal !D! damage. If you have played less than !M! cards this turn, draw 1 card.",
-    "EXTENDED_DESCRIPTION": [
-      " NL (",
-      " card played.)",
-      " cards played.)"
-    ]
+    "EXTENDED_DESCRIPTION": [" NL (", " card played.)", " cards played.)"]
   },
   "Feed": {
     "NAME": "Feed",
@@ -509,11 +500,7 @@
   "Finisher": {
     "NAME": "Finisher",
     "DESCRIPTION": "Deal !D! damage for each Attack played this turn.",
-    "EXTENDED_DESCRIPTION": [
-      " NL (",
-      " Attack played.)",
-      " Attacks played.)"
-    ]
+    "EXTENDED_DESCRIPTION": [" NL (", " Attack played.)", " Attacks played.)"]
   },
   "Fire Breathing": {
     "NAME": "Fire Breathing",
@@ -535,11 +522,7 @@
   "Flechettes": {
     "NAME": "Flechettes",
     "DESCRIPTION": "Deal !D! damage for each Skill in your hand.",
-    "EXTENDED_DESCRIPTION": [
-      " NL (You have ",
-      " Skill).",
-      " Skills)."
-    ]
+    "EXTENDED_DESCRIPTION": [" NL (You have ", " Skill).", " Skills)."]
   },
   "Flex": {
     "NAME": "Flex",
@@ -771,9 +754,7 @@
     "NAME": "Mind Blast",
     "DESCRIPTION": "Innate. NL Deal damage equal to the number of cards in your draw pile.",
     "UPGRADE_DESCRIPTION": "",
-    "EXTENDED_DESCRIPTION": [
-      " NL (Deals !D! damage.)"
-    ]
+    "EXTENDED_DESCRIPTION": [" NL (Deals !D! damage.)"]
   },
   "Multi-Cast": {
     "NAME": "Multi-Cast",
@@ -791,10 +772,7 @@
   "Night Terror": {
     "NAME": "Nightmare",
     "DESCRIPTION": "Choose a card. NL Next turn, add !M! copies of that card into your hand. Exhaust.",
-    "EXTENDED_DESCRIPTION": [
-      "I can only use NL ",
-      " NL once per turn."
-    ]
+    "EXTENDED_DESCRIPTION": ["I can only use NL ", " NL once per turn."]
   },
   "Normality": {
     "NAME": "Normality",
@@ -805,7 +783,7 @@
       " cards per turn.",
       " cards per turn. NL You have played ",
       " card this turn.",
-	  " cards this turn."
+      " cards this turn."
     ]
   },
   "Noxious Fumes": {
@@ -927,9 +905,7 @@
     "NAME": "Reflex",
     "DESCRIPTION": "Unplayable. NL If this card is discarded from your hand, draw !M! cards.",
     "UPGRADE_DESCRIPTION": "Unplayable. NL If this card is discarded from your hand, draw !M! cards.",
-    "EXTENDED_DESCRIPTION": [
-      "I can't play this card."
-    ]
+    "EXTENDED_DESCRIPTION": ["I can't play this card."]
   },
   "Regret": {
     "NAME": "Regret",
@@ -976,17 +952,13 @@
     "NAME": "Secret Technique",
     "DESCRIPTION": "Put a Skill from your draw pile into your hand. NL Exhaust.",
     "UPGRADE_DESCRIPTION": "Put a Skill from your draw pile into your hand.",
-    "EXTENDED_DESCRIPTION": [
-      "There are no Skills NL in my draw pile."
-    ]
+    "EXTENDED_DESCRIPTION": ["There are no Skills NL in my draw pile."]
   },
   "Secret Weapon": {
     "NAME": "Secret Weapon",
     "DESCRIPTION": "Put an Attack from your draw pile into your hand. NL Exhaust.",
     "UPGRADE_DESCRIPTION": "Put an Attack from your draw pile into your hand.",
-    "EXTENDED_DESCRIPTION": [
-      "There are no Attacks NL in my draw pile."
-    ]
+    "EXTENDED_DESCRIPTION": ["There are no Attacks NL in my draw pile."]
   },
   "Seeing Red": {
     "NAME": "Seeing Red",
@@ -1054,9 +1026,7 @@
     "NAME": "Stack",
     "DESCRIPTION": "Gain Block equal to the number of cards in your discard pile.",
     "UPGRADE_DESCRIPTION": "Gain Block equal to the number of cards in your discard pile +3.",
-    "EXTENDED_DESCRIPTION": [
-      " NL (Gains !B! Block.)"
-    ]
+    "EXTENDED_DESCRIPTION": [" NL (Gains !B! Block.)"]
   },
   "Static Discharge": {
     "NAME": "Static Discharge",
@@ -1129,9 +1099,7 @@
     "NAME": "Tactician",
     "DESCRIPTION": "Unplayable. NL If this card is discarded from your hand, gain [G].",
     "UPGRADE_DESCRIPTION": "Unplayable. NL If this card is discarded from your hand, gain [G] [G].",
-    "EXTENDED_DESCRIPTION": [
-      "I can't play this card."
-    ]
+    "EXTENDED_DESCRIPTION": ["I can't play this card."]
   },
   "Tempest": {
     "NAME": "Tempest",
@@ -1154,9 +1122,7 @@
   "Thunder Strike": {
     "NAME": "Thunder Strike",
     "DESCRIPTION": "Deal !D! damage to a random enemy for each Lightning Channeled this combat.",
-    "EXTENDED_DESCRIPTION": [
-      " (Channeled !M! Lightning.)"
-    ]
+    "EXTENDED_DESCRIPTION": [" (Channeled !M! Lightning.)"]
   },
   "Thunderclap": {
     "NAME": "Thunderclap",
@@ -1193,9 +1159,7 @@
   "Underhanded Strike": {
     "NAME": "Sneaky Strike",
     "DESCRIPTION": "Deal !D! damage. NL If you have discarded a card this turn, NL gain [G] [G].",
-    "EXTENDED_DESCRIPTION": [
-      "I can't play this card."
-    ]
+    "EXTENDED_DESCRIPTION": ["I can't play this card."]
   },
   "Undo": {
     "NAME": "Equilibrium",
@@ -1355,7 +1319,7 @@
   "Blasphemy": {
     "NAME": "Blasphemy",
     "DESCRIPTION": "Enter Divinity. NL Die next turn. NL Exhaust.",
-	"UPGRADE_DESCRIPTION": "Retain. NL Enter Divinity. NL Die next turn. NL Exhaust."
+    "UPGRADE_DESCRIPTION": "Retain. NL Enter Divinity. NL Die next turn. NL Exhaust."
   },
   "Ragnarok": {
     "NAME": "Ragnarok",
@@ -1369,9 +1333,7 @@
   "Judgement": {
     "NAME": "Judgment",
     "DESCRIPTION": "If the enemy has !M! or less HP, set their NL HP to 0.",
-    "EXTENDED_DESCRIPTION": [
-      "JUDGED"
-    ]
+    "EXTENDED_DESCRIPTION": ["JUDGED"]
   },
   "Pray": {
     "NAME": "Pray",
@@ -1396,7 +1358,7 @@
   },
   "SignatureMove": {
     "NAME": "Signature Move",
-    "DESCRIPTION": "Can only be played if this is the only Attack in your hand. NL Deal !D! damage." 
+    "DESCRIPTION": "Can only be played if this is the only Attack in your hand. NL Deal !D! damage."
   },
   "Worship": {
     "NAME": "Worship",
@@ -1420,7 +1382,7 @@
   "ReachHeaven": {
     "NAME": "Reach Heaven",
     "DESCRIPTION": "Deal !D! damage. NL Shuffle a NL *Through *Violence into your draw pile.",
-	"UPGRADE_DESCRIPTION": ""
+    "UPGRADE_DESCRIPTION": ""
   },
   "ThroughViolence": {
     "NAME": "Through Violence",
@@ -1488,7 +1450,7 @@
   "Establishment": {
     "NAME": "Establishment",
     "DESCRIPTION": "Whenever a card is Retained, reduce its cost by !M! this combat.",
-	  "UPGRADE_DESCRIPTION": "Innate. NL Whenever a card is Retained, reduce its cost by !M! this combat."
+    "UPGRADE_DESCRIPTION": "Innate. NL Whenever a card is Retained, reduce its cost by !M! this combat."
   },
   "Evaluate": {
     "NAME": "Evaluate",
@@ -1515,7 +1477,7 @@
   "BattleHymn": {
     "NAME": "Battle Hymn",
     "DESCRIPTION": "At the start of each turn, add a *Smite into your hand.",
-	"UPGRADE_DESCRIPTION": "Innate. NL At the start of each turn, add a *Smite into your hand."
+    "UPGRADE_DESCRIPTION": "Innate. NL At the start of each turn, add a *Smite into your hand."
   },
   "Prostrate": {
     "NAME": "Prostrate",
@@ -1536,9 +1498,7 @@
   "SpiritShield": {
     "NAME": "Spirit Shield",
     "DESCRIPTION": "Gain !M! Block for each card in your hand.",
-    "EXTENDED_DESCRIPTION": [
-      " NL (Gain !B! Block.)"
-    ]
+    "EXTENDED_DESCRIPTION": [" NL (Gain !B! Block.)"]
   },
   "Vigilance": {
     "NAME": "Vigilance",
@@ -1613,10 +1573,7 @@
   "Brilliance": {
     "NAME": "Brilliance",
     "DESCRIPTION": "Deal !D! damage. NL Deals additional damage equal to Mantra gained this combat.",
-    "EXTENDED_DESCRIPTION": [
-      "",
-      ""
-    ]
+    "EXTENDED_DESCRIPTION": ["", ""]
   },
   "JustLucky": {
     "NAME": "Just Lucky",
@@ -1709,10 +1666,7 @@
     "NAME": "Expunger",
     "DESCRIPTION": "Deal !D! damage X times.",
     "UPGRADE_DESCRIPTION": "",
-    "EXTENDED_DESCRIPTION": [
-      "Deal !D! damage !M! times.",
-      "Deal !D! damage !M! time."
-    ]
+    "EXTENDED_DESCRIPTION": ["Deal !D! damage !M! times.", "Deal !D! damage !M! time."]
   },
   "LikeWater": {
     "NAME": "Like Water",
