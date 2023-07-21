@@ -1,7 +1,26 @@
 import fs from 'fs';
+import { ENCRYPTION_KEY } from '../constants.js';
 export class EncoderService {
   public isSaveFileExists(path: string): boolean {
     return fs.existsSync(path);
+  }
+
+  public readSaveDataFromDisk(path: string): any {
+    const content = fs.readFileSync(path, 'utf8');
+    let result: any = null;
+    try {
+      result = this.decode(content, ENCRYPTION_KEY);
+    } catch (error) {
+      return null;
+    }
+
+    try {
+      result = JSON.parse(result);
+    } catch (error) {
+      return null;
+    }
+
+    return result;
   }
 
   private stringToByteArray(str: string): Uint8Array {

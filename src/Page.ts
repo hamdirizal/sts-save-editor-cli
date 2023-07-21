@@ -18,6 +18,8 @@ export class Page {
     private encoderService: EncoderService
   ) {}
 
+  private saveFilePath: string = '';
+
   private render_exit() {
     console.clear();
   }
@@ -310,19 +312,35 @@ export class Page {
       });
   }
 
-  private showScreen__inputSaveFilePath(presetId: number) {
+  private showScreen__inputSaveFilePath(presetId: number, errorMessage: string | null) {
     this.renderAppHeader();
+    if(errorMessage) {
+      console.error(errorMessage);
+    }
     inquirer
       .prompt({
         type: 'input',
         name: 'action',
         message: 'Enter the path to the save file',
-        default:
-          'D:\\program-files\\Steam\\steamapps\\common\\SlayTheSpire\\saves\\1_IRONCLAD.autosave',
+        default: this.saveFilePath,
       })
       .then((answers) => {
-        console.log('isSaveexuists', this.encoderService.isSaveFileExists(answers.action));
-        // this.showScreen__viewSinglePreset(presetId)
+        this.saveFilePath = answers.action;
+        const isFileExists = this.encoderService.isSaveFileExists(answers.action);
+        if (!isFileExists) {
+          this.showScreen__inputSaveFilePath(presetId, 'Save file not found. Check the path again.');
+          return;
+        } 
+        const saveDataObject = this.encoderService.readSaveDataFromDisk(answers.action);
+        if (!saveDataObject) {
+          this.showScreen__inputSaveFilePath(presetId, 'Invalid save file.');
+          return;
+        }
+        if(!saveDataObject?.name){
+          this.showScreen__inputSaveFilePath(presetId, 'Broken save file.');
+          return;
+        }
+        console.log(saveDataObject);
       });
   }
 
@@ -373,7 +391,7 @@ export class Page {
         } else if (answers.action === 'set_gold') {
           this.showScreen__setGoldToPreset(presetId);
         } else if (answers.action === 'inject_savefile') {
-          this.showScreen__inputSaveFilePath(presetId);
+          this.showScreen__inputSaveFilePath(presetId, null);
         } else {
           this.showPresetListingPage();
         }
