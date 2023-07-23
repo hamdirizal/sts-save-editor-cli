@@ -11,8 +11,6 @@ import { EncoderService } from './services/EncoderService.js';
 import tk from 'terminal-kit';
 const term = tk.terminal;
 
-
-
 inquirer.registerPrompt('search-list', SearchBox);
 
 export class Page {
@@ -29,6 +27,7 @@ export class Page {
 
   private showScreen__exit() {
     console.clear();
+    process.exit();
   }
 
   public renderAppHeader() {
@@ -64,13 +63,18 @@ export class Page {
     const cards: CardWithTitle[] = this.cardService.getCardList();
     const colWidth = 24;
     this.renderCardsAsGrid(cards);
-    inquirer
-      .prompt({
-        type: 'input',
-        name: 'action',
-        message: this.trans.get('press_enter_back_to_main'),
-      })
-      .then(() => this.showScreen__home(null));
+    term.cyan('Press ENTER to go back to the main page...');
+
+    term.inputField({ autoCompleteMenu: false }, (error, input) => {
+      this.showScreen__home(null);
+    });
+    // inquirer
+    //   .prompt({
+    //     type: 'input',
+    //     name: 'action',
+    //     message: this.trans.get('press_enter_back_to_main'),
+    //   })
+    //   .then(() => this.showScreen__home(null));
   }
 
   /**
@@ -498,15 +502,31 @@ export class Page {
       'Franklin Roosevelt',
     ];
 
-    term('Please enter your name: ');
+    // term('Please enter your name: ');
 
-    term.inputField(
-      { history: history, autoComplete: autoComplete, autoCompleteMenu: true },
-      function (error, input) {
-        term.green("\nYour name is '%s'\n", input);
-        process.exit();
+    // term.inputField(
+    //   { history: history, autoComplete: autoComplete, autoCompleteMenu: true },
+    //   function (error, input) {
+    //     term.green("\nYour name is '%s'\n", input);
+    //     process.exit();
+    //   }
+    // );
+
+    term.cyan('What do you want to do?\n');
+
+    var items = ['Manage presets ', 'View cards ', 'View relics ', 'Exit '];
+
+    term.singleColumnMenu(items, (error, response) => {
+      if (response.selectedIndex === 0) {
+        this.showScreen__managePresets(null);
+      } else if (response.selectedIndex === 1) {
+        this.showScreen__cardList();
+      } else if (response.selectedIndex === 2) {
+        this.showScreen__relicList();
+      } else {
+        this.showScreen__exit();
       }
-    );
+    });
 
     // const cards: CardWithTitle[] = this.cardService.getCardList();
     // if (errorMessage) console.error(errorMessage);
