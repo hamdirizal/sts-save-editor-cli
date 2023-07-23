@@ -15,7 +15,7 @@ const encoderService: EncoderService = new EncoderService();
 
 const page: Page = new Page(translation, utility, cardService, relicService, presetService, encoderService);
 
-page.showScreen__home();
+page.showScreen__home(null);
 
 // const processTheGivenSavePath = (savePath) => {
 //   if(existsSync(savePath)) {

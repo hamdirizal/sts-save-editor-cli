@@ -20,7 +20,7 @@ export class Page {
 
   private saveFilePath: string = '';
 
-  private render_exit() {
+  private showScreen__exit() {
     console.clear();
   }
 
@@ -63,7 +63,7 @@ export class Page {
         name: 'action',
         message: this.trans.get('press_enter_back_to_main'),
       })
-      .then(() => this.showScreen__home());
+      .then(() => this.showScreen__home(null));
   }
 
   /**
@@ -80,7 +80,7 @@ export class Page {
         name: 'action',
         message: this.trans.get('press_enter_back_to_main'),
       })
-      .then(() => this.showScreen__home());
+      .then(() => this.showScreen__home(null));
   }
 
   /** Show all available presets */
@@ -104,7 +104,7 @@ export class Page {
       })
       .then((answers) => {
         if (answers.action === 'back') {
-          this.showScreen__home();
+          this.showScreen__home(null);
         } else if (answers.action === 'create_new_preset') {
           this.showCreatePresetNameInput();
         } else {
@@ -438,29 +438,39 @@ export class Page {
   }
 
   /** Showing the homepage */
-  public showScreen__home() {
+  public showScreen__home(errorMessage: string | null) {
     this.renderAppHeader();
+    if(errorMessage) console.error(errorMessage);
+    console.info(`What do you want to do?:
+    1) View cards
+    2) View relics
+    3) Manage presets
+    4) Exit`);
     inquirer
       .prompt({
-        type: 'list',
+        type: 'input',
         name: 'action',
-        message: 'What do you want to do?',
-        choices: [
-          { value: 'view_cards', name: '1) View cards' },
-          { value: 'view_relics', name: '2) View relics' },
-          { value: 'manage_presets', name: '3) Manage presets' },
-          { value: 'exit', name: '4) Exit' },
-        ],
+        message: 'Action: ',
       })
       .then((answers) => {
-        if (answers.action === 'view_cards') {
+        if(parseInt(answers.action)===1){
           this.showScreen__cardList();
-        } else if (answers.action === 'view_relics') {
+          return;
+        }
+        else if(parseInt(answers.action)===2){
           this.showScreen__relicList();
-        } else if (answers.action === 'manage_presets') {
+          return;
+        }
+        else if(parseInt(answers.action)===3){
           this.showPresetListingPage();
-        } else {
-          this.render_exit();
+          return;
+        }
+        else if(parseInt(answers.action)===4){
+          this.showScreen__exit();
+        }
+        else{
+          this.showScreen__home(`Invalid input "${answers.action}". Please try again.`)
+          return;
         }
       });
   }
