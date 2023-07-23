@@ -84,34 +84,49 @@ export class Page {
   }
 
   /** Show all available presets */
-  public showScreen__managePresets() {
+  public showScreen__managePresets(errorMessage: string | null) {
     this.renderAppHeader();
     const presets: string[] = this.presetService.getAllPresets();
-    const options: InquirerListOption[] = presets.map((p) => {
+    const indexedPresets = presets.map((p, i) => {
       return {
-        value: p.split('.')[0],
+        index: i + 3,
         name: p,
       };
     });
-    options.push({ value: 'create_new_preset', name: this.trans.get('create_new_preset') });
-    options.push({ value: 'back', name: this.trans.get('back_to_main') });
+    if (errorMessage) console.error(errorMessage);
+    console.info(`What do you want to do?:
+    1) Back to the main page
+    2) Create a new preset
+    Open preset:`);
+    console.info(
+      indexedPresets
+        .map((p) => `    ${p.index}) ${this.presetService.renderNiceName(p.name)}`)
+        .join('\n')
+    );
     inquirer
       .prompt({
-        type: 'list',
+        type: 'input',
         name: 'action',
-        message: presets.length ? 'Select a preset to view' : "You don't have any preset",
-        choices: options,
+        message: 'Action: ',
       })
       .then((answers) => {
-        if (answers.action === 'back') {
+        if (parseInt(answers.action) === 1) {
           this.showScreen__home(null);
-        } else if (answers.action === 'create_new_preset') {
+        } else if (parseInt(answers.action) === 2) {
           this.showCreatePresetNameInput();
         } else {
-          this.showScreen__viewSinglePreset(parseInt(answers.action));
+          // Open preset in the list
+          const selectedPreset = indexedPresets.find((p) => p.index === parseInt(answers.action));
+          if (selectedPreset) {
+            const presetName = selectedPreset?.name;
+            console.log(' you selected ', presetName);
+          } else {
+            this.showScreen__managePresets('Invalid input.');
+          }
         }
       });
   }
+
   private render_confirmPresetName(rawName: string) {
     this.renderAppHeader();
     const generatedName = this.presetService.generatePresetName(rawName);
@@ -129,11 +144,11 @@ export class Page {
       .then((answers) => {
         if (answers.action === 'confirm') {
           this.presetService.writeDefaultPresetToDisk(generatedName);
-          this.showScreen__managePresets();
+          this.showScreen__managePresets(null);
         } else if (answers.action === 'change_name') {
           this.showCreatePresetNameInput();
         } else {
-          this.showScreen__managePresets();
+          this.showScreen__managePresets(null);
         }
       });
   }
@@ -416,7 +431,7 @@ export class Page {
         } else if (answers.action === 'inject_savefile') {
           this.showScreen__inputSaveFilePath(presetId, null);
         } else {
-          this.showScreen__managePresets();
+          this.showScreen__managePresets(null);
         }
       });
   }
@@ -437,7 +452,7 @@ export class Page {
       .then((answers) => {
         if (answers.action === 'confirm') {
           this.presetService.deletePresetFromDisk(presetName);
-          this.showScreen__managePresets();
+          this.showScreen__managePresets(null);
         } else {
           this.showScreen__viewSinglePreset(presetId);
         }
@@ -467,12 +482,12 @@ export class Page {
           this.showScreen__relicList();
           return;
         } else if (parseInt(answers.action) === 3) {
-          this.showScreen__managePresets();
+          this.showScreen__managePresets(null);
           return;
         } else if (parseInt(answers.action) === 4) {
           this.showScreen__exit();
         } else {
-          this.showScreen__home(`Invalid input "${answers.action}". Please try again.`);
+          this.showScreen__home(`"${answers.action}" is invalid input.`);
           return;
         }
       });

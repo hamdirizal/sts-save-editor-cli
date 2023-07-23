@@ -25,6 +25,11 @@ export class PresetService {
     return sorted;
   }
 
+  public renderNiceName(filename: string){
+    const name = filename.split('.')[1];
+    return name;
+  }
+
   private readOnePresetFromDisk(filename: string): any {
     const fileContent = fs.readFileSync(`./${PRESET_FOLDER_NAME}/${filename}`, 'utf8');
     return JSON.parse(fileContent);
