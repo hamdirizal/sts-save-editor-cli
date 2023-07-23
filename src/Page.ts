@@ -122,7 +122,7 @@ export class Page {
           const selectedPreset = indexedPresets.find((p) => p.index === parseInt(answers.action));
           if (selectedPreset) {
             const presetName = selectedPreset?.name;
-            console.log(' you selected ', presetName);
+            this.showScreen__viewSinglePreset(presetName);
           } else {
             this.showScreen__managePresets('Invalid input.');
           }
@@ -171,11 +171,10 @@ export class Page {
       .then((answers) => {
         // Try to create name
         const generatedName = this.presetService.generatePresetName(answers.action);
-        if(!generatedName){
+        if (!generatedName) {
           this.showScreen__presetNameInput();
           return;
-        }
-        else{
+        } else {
           this.showScreen__confirmPresetName(generatedName, null);
           return;
         }
@@ -185,27 +184,28 @@ export class Page {
   /**
    * Screen for setting gold amount to a preset
    */
-  private showScreen__setGoldToPreset(presetId: number) {
+  private showScreen__setGoldToPreset(presetFilename: string) {
     this.renderAppHeader();
-    const presetName = this.presetService.getPresetNameById(presetId);
-    const presetObj = this.presetService.getPresetDataByFilename(presetName);
+    const presetObj = this.presetService.getPresetDataByFilename(presetFilename);
     console.info(`Current amount: ${presetObj.gold} gold`);
     inquirer
       .prompt({
         type: 'input',
         name: 'action',
-        message: `Enter gold amount to be set to the "${presetName}"`,
+        message: `Enter gold amount to be set to the "${this.presetService.renderNiceName(
+          presetFilename
+        )}"`,
       })
       .then((answers) => {
         const amount = parseInt(answers.action);
 
         if (isNaN(amount)) {
-          this.showScreen__setGoldToPreset(presetId);
+          this.showScreen__setGoldToPreset(presetFilename);
           return;
         } else {
           const newPresetObj: Preset = { ...presetObj, gold: amount };
-          this.presetService.writePresetToDisk(presetName, newPresetObj);
-          this.showScreen__viewSinglePreset(presetId);
+          this.presetService.writePresetToDisk(presetFilename, newPresetObj);
+          this.showScreen__viewSinglePreset(presetFilename);
           return;
         }
       });
@@ -214,10 +214,9 @@ export class Page {
   /**
    * Screen for removing cards from a preset
    */
-  private showScreen__removeCardsFromPreset(presetId: number) {
+  private showScreen__removeCardsFromPreset(presetFilename: string) {
     this.renderAppHeader();
-    const presetName = this.presetService.getPresetNameById(presetId);
-    const presetObj = this.presetService.getPresetDataByFilename(presetName);
+    const presetObj = this.presetService.getPresetDataByFilename(presetFilename);
     const cards: CardWithTitle[] = this.cardService.getCardList();
     console.info('Cards in this preset');
     console.info(this.cardService.transformIdsToReadableNames(presetObj.cards).join('  '));
@@ -235,19 +234,21 @@ export class Page {
             return parseInt(item) >= 0;
           })
           .map((item) => parseInt(item));
-        const newPresetObj = this.presetService.removeCardsFromPreset(selectedCardIds, presetId);
-        this.presetService.writePresetToDisk(presetName, newPresetObj);
-        this.showScreen__viewSinglePreset(presetId);
+        const newPresetObj = this.presetService.removeCardsFromPreset(
+          selectedCardIds,
+          presetFilename
+        );
+        this.presetService.writePresetToDisk(presetFilename, newPresetObj);
+        this.showScreen__viewSinglePreset(presetFilename);
       });
   }
 
   /**
    * Screen for adding cards to a preset
    */
-  private showScreen__addCardsToPreset(presetId: number) {
+  private showScreen__addCardsToPreset(presetFilename: string) {
     this.renderAppHeader();
-    const presetName = this.presetService.getPresetNameById(presetId);
-    const presetObj = this.presetService.getPresetDataByFilename(presetName);
+    const presetObj = this.presetService.getPresetDataByFilename(presetFilename);
     const cards: CardWithTitle[] = this.cardService.getCardList();
     console.info('Available cards:');
     this.renderCardsAsGrid(cards);
@@ -268,20 +269,18 @@ export class Page {
         const cards: CardWithTitle[] = this.cardService.getCardList();
         const newPresetObj: Preset = this.presetService.pushCardIdsToPreset(
           idsToBeAdded,
-          presetId,
+          presetFilename,
           cards
         );
-        const presetName: string = this.presetService.getPresetNameById(presetId);
-        this.presetService.writePresetToDisk(presetName, newPresetObj);
+        this.presetService.writePresetToDisk(presetFilename, newPresetObj);
 
-        this.showScreen__viewSinglePreset(presetId);
+        this.showScreen__viewSinglePreset(presetFilename);
       });
   }
 
-  private showScreen__addRelicsToPreset(presetId: number) {
+  private showScreen__addRelicsToPreset(presetFilename: string) {
     this.renderAppHeader();
-    const presetName = this.presetService.getPresetNameById(presetId);
-    const presetObj = this.presetService.getPresetDataByFilename(presetName);
+    const presetObj = this.presetService.getPresetDataByFilename(presetFilename);
     const relics: RelicWithTitle[] = this.relicService.getRelicList();
     console.info('Available relics:');
     this.renderRelicsAsGrid(relics);
@@ -302,20 +301,18 @@ export class Page {
         const relics: RelicWithTitle[] = this.relicService.getRelicList();
         const newPresetObj: Preset = this.presetService.pushRelicIdsToPreset(
           idsToBeAdded,
-          presetId,
+          presetFilename,
           relics
         );
-        const presetName: string = this.presetService.getPresetNameById(presetId);
-        this.presetService.writePresetToDisk(presetName, newPresetObj);
+        this.presetService.writePresetToDisk(presetFilename, newPresetObj);
 
-        this.showScreen__viewSinglePreset(presetId);
+        this.showScreen__viewSinglePreset(presetFilename);
       });
   }
 
-  private showScreen__removeRelicsFromPreset(presetId: number) {
+  private showScreen__removeRelicsFromPreset(presetFilename: string) {
     this.renderAppHeader();
-    const presetName = this.presetService.getPresetNameById(presetId);
-    const presetObj = this.presetService.getPresetDataByFilename(presetName);
+    const presetObj = this.presetService.getPresetDataByFilename(presetFilename);
     const relics: RelicWithTitle[] = this.relicService.getRelicList();
     console.info('Relics in this preset');
     console.info(this.relicService.transformIdsToReadableNames(presetObj.relics).join('  '));
@@ -333,13 +330,16 @@ export class Page {
             return parseInt(item) >= 0;
           })
           .map((item) => parseInt(item));
-        const newPresetObj = this.presetService.removeRelicsFromPreset(selectedRelicIds, presetId);
-        this.presetService.writePresetToDisk(presetName, newPresetObj);
-        this.showScreen__viewSinglePreset(presetId);
+        const newPresetObj = this.presetService.removeRelicsFromPreset(
+          selectedRelicIds,
+          presetFilename
+        );
+        this.presetService.writePresetToDisk(presetFilename, newPresetObj);
+        this.showScreen__viewSinglePreset(presetFilename);
       });
   }
 
-  private showScreen__inputSaveFilePath(presetId: number, errorMessage: string | null) {
+  private showScreen__inputSaveFilePath(presetFilename: string, errorMessage: string | null) {
     this.renderAppHeader();
     if (errorMessage) {
       console.error(errorMessage);
@@ -356,29 +356,28 @@ export class Page {
         const isFileExists = this.encoderService.isSaveFileExists(answers.action);
         if (!isFileExists) {
           this.showScreen__inputSaveFilePath(
-            presetId,
+            presetFilename,
             'Save file not found. Check the path again.'
           );
           return;
         }
         const saveDataObject = this.encoderService.readSaveDataFromDisk(answers.action);
         if (!saveDataObject) {
-          this.showScreen__inputSaveFilePath(presetId, 'Invalid save file.');
+          this.showScreen__inputSaveFilePath(presetFilename, 'Invalid save file.');
           return;
         }
         if (!saveDataObject?.name) {
-          this.showScreen__inputSaveFilePath(presetId, 'Broken save file.');
+          this.showScreen__inputSaveFilePath(presetFilename, 'Broken save file.');
           return;
         }
 
-        this.injectPresetToSaveFile(presetId, saveDataObject);
+        this.injectPresetToSaveFile(presetFilename, saveDataObject);
       });
   }
 
-  private injectPresetToSaveFile(presetId: number, saveDataObject: SaveObject) {
+  private injectPresetToSaveFile(presetFilename: string, saveDataObject: SaveObject) {
     console.info('Injecting...');
-    const presetName = this.presetService.getPresetNameById(presetId);
-    const presetObj = this.presetService.getPresetDataByFilename(presetName);
+    const presetObj = this.presetService.getPresetDataByFilename(presetFilename);
     const cards = this.cardService.getCardList();
     const relics = this.relicService.getRelicList();
 
@@ -397,11 +396,10 @@ export class Page {
   /**
    * Screen for viewing a single preset
    */
-  private showScreen__viewSinglePreset(presetId: number) {
+  private showScreen__viewSinglePreset(presetFilename: string) {
     this.renderAppHeader();
-    const presetName = this.presetService.getPresetNameById(presetId);
-    const presetObj = this.presetService.getPresetDataByFilename(presetName);
-    console.info(`Name:`, presetName);
+    const presetObj = this.presetService.getPresetDataByFilename(presetFilename);
+    console.info(`Name:`, this.presetService.renderNiceName(presetFilename));
     console.info(`Gold:`, presetObj.gold);
     console.info(
       `Cards:`,
@@ -429,33 +427,34 @@ export class Page {
       })
       .then((answers) => {
         if (answers.action === 'delete_preset') {
-          this.showScreen__deletePresetConfirmation(presetId);
+          this.showScreen__deletePresetConfirmation(presetFilename);
         } else if (answers.action === 'add_cards') {
-          this.showScreen__addCardsToPreset(presetId);
+          this.showScreen__addCardsToPreset(presetFilename);
         } else if (answers.action === 'remove_cards') {
-          this.showScreen__removeCardsFromPreset(presetId);
+          this.showScreen__removeCardsFromPreset(presetFilename);
         } else if (answers.action === 'add_relics') {
-          this.showScreen__addRelicsToPreset(presetId);
+          this.showScreen__addRelicsToPreset(presetFilename);
         } else if (answers.action === 'remove_relics') {
-          this.showScreen__removeRelicsFromPreset(presetId);
+          this.showScreen__removeRelicsFromPreset(presetFilename);
         } else if (answers.action === 'set_gold') {
-          this.showScreen__setGoldToPreset(presetId);
+          this.showScreen__setGoldToPreset(presetFilename);
         } else if (answers.action === 'inject_savefile') {
-          this.showScreen__inputSaveFilePath(presetId, null);
+          this.showScreen__inputSaveFilePath(presetFilename, null);
         } else {
           this.showScreen__managePresets(null);
         }
       });
   }
 
-  private showScreen__deletePresetConfirmation(presetId: number) {
+  private showScreen__deletePresetConfirmation(presetFilename) {
     this.renderAppHeader();
-    const presetName = this.presetService.getPresetNameById(presetId);
     inquirer
       .prompt({
         type: 'list',
         name: 'action',
-        message: `Are you sure you want to permanently delete the preset "${presetName}"?`,
+        message: `Are you sure you want to permanently delete the preset "${this.presetService.renderNiceName(
+          presetFilename
+        )}"?`,
         choices: [
           { value: 'cancel', name: 'Cancel' },
           { value: 'confirm', name: 'Yes. Delete it' },
@@ -463,10 +462,10 @@ export class Page {
       })
       .then((answers) => {
         if (answers.action === 'confirm') {
-          this.presetService.deletePresetFromDisk(presetName);
+          this.presetService.deletePresetFromDisk(presetFilename);
           this.showScreen__managePresets(null);
         } else {
-          this.showScreen__viewSinglePreset(presetId);
+          this.showScreen__viewSinglePreset(presetFilename);
         }
       });
   }

@@ -25,7 +25,7 @@ export class PresetService {
     return sorted;
   }
 
-  public renderNiceName(filename: string){
+  public renderNiceName(filename: string) {
     const name = filename.split('.')[1];
     return name;
   }
@@ -55,8 +55,8 @@ export class PresetService {
       .split('')
       .filter((c) => allowedCharacters.includes(c))
       .join('');
-    
-    if(newName.length === 0){
+
+    if (newName.length === 0) {
       return '';
     }
 
@@ -99,9 +99,8 @@ export class PresetService {
     fs.unlinkSync(`./${PRESET_FOLDER_NAME}/${presetName}`);
   }
 
-  public removeCardsFromPreset(cardIdsToBeRemoved: number[], presetId: number): Preset {
-    const presetName = this.getPresetNameById(presetId);
-    let presetObj = this.getPresetDataByFilename(presetName);
+  public removeCardsFromPreset(cardIdsToBeRemoved: number[], presetFilename: string): Preset {
+    let presetObj = this.getPresetDataByFilename(presetFilename);
 
     // For each card id to be removed, remove it from the preset object
     for (let i = 0; i < cardIdsToBeRemoved.length; i++) {
@@ -114,9 +113,8 @@ export class PresetService {
     return presetObj;
   }
 
-  public removeRelicsFromPreset(relicIdsToBeRemoved: number[], presetId: number): Preset {
-    const presetName = this.getPresetNameById(presetId);
-    let presetObj = this.getPresetDataByFilename(presetName);
+  public removeRelicsFromPreset(relicIdsToBeRemoved: number[], presetFilename: string): Preset {
+    let presetObj = this.getPresetDataByFilename(presetFilename);
 
     // For each card id to be removed, remove it from the preset object
     for (let i = 0; i < relicIdsToBeRemoved.length; i++) {
@@ -131,7 +129,7 @@ export class PresetService {
 
   public pushRelicIdsToPreset(
     idsToBeAdded: number[],
-    presetId: number,
+    presetFilename: string,
     allRelics: CardWithTitle[]
   ): Preset {
     // Check the ids, filter out the invalid ones
@@ -140,8 +138,7 @@ export class PresetService {
     });
 
     // Get the preset object data
-    const presetName = this.getPresetNameById(presetId);
-    const presetObj = this.getPresetDataByFilename(presetName);
+    const presetObj = this.getPresetDataByFilename(presetFilename);
 
     // Create new preset object with the new relic ids
     const newPreset = { ...presetObj, relics: [...presetObj.relics, ...validRelicIds] };
@@ -151,7 +148,7 @@ export class PresetService {
 
   public pushCardIdsToPreset(
     idsToBeAdded: number[],
-    presetId: number,
+    presetFilename: string,
     allCards: CardWithTitle[]
   ): Preset {
     // Check the ids, filter out the invalid ones
@@ -160,8 +157,7 @@ export class PresetService {
     });
 
     // Get the preset object data
-    const presetName = this.getPresetNameById(presetId);
-    const presetObj = this.getPresetDataByFilename(presetName);
+    const presetObj = this.getPresetDataByFilename(presetFilename);
 
     // Create new preset object with the new card ids
     const newPreset = { ...presetObj, cards: [...presetObj.cards, ...validCardIds] };
