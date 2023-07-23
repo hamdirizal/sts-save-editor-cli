@@ -1583,6 +1583,11 @@
     "NAME": "Weave",
     "DESCRIPTION": "Deal !D! damage. NL Whenever you Scry, return this from the discard pile to your Hand."
   },
+  "Adaptation": {
+    "NAME": "Rushdown",
+    "DESCRIPTION": "Whenever you enter Wrath, draw !M! cards.",
+    "UPGRADE_DESCRIPTION": "DEPRECATED"
+  },
   "Causality": {
     "NAME": "Causality",
     "DESCRIPTION": "Draw cards until your hand is full. NL Exhaust.",
