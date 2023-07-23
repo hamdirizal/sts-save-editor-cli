@@ -84,7 +84,7 @@ export class Page {
   }
 
   /** Show all available presets */
-  public showPresetListingPage() {
+  public showScreen__managePresets() {
     this.renderAppHeader();
     const presets: string[] = this.presetService.getAllPresets();
     const options: InquirerListOption[] = presets.map((p) => {
@@ -129,11 +129,11 @@ export class Page {
       .then((answers) => {
         if (answers.action === 'confirm') {
           this.presetService.writeDefaultPresetToDisk(generatedName);
-          this.showPresetListingPage();
+          this.showScreen__managePresets();
         } else if (answers.action === 'change_name') {
           this.showCreatePresetNameInput();
         } else {
-          this.showPresetListingPage();
+          this.showScreen__managePresets();
         }
       });
   }
@@ -314,7 +314,7 @@ export class Page {
 
   private showScreen__inputSaveFilePath(presetId: number, errorMessage: string | null) {
     this.renderAppHeader();
-    if(errorMessage) {
+    if (errorMessage) {
       console.error(errorMessage);
     }
     inquirer
@@ -328,20 +328,22 @@ export class Page {
         this.saveFilePath = answers.action;
         const isFileExists = this.encoderService.isSaveFileExists(answers.action);
         if (!isFileExists) {
-          this.showScreen__inputSaveFilePath(presetId, 'Save file not found. Check the path again.');
+          this.showScreen__inputSaveFilePath(
+            presetId,
+            'Save file not found. Check the path again.'
+          );
           return;
-        } 
+        }
         const saveDataObject = this.encoderService.readSaveDataFromDisk(answers.action);
         if (!saveDataObject) {
           this.showScreen__inputSaveFilePath(presetId, 'Invalid save file.');
           return;
         }
-        if(!saveDataObject?.name){
+        if (!saveDataObject?.name) {
           this.showScreen__inputSaveFilePath(presetId, 'Broken save file.');
           return;
         }
 
-        
         this.injectPresetToSaveFile(presetId, saveDataObject);
       });
   }
@@ -353,11 +355,16 @@ export class Page {
     const cards = this.cardService.getCardList();
     const relics = this.relicService.getRelicList();
 
-    const newSaveObject = this.encoderService.getInjectedSaveObject(presetObj, saveDataObject, cards, relics);
+    const newSaveObject = this.encoderService.getInjectedSaveObject(
+      presetObj,
+      saveDataObject,
+      cards,
+      relics
+    );
 
     this.encoderService.writeSaveDataToDisk(this.saveFilePath, newSaveObject);
 
-    console.info('Done.')
+    console.info('Done.');
   }
 
   /**
@@ -409,7 +416,7 @@ export class Page {
         } else if (answers.action === 'inject_savefile') {
           this.showScreen__inputSaveFilePath(presetId, null);
         } else {
-          this.showPresetListingPage();
+          this.showScreen__managePresets();
         }
       });
   }
@@ -430,7 +437,7 @@ export class Page {
       .then((answers) => {
         if (answers.action === 'confirm') {
           this.presetService.deletePresetFromDisk(presetName);
-          this.showPresetListingPage();
+          this.showScreen__managePresets();
         } else {
           this.showScreen__viewSinglePreset(presetId);
         }
@@ -440,7 +447,7 @@ export class Page {
   /** Showing the homepage */
   public showScreen__home(errorMessage: string | null) {
     this.renderAppHeader();
-    if(errorMessage) console.error(errorMessage);
+    if (errorMessage) console.error(errorMessage);
     console.info(`What do you want to do?:
     1) View cards
     2) View relics
@@ -453,23 +460,19 @@ export class Page {
         message: 'Action: ',
       })
       .then((answers) => {
-        if(parseInt(answers.action)===1){
+        if (parseInt(answers.action) === 1) {
           this.showScreen__cardList();
           return;
-        }
-        else if(parseInt(answers.action)===2){
+        } else if (parseInt(answers.action) === 2) {
           this.showScreen__relicList();
           return;
-        }
-        else if(parseInt(answers.action)===3){
-          this.showPresetListingPage();
+        } else if (parseInt(answers.action) === 3) {
+          this.showScreen__managePresets();
           return;
-        }
-        else if(parseInt(answers.action)===4){
+        } else if (parseInt(answers.action) === 4) {
           this.showScreen__exit();
-        }
-        else{
-          this.showScreen__home(`Invalid input "${answers.action}". Please try again.`)
+        } else {
+          this.showScreen__home(`Invalid input "${answers.action}". Please try again.`);
           return;
         }
       });
