@@ -409,36 +409,36 @@ export class Page {
       `Relics:`,
       this.relicService.transformIdsToReadableNames(presetObj.relics).join('  ')
     );
+    console.info('What do you want to do? ');
+    console.info('    1) Add cards');
+    console.info('    2) Remove cards');
+    console.info('    3) Add relics');
+    console.info('    4) Remove relics');
+    console.info('    5) Set gold amount');
+    console.info('    6) Delete this preset');
+    console.info('    7) Inject this preset to a save file');
+    console.info('    8) Back to the preset list page');
+
     inquirer
       .prompt({
-        type: 'list',
+        type: 'input',
         name: 'action',
-        message: 'Action:',
-        choices: [
-          { value: 'add_cards', name: '1) Add cards' },
-          { value: 'remove_cards', name: '2) Remove cards' },
-          { value: 'add_relics', name: '3) Add relics' },
-          { value: 'remove_relics', name: '4) Remove relics' },
-          { value: 'set_gold', name: '5) Set gold amount' },
-          { value: 'delete_preset', name: '6) Delete this preset' },
-          { value: 'inject_savefile', name: '7) Inject this preset to a save file' },
-          { value: 'back', name: '8) Back to the preset list page' },
-        ],
+        message: 'Action: ',
       })
       .then((answers) => {
-        if (answers.action === 'delete_preset') {
+        if (parseInt(answers.action) === 6) {
           this.showScreen__deletePresetConfirmation(presetFilename);
-        } else if (answers.action === 'add_cards') {
+        } else if (parseInt(answers.action) === 1) {
           this.showScreen__addCardsToPreset(presetFilename);
-        } else if (answers.action === 'remove_cards') {
+        } else if (parseInt(answers.action) === 2) {
           this.showScreen__removeCardsFromPreset(presetFilename);
-        } else if (answers.action === 'add_relics') {
+        } else if (parseInt(answers.action) === 3) {
           this.showScreen__addRelicsToPreset(presetFilename);
-        } else if (answers.action === 'remove_relics') {
+        } else if (parseInt(answers.action) === 4) {
           this.showScreen__removeRelicsFromPreset(presetFilename);
-        } else if (answers.action === 'set_gold') {
+        } else if (parseInt(answers.action) === 5) {
           this.showScreen__setGoldToPreset(presetFilename);
-        } else if (answers.action === 'inject_savefile') {
+        } else if (parseInt(answers.action) === 7) {
           this.showScreen__inputSaveFilePath(presetFilename, null);
         } else {
           this.showScreen__managePresets(null);
@@ -478,7 +478,7 @@ export class Page {
     1) View cards
     2) View relics
     3) Manage presets
-    4) Exit`);
+    0) Exit`);
     inquirer
       .prompt({
         type: 'input',
@@ -495,7 +495,7 @@ export class Page {
         } else if (parseInt(answers.action) === 3) {
           this.showScreen__managePresets(null);
           return;
-        } else if (parseInt(answers.action) === 4) {
+        } else if (parseInt(answers.action) === 0) {
           this.showScreen__exit();
         } else {
           this.showScreen__home(`"${answers.action}" is invalid input.`);
