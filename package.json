@@ -23,6 +23,7 @@
   "dependencies": {
     "chalk": "^5.3.0",
     "inquirer": "^9.2.8",
-    "inquirer-search-list": "^1.2.6"
+    "inquirer-search-list": "^1.2.6",
+    "terminal-kit": "^3.0.0"
   }
 }

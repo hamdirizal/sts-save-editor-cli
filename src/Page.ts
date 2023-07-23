@@ -8,6 +8,10 @@ import { PresetService } from './services/PresetService.js';
 import { Translation } from './Translation.js';
 import { APP_TITLE, APP_VERSION } from './constants.js';
 import { EncoderService } from './services/EncoderService.js';
+import tk from 'terminal-kit';
+const term = tk.terminal;
+
+
 
 inquirer.registerPrompt('search-list', SearchBox);
 
@@ -476,32 +480,60 @@ export class Page {
   /** Showing the homepage */
   public showScreen__home(errorMessage: string | null) {
     this.renderAppHeader();
-    const cards: CardWithTitle[] = this.cardService.getCardList();
-    if (errorMessage) console.error(errorMessage);
-    console.info(`What do you want to do?:
-    1) View cards
-    2) View relics
-    3) Manage presets
-    0) Exit`);
-    inquirer
-      .prompt([
-        {
-          type: 'search-list',
-          message: 'Select topping',
-          name: 'topping',
-          choices: cards.map((c) => c.title),
-          validate: function (answer) {
-            if (answer === 'Bottle') {
-              return `Whoops, ${answer} is not a real topping.`;
-            }
-            return true;
-          },
-        },
-      ])
-      .then(function (answers) {
-        console.log(JSON.stringify(answers, null, '  '));
-      })
-      .catch((e) => console.log(e));
+    var history = ['John', 'Jack', 'Joey', 'Billy', 'Bob'];
+
+    var autoComplete = [
+      'Barack Obama',
+      'George W. Bush',
+      'Bill Clinton',
+      'George Bush',
+      'Ronald W. Reagan',
+      'Jimmy Carter',
+      'Gerald Ford',
+      'Richard Nixon',
+      'Lyndon Johnson',
+      'John F. Kennedy',
+      'Dwight Eisenhower',
+      'Harry Truman',
+      'Franklin Roosevelt',
+    ];
+
+    term('Please enter your name: ');
+
+    term.inputField(
+      { history: history, autoComplete: autoComplete, autoCompleteMenu: true },
+      function (error, input) {
+        term.green("\nYour name is '%s'\n", input);
+        process.exit();
+      }
+    );
+
+    // const cards: CardWithTitle[] = this.cardService.getCardList();
+    // if (errorMessage) console.error(errorMessage);
+    // console.info(`What do you want to do?:
+    // 1) View cards
+    // 2) View relics
+    // 3) Manage presets
+    // 0) Exit`);
+    // inquirer
+    //   .prompt([
+    //     {
+    //       type: 'search-list',
+    //       message: 'Select topping',
+    //       name: 'topping',
+    //       choices: cards.map((c) => c.title),
+    //       validate: function (answer) {
+    //         if (answer === 'Bottle') {
+    //           return `Whoops, ${answer} is not a real topping.`;
+    //         }
+    //         return true;
+    //       },
+    //     },
+    //   ])
+    //   .then(function (answers) {
+    //     console.log(JSON.stringify(answers, null, '  '));
+    //   })
+    //   .catch((e) => console.log(e));
     // inquirer
     //   .prompt({
     //     type: 'input',
