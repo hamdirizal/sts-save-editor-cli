@@ -1,4 +1,5 @@
 import inquirer from 'inquirer';
+import SearchBox from 'inquirer-search-list';
 import { Utility } from './Utility.js';
 import { CardService } from './services/CardService.js';
 import { CardWithTitle, InquirerListOption, Preset, RelicWithTitle, SaveObject } from './types.js';
@@ -7,6 +8,8 @@ import { PresetService } from './services/PresetService.js';
 import { Translation } from './Translation.js';
 import { APP_TITLE, APP_VERSION } from './constants.js';
 import { EncoderService } from './services/EncoderService.js';
+
+inquirer.registerPrompt('search-list', SearchBox);
 
 export class Page {
   constructor(
@@ -473,6 +476,7 @@ export class Page {
   /** Showing the homepage */
   public showScreen__home(errorMessage: string | null) {
     this.renderAppHeader();
+    const cards: CardWithTitle[] = this.cardService.getCardList();
     if (errorMessage) console.error(errorMessage);
     console.info(`What do you want to do?:
     1) View cards
@@ -480,27 +484,46 @@ export class Page {
     3) Manage presets
     0) Exit`);
     inquirer
-      .prompt({
-        type: 'input',
-        name: 'action',
-        message: 'Action: ',
+      .prompt([
+        {
+          type: 'search-list',
+          message: 'Select topping',
+          name: 'topping',
+          choices: cards.map((c) => c.title),
+          validate: function (answer) {
+            if (answer === 'Bottle') {
+              return `Whoops, ${answer} is not a real topping.`;
+            }
+            return true;
+          },
+        },
+      ])
+      .then(function (answers) {
+        console.log(JSON.stringify(answers, null, '  '));
       })
-      .then((answers) => {
-        if (parseInt(answers.action) === 1) {
-          this.showScreen__cardList();
-          return;
-        } else if (parseInt(answers.action) === 2) {
-          this.showScreen__relicList();
-          return;
-        } else if (parseInt(answers.action) === 3) {
-          this.showScreen__managePresets(null);
-          return;
-        } else if (parseInt(answers.action) === 0) {
-          this.showScreen__exit();
-        } else {
-          this.showScreen__home(`"${answers.action}" is invalid input.`);
-          return;
-        }
-      });
+      .catch((e) => console.log(e));
+    // inquirer
+    //   .prompt({
+    //     type: 'input',
+    //     name: 'action',
+    //     message: 'Action: ',
+    //   })
+    //   .then((answers) => {
+    //     if (parseInt(answers.action) === 1) {
+    //       this.showScreen__cardList();
+    //       return;
+    //     } else if (parseInt(answers.action) === 2) {
+    //       this.showScreen__relicList();
+    //       return;
+    //     } else if (parseInt(answers.action) === 3) {
+    //       this.showScreen__managePresets(null);
+    //       return;
+    //     } else if (parseInt(answers.action) === 0) {
+    //       this.showScreen__exit();
+    //     } else {
+    //       this.showScreen__home(`"${answers.action}" is invalid input.`);
+    //       return;
+    //     }
+    //   });
   }
 }
