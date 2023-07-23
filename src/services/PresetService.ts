@@ -40,17 +40,6 @@ export class PresetService {
     return files;
   }
 
-  public getLastPresetId() {
-    const allPresets = this.getAllPresets();
-    if (allPresets.length === 0) {
-      return 0;
-    } else {
-      const lastPresetName = allPresets[allPresets.length - 1];
-      const lastNumber = lastPresetName.split('.')[0];
-      return parseInt(lastNumber);
-    }
-  }
-
   public generatePresetName(rawName: string) {
     const allowedCharacters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_';
     let newName = rawName;
@@ -66,9 +55,13 @@ export class PresetService {
       .split('')
       .filter((c) => allowedCharacters.includes(c))
       .join('');
+    
+    if(newName.length === 0){
+      return '';
+    }
 
-    const lastPresetId = this.getLastPresetId();
-    const finalName = `${lastPresetId + 1}.${newName}.json`;
+    const timestamp = Date.now();
+    const finalName = `${timestamp}.${newName}`;
 
     // Return final name
     return finalName;

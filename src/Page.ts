@@ -94,10 +94,13 @@ export class Page {
       };
     });
     if (errorMessage) console.error(errorMessage);
+    const presetText = presets.length
+      ? 'Open preset:'
+      : "You don't have any preset, please create a new one.";
     console.info(`What do you want to do?:
     1) Back to the main page
     2) Create a new preset
-    Open preset:`);
+    ${presetText}`);
     console.info(
       indexedPresets
         .map((p) => `    ${p.index}) ${this.presetService.renderNiceName(p.name)}`)
@@ -113,7 +116,7 @@ export class Page {
         if (parseInt(answers.action) === 1) {
           this.showScreen__home(null);
         } else if (parseInt(answers.action) === 2) {
-          this.showCreatePresetNameInput();
+          this.showScreen__presetNameInput();
         } else {
           // Open preset in the list
           const selectedPreset = indexedPresets.find((p) => p.index === parseInt(answers.action));
@@ -127,33 +130,37 @@ export class Page {
       });
   }
 
-  private render_confirmPresetName(rawName: string) {
+  private showScreen__confirmPresetName(generatedName: string, errorMessage: string | null) {
     this.renderAppHeader();
-    const generatedName = this.presetService.generatePresetName(rawName);
+    console.info(
+      `You are going to create a preset called "${this.presetService.renderNiceName(
+        generatedName
+      )}", are you sure?`
+    );
+    console.info('    1) Yes, create it');
+    console.info('    2) No, change the name');
+    console.info('    3) Cancel. Back to the preset list page');
     inquirer
       .prompt({
-        type: 'list',
+        type: 'input',
         name: 'action',
-        message: `You are going to create a preset called "${generatedName}", are you sure?`,
-        choices: [
-          { value: 'confirm', name: 'Yes. Create the preset' },
-          { value: 'change_name', name: 'No. Change name' },
-          { value: 'cancel', name: 'Cancel. Back to the preset list page' },
-        ],
+        message: 'Action: ',
       })
       .then((answers) => {
-        if (answers.action === 'confirm') {
+        if (parseInt(answers.action) === 1) {
           this.presetService.writeDefaultPresetToDisk(generatedName);
           this.showScreen__managePresets(null);
-        } else if (answers.action === 'change_name') {
-          this.showCreatePresetNameInput();
-        } else {
+        } else if (parseInt(answers.action) === 2) {
+          this.showScreen__presetNameInput();
+        } else if (parseInt(answers.action) === 3) {
           this.showScreen__managePresets(null);
+        } else {
+          this.showScreen__confirmPresetName('', null);
         }
       });
   }
 
-  private showCreatePresetNameInput() {
+  private showScreen__presetNameInput() {
     this.renderAppHeader();
     inquirer
       .prompt({
@@ -162,10 +169,15 @@ export class Page {
         message: 'Enter the preset name: ',
       })
       .then((answers) => {
-        if (!answers.action.trim()) {
-          this.showCreatePresetNameInput();
-        } else {
-          this.render_confirmPresetName(answers.action);
+        // Try to create name
+        const generatedName = this.presetService.generatePresetName(answers.action);
+        if(!generatedName){
+          this.showScreen__presetNameInput();
+          return;
+        }
+        else{
+          this.showScreen__confirmPresetName(generatedName, null);
+          return;
         }
       });
   }
