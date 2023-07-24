@@ -114,7 +114,7 @@ export class Page {
     console.info('');
 
     term.cyan(
-      'Please type preset name to be opened. Press <TAB> to autocomplete. Press <ESC> to go back.\n'
+      'Please type preset name to be opened. <TAB> to autocomplete. <ESC> to go back.\n'
     );
     term.inputField(
       {
@@ -388,35 +388,6 @@ export class Page {
         return;
       }
     );
-
-    //=============hamdi
-    return;
-    // console.info('Available cards:');
-    // this.renderCardsAsGrid(cards);
-    // inquirer
-    //   .prompt({
-    //     type: 'input',
-    //     name: 'action',
-    //     message: `Enter card IDs to be added, separate by spaces:`,
-    //   })
-    //   .then((answers) => {
-    //     let idsToBeAdded: number[] = answers.action
-    //       .trim()
-    //       .split(' ')
-    //       .filter((item) => {
-    //         return parseInt(item) >= 0;
-    //       })
-    //       .map((item) => parseInt(item));
-    //     const cards: GameCard[] = this.cardService.getCardList();
-    //     const newPresetObj: Preset = this.presetService.pushxCardIdsToPreset(
-    //       idsToBeAdded,
-    //       presetFilename,
-    //       cards
-    //     );
-    //     this.presetService.writePresetToDisk(presetFilename, newPresetObj);
-
-    //     this.showScreen__viewSinglePreset(presetFilename);
-    //   });
   }
 
   private showScreen__addRelicsToPreset(presetFilename: string) {
@@ -491,8 +462,14 @@ export class Page {
 
   private showScreen__inputSaveFilePath(presetFilename: string, errorMessage: string | null) {
     this.renderAppHeader();
-    term.cyan('Enter the path to the save file: ');
-    term.inputField({ autoCompleteMenu: false }, (error, input) => {
+    term.cyan('Enter the path to the save file. <ENTER> to confirm. <ESC> to go back. ');
+    term.inputField({ autoCompleteMenu: false, cancelable: true }, (error, input) => {
+      // If canceled, return the the preset details page
+      if (input === undefined) {
+        this.showScreen__presetDetailsPage(presetFilename);
+        return;
+      }
+
       this.saveFilePath = input;
       const isFileExists = this.encoderService.isSaveFileExists(input);
       if (!isFileExists) {
@@ -540,12 +517,17 @@ export class Page {
   private showScreen__viewSinglePreset(presetFilename: string) {
     this.renderAppHeader();
     const presetObj = this.presetService.getPresetDataByFilename(presetFilename);
+    const cardNames = presetObj.cards.map((id: number) => {
+      return this.cardService.getSingleCardById(id).title;
+    });
+
     term.cyan('Preset name: ');
-    term(presetFilename + '\n');
+    term(presetFilename + '\n\n');
     term.cyan('Gold: ');
-    term(presetObj.gold + '\n');
-    term.cyan('Cards: \n');
-    term(presetObj.cards.join('  ') + '\n');
+    term(presetObj.gold + '\n\n');
+    term.cyan(`Cards (${cardNames.length}): \n`);
+    this.utility.renderArrayAsGrid2(cardNames, 120);
+    term('\n');
     term.cyan('Relics: \n');
     term(this.relicService.transformIdsToReadableNames(presetObj.relics).join('  ') + '\n\n');
     term.cyan('What do you want to do with this preset?');

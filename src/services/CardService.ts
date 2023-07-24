@@ -11,7 +11,7 @@ export class CardService {
   public getSingleCardById(id: number): GameCard {
     const cards = this.readCardsFromFile();
     return cards.find((c) => {
-      return c.substring(1).split(']')[0] === id.toString();
+      return c.title.substring(1).split(']')[0] === id.toString();
     });
   }
 
