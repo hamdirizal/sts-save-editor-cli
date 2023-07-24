@@ -30,6 +30,11 @@ export interface InquirerListOption {
   name: string;
 }
 
+export interface ListOption {
+  value: string;
+  name: string;
+}
+
 export interface SaveCard {
   upgrades: number;
   misc: number;

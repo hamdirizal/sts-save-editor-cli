@@ -2,7 +2,14 @@ import inquirer from 'inquirer';
 import SearchBox from 'inquirer-search-list';
 import { Utility } from './Utility.js';
 import { CardService } from './services/CardService.js';
-import { CardWithTitle, InquirerListOption, Preset, RelicWithTitle, SaveObject } from './types.js';
+import {
+  CardWithTitle,
+  InquirerListOption,
+  ListOption,
+  Preset,
+  RelicWithTitle,
+  SaveObject,
+} from './types.js';
 import { RelicService } from './services/RelicService.js';
 import { PresetService } from './services/PresetService.js';
 import { Translation } from './Translation.js';
@@ -94,10 +101,71 @@ export class Page {
       .then(() => this.showScreen__home(null));
   }
 
+  public showScreen__presetSelection() {
+    this.renderAppHeader();
+    term.cyan('Please type preset name to be opened. Press <TAB> to autocomplete.\n');
+
+    var autoComplete = [
+      'Barack Obama',
+      'George W. Bush',
+      'Bill Clinton',
+      'George Bush',
+      'Ronald W. Reagan',
+      'Jimmy Carter',
+      'Gerald Ford',
+      'Richard Nixon',
+      'Lyndon Johnson',
+      'John F. Kennedy',
+      'Dwight Eisenhower',
+      'Harry Truman',
+      'Franklin Roosevelt',
+    ];
+    term.inputField(
+      {
+        autoComplete: autoComplete,
+        autoCompleteMenu: true,
+        autoCompleteHint: true,
+        cancelable: true,
+      },
+      (error, input) => {
+        term.green("\nYour name is '%s'\n", input);
+        process.exit();
+      }
+    );
+  }
+
   /** Show all available presets */
   public showScreen__managePresets(errorMessage: string | null) {
     this.renderAppHeader();
     const presets: string[] = this.presetService.getAllPresets();
+
+    term.cyan('What do you want to do?\n');
+
+    const choices: ListOption[] = [];
+    if (presets.length) choices.push({ name: 'Open preset', value: 'open_preset' });
+    choices.push({ name: 'Create new preset', value: 'create_preset' });
+    choices.push({ name: 'Back to the main page', value: 'back' });
+
+    term.singleColumnMenu(
+      choices.map((o) => o.name),
+      { cancelable: true },
+      (error, response) => {
+        if (response?.canceled) {
+          this.showScreen__home(null);
+          return;
+        }
+        const obj = choices[response.selectedIndex];
+        if (obj.value === 'open_preset') {
+          this.showScreen__presetSelection();
+        } else if (obj.value === 'create_preset') {
+          this.showScreen__presetNameInput();
+        } else {
+          this.showScreen__home(null);
+        }
+      }
+    );
+
+    return;
     const indexedPresets = presets.map((p, i) => {
       return {
         index: i + 3,
@@ -173,23 +241,24 @@ export class Page {
 
   private showScreen__presetNameInput() {
     this.renderAppHeader();
-    inquirer
-      .prompt({
-        type: 'input',
-        name: 'action',
-        message: 'Enter the preset name: ',
-      })
-      .then((answers) => {
-        // Try to create name
-        const generatedName = this.presetService.generatePresetName(answers.action);
-        if (!generatedName) {
-          this.showScreen__presetNameInput();
-          return;
-        } else {
-          this.showScreen__confirmPresetName(generatedName, null);
-          return;
-        }
-      });
+    term.cyan('Enter the name for the new preset: ');
+    // inquirer
+    //   .prompt({
+    //     type: 'input',
+    //     name: 'action',
+    //     message: 'Enter the preset name: ',
+    //   })
+    //   .then((answers) => {
+    //     // Try to create name
+    //     const generatedName = this.presetService.generatePresetName(answers.action);
+    //     if (!generatedName) {
+    //       this.showScreen__presetNameInput();
+    //       return;
+    //     } else {
+    //       this.showScreen__confirmPresetName(generatedName, null);
+    //       return;
+    //     }
+    //   });
   }
 
   /**
@@ -516,7 +585,11 @@ export class Page {
 
     var items = ['Manage presets ', 'View cards ', 'View relics ', 'Exit '];
 
-    term.singleColumnMenu(items, (error, response) => {
+    term.singleColumnMenu(items, { cancelable: true }, (error, response) => {
+      if (response?.canceled) {
+        this.showScreen__exit();
+        return;
+      }
       if (response.selectedIndex === 0) {
         this.showScreen__managePresets(null);
       } else if (response.selectedIndex === 1) {
