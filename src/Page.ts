@@ -343,7 +343,9 @@ export class Page {
     term.cyan(`Cards in this ${presetFilename} preset (${presetObj.cards.length}): \n`);
     term(presetObj.cards.map((c) => `-- ${c}`).join('  '));
     term('\n\n');
-    term.cyan('Please type card name to be added. <TAB> to autocomplete. <ENTER> to confirm \n');
+    term.cyan(
+      'Please type card name to be added. <TAB> to autocomplete. <ENTER> to confirm. <ESC> to go back \n'
+    );
     term.inputField(
       {
         autoComplete: (input) =>
@@ -356,19 +358,34 @@ export class Page {
         cancelable: true,
       },
       (error, input) => {
-        return;
+        // If canceled, return the the preset details page
+        if (input === undefined) {
+          this.showScreen__viewSinglePreset(presetFilename);
+          return;
+        }
         // If input is falsy, reload the screen
-        // if (!input || !input.trim()) {
-        //   this.showScreen__managePresets(null);
-        //   return;
-        // }
-        // // If input is truthy, but the preset not on the list, reload the screen
-        // if (cards.indexOf(input) === -1) {
-        //   this.showScreen__presetSelection();
-        //   return;
-        // }
-        // // At this point, the process is valid, go to the preset details page
-        // this.showScreen__presetDetailsPage(input);
+        if (!input || !input.trim()) {
+          this.showScreen__addCardsToPreset(presetFilename);
+          return;
+        }
+        // If input is truthy, but the card is invalid, reload the screen
+        if (
+          !cards.find((c) => {
+            return c.title === input;
+          })
+        ) {
+          this.showScreen__addCardsToPreset(presetFilename);
+          return;
+        }
+        // At this point, the process is valid,
+        // PUsh card to the preset, then reload the screen
+        const newPresetObj = this.presetService.pushCardIdToPreset(
+          input.substring(1).split(']')[0],
+          presetFilename
+        );
+        this.presetService.writePresetToDisk(presetFilename, newPresetObj);
+        this.showScreen__addCardsToPreset(presetFilename);
+        return;
       }
     );
 
@@ -391,7 +408,7 @@ export class Page {
     //       })
     //       .map((item) => parseInt(item));
     //     const cards: GameCard[] = this.cardService.getCardList();
-    //     const newPresetObj: Preset = this.presetService.pushCardIdsToPreset(
+    //     const newPresetObj: Preset = this.presetService.pushxCardIdsToPreset(
     //       idsToBeAdded,
     //       presetFilename,
     //       cards

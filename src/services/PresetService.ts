@@ -150,23 +150,15 @@ export class PresetService {
     return newPreset;
   }
 
-  public pushCardIdsToPreset(
-    idsToBeAdded: number[],
+  public pushCardIdToPreset(
+    cardId: number,
     presetFilename: string,
-    allCards: GameCard[]
   ): Preset {
-    // Check the ids, filter out the invalid ones
-    const validCardIds = idsToBeAdded.filter((id: number) => {
-      return allCards.some((c) => {
-        return c.title.substring(1).split(']')[0] === id.toString();
-      });
-    });
-
     // Get the preset object data
     const presetObj = this.getPresetDataByFilename(presetFilename);
 
     // Create new preset object with the new card ids
-    const newPreset = { ...presetObj, cards: [...presetObj.cards, ...validCardIds] };
+    const newPreset = { ...presetObj, cards: [...presetObj.cards, cardId] };
 
     return newPreset;
   }
