@@ -433,7 +433,7 @@ export class Page {
 
   private showScreen__injectionComplete(presetFilename: string) {
     term.cyan(presetFilename);
-    term.cyan(' has been injected to the savefile\nN');
+    term.cyan(' preset has been injected to the savefile\n\n');
     term.cyan('Press <ENTER> or <ESC> to go back to the preset page');
     term.inputField({ autoCompleteMenu: false }, (error, input) => {
       this.showScreen__presetDetailsPage(presetFilename);
