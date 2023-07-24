@@ -3,6 +3,7 @@ import { renderArrayAsGrid2, renderHeader } from '../utils.js';
 import { getPresetDataByFilename } from '../helpers/preset-helpers.js';
 import { ListOption, Preset } from '../types.js';
 import { preset__management } from './preset__management.js';
+import { getAllCards } from '../helpers/card-helper.js';
 
 const term = tk.terminal;
 
@@ -10,6 +11,9 @@ export const preset__single = (presetName: string) => {
   renderHeader();
 
   const presetObj: Preset | null = getPresetDataByFilename(presetName);
+
+  const allCards = getAllCards();
+  console.log(allCards)
 
   const cardNames: string[] = ['foo', 'bar', 'baz'];
 
