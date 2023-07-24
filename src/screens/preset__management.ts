@@ -1,9 +1,10 @@
+import tk from 'terminal-kit';
 import { getAllPresetNames } from '../helpers/preset-helpers.js';
 import { ListOption } from '../types.js';
 import { renderHeader } from '../utils.js';
-import tk from 'terminal-kit';
 import home from './home.js';
 import { preset__add__inputName } from './preset__add__inputName.js';
+import { preset__open__inputName } from './preset__open__inputName.js';
 
 const term = tk.terminal;
 
@@ -25,7 +26,7 @@ export const preset__management = () => {
       }
       const obj = choices[response.selectedIndex];
       if (obj.value === 'open_preset') {
-        // this.showScreen__presetSelection();
+        return preset__open__inputName();
       } else if (obj.value === 'create_preset') {
         return preset__add__inputName();
       } else {

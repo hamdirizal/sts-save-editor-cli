@@ -8,10 +8,17 @@ export const createPresetFolderIfNotExists = () => {
   if (!fs.existsSync(`./${PRESET_FOLDER_NAME}`)) {
     fs.mkdirSync(`./${PRESET_FOLDER_NAME}`);
   }
-}
+};
 
 export const getAllPresetNames = (): string[] => {
-  return ['preset1', 'preset2', 'preset3'];
+  // If preset folder not exists, then return empty array, and create the folder
+  if (!fs.existsSync(`./${PRESET_FOLDER_NAME}`)) {
+    fs.mkdirSync(`./${PRESET_FOLDER_NAME}`);
+    return [];
+  }
+
+  // At this point, preset folder exists, so read the files
+  return fs.readdirSync(`./${PRESET_FOLDER_NAME}`);
 };
 
 export const sanitizePresetName = (rawName: string): string => {
