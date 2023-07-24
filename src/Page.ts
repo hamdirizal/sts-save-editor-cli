@@ -103,31 +103,37 @@ export class Page {
 
   public showScreen__presetSelection() {
     this.renderAppHeader();
-    term.cyan('Please type preset name to be opened. Press <TAB> to autocomplete.\n');
+    const allPresets: string[] = this.presetService.getAllPresets();
+    const allPresetsWithNiceName: string[] = allPresets.map((p) =>
+      this.presetService.renderNiceName(p)
+    );
+    const colWidth = 30;
+    console.info('All presets:');
+    term(
+      this.utility.renderArrayAsGrid(
+        allPresetsWithNiceName.map((p) => p.substring(0, colWidth - 2)),
+        colWidth,
+        3
+      )
+    );
+    console.info('');
 
-    var autoComplete = [
-      'Barack Obama',
-      'George W. Bush',
-      'Bill Clinton',
-      'George Bush',
-      'Ronald W. Reagan',
-      'Jimmy Carter',
-      'Gerald Ford',
-      'Richard Nixon',
-      'Lyndon Johnson',
-      'John F. Kennedy',
-      'Dwight Eisenhower',
-      'Harry Truman',
-      'Franklin Roosevelt',
-    ];
+    term.cyan(
+      'Please type preset name to be opened. Press <TAB> to autocomplete. Press <ESC> to go back.\n'
+    );
     term.inputField(
       {
-        autoComplete: autoComplete,
+        autoComplete: (input) => this.utility.searchArray(input, allPresetsWithNiceName),
         autoCompleteMenu: true,
-        autoCompleteHint: true,
+        autoCompleteHint: false,
         cancelable: true,
       },
       (error, input) => {
+        // If input is falsy, go back to the previous menu
+        if (!input || !input.trim()) {
+          this.showScreen__managePresets(null);
+          return;
+        }
         term.green("\nYour name is '%s'\n", input);
         process.exit();
       }

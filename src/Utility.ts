@@ -14,4 +14,17 @@ export class Utility {
     }
     console.info(result);
   }
+
+  public searchArray(search: string, items: string[]): string | string[] {
+    const searchLower = search.toLowerCase(); // Convert search to lowercase
+    const matchingItems = items.filter((item) => item.toLowerCase().includes(searchLower));
+
+    if (matchingItems.length === 0) {
+      return search; // Return the search key itself as a plain string
+    } else if (matchingItems.length === 1) {
+      return matchingItems[0]; // Return the single matching item as a plain string
+    } else {
+      return matchingItems; // Return multiple matching items as an array
+    }
+  }
 }
