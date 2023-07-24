@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { PRESET_FOLDER_NAME } from '../constants.js';
-import { CardWithTitle, Preset } from '../types.js';
+import { GameCard, Preset, RelicWithTitle } from '../types.js';
 
 export class PresetService {
   private defaultPresetContent: Preset = { gold: 99, cards: [], relics: [] };
@@ -134,7 +134,7 @@ export class PresetService {
   public pushRelicIdsToPreset(
     idsToBeAdded: number[],
     presetFilename: string,
-    allRelics: CardWithTitle[]
+    allRelics: RelicWithTitle[]
   ): Preset {
     // Check the ids, filter out the invalid ones
     const validRelicIds = idsToBeAdded.filter((id: number) => {
@@ -153,11 +153,13 @@ export class PresetService {
   public pushCardIdsToPreset(
     idsToBeAdded: number[],
     presetFilename: string,
-    allCards: CardWithTitle[]
+    allCards: GameCard[]
   ): Preset {
     // Check the ids, filter out the invalid ones
     const validCardIds = idsToBeAdded.filter((id: number) => {
-      return allCards.some((c) => c.id === id);
+      return allCards.some((c) => {
+        return c.title.substring(1).split(']')[0] === id.toString();
+      });
     });
 
     // Get the preset object data

@@ -3,7 +3,7 @@ import SearchBox from 'inquirer-search-list';
 import { Utility } from './Utility.js';
 import { CardService } from './services/CardService.js';
 import {
-  CardWithTitle,
+  GameCard,
   InquirerListOption,
   ListOption,
   Preset,
@@ -46,11 +46,9 @@ export class Page {
     console.info(`${'='.repeat(beforeLength)}${title}${'='.repeat(afterLength)}`);
   }
 
-  private renderCardsAsGrid(cards: CardWithTitle[]) {
+  private renderCardsAsGrid(cards: GameCard[]) {
     const colWidth = 24;
-    const cardNames: string[] = cards.map((c) =>
-      this.cardService.getDisplayNameById(c.id, cards).substring(0, colWidth - 2)
-    );
+    const cardNames: string[] = cards.map((c) => c.title.substring(0, colWidth - 2));
     this.utility.renderArrayAsGrid(cardNames, colWidth, 5);
   }
 
@@ -67,7 +65,7 @@ export class Page {
    */
   private showScreen__cardList() {
     this.renderAppHeader();
-    const cards: CardWithTitle[] = this.cardService.getCardList();
+    const cards: GameCard[] = this.cardService.getCardList();
     const colWidth = 24;
     this.renderCardsAsGrid(cards);
     term.cyan('Press ENTER to go back to the main page...');
@@ -309,9 +307,9 @@ export class Page {
   private showScreen__removeCardsFromPreset(presetFilename: string) {
     this.renderAppHeader();
     const presetObj = this.presetService.getPresetDataByFilename(presetFilename);
-    const cards: CardWithTitle[] = this.cardService.getCardList();
+    const cards: GameCard[] = this.cardService.getCardList();
     console.info('Cards in this preset');
-    console.info(this.cardService.transformIdsToReadableNames(presetObj.cards).join('  '));
+    console.info(presetObj.cards.join('  '));
     inquirer
       .prompt({
         type: 'input',
@@ -341,7 +339,7 @@ export class Page {
   private showScreen__addCardsToPreset(presetFilename: string) {
     this.renderAppHeader();
     const presetObj = this.presetService.getPresetDataByFilename(presetFilename);
-    const cards: CardWithTitle[] = this.cardService.getCardList();
+    const cards: GameCard[] = this.cardService.getCardList();
     term.cyan(`Cards in this ${presetFilename} preset (${presetObj.cards.length}): \n`);
     term(presetObj.cards.map((c) => `-- ${c}`).join('  '));
     term('\n\n');
@@ -376,32 +374,32 @@ export class Page {
 
     //=============hamdi
     return;
-    console.info('Available cards:');
-    this.renderCardsAsGrid(cards);
-    inquirer
-      .prompt({
-        type: 'input',
-        name: 'action',
-        message: `Enter card IDs to be added, separate by spaces:`,
-      })
-      .then((answers) => {
-        let idsToBeAdded: number[] = answers.action
-          .trim()
-          .split(' ')
-          .filter((item) => {
-            return parseInt(item) >= 0;
-          })
-          .map((item) => parseInt(item));
-        const cards: CardWithTitle[] = this.cardService.getCardList();
-        const newPresetObj: Preset = this.presetService.pushCardIdsToPreset(
-          idsToBeAdded,
-          presetFilename,
-          cards
-        );
-        this.presetService.writePresetToDisk(presetFilename, newPresetObj);
+    // console.info('Available cards:');
+    // this.renderCardsAsGrid(cards);
+    // inquirer
+    //   .prompt({
+    //     type: 'input',
+    //     name: 'action',
+    //     message: `Enter card IDs to be added, separate by spaces:`,
+    //   })
+    //   .then((answers) => {
+    //     let idsToBeAdded: number[] = answers.action
+    //       .trim()
+    //       .split(' ')
+    //       .filter((item) => {
+    //         return parseInt(item) >= 0;
+    //       })
+    //       .map((item) => parseInt(item));
+    //     const cards: GameCard[] = this.cardService.getCardList();
+    //     const newPresetObj: Preset = this.presetService.pushCardIdsToPreset(
+    //       idsToBeAdded,
+    //       presetFilename,
+    //       cards
+    //     );
+    //     this.presetService.writePresetToDisk(presetFilename, newPresetObj);
 
-        this.showScreen__viewSinglePreset(presetFilename);
-      });
+    //     this.showScreen__viewSinglePreset(presetFilename);
+    //   });
   }
 
   private showScreen__addRelicsToPreset(presetFilename: string) {
@@ -530,7 +528,7 @@ export class Page {
     term.cyan('Gold: ');
     term(presetObj.gold + '\n');
     term.cyan('Cards: \n');
-    term(this.cardService.transformIdsToReadableNames(presetObj.cards).join('  ') + '\n');
+    term(presetObj.cards.join('  ') + '\n');
     term.cyan('Relics: \n');
     term(this.relicService.transformIdsToReadableNames(presetObj.relics).join('  ') + '\n\n');
     term.cyan('What do you want to do with this preset?');

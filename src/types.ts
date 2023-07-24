@@ -7,8 +7,7 @@ export interface Person {
   age: number;
 }
 
-export interface CardWithTitle {
-  id: number;
+export interface GameCard {
   title: string;
   identifier: string;
 }

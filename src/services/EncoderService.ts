@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { ENCRYPTION_KEY } from '../constants.js';
-import { CardWithTitle, Preset, RelicWithTitle, SaveCard, SaveObject } from '../types.js';
+import { GameCard, Preset, RelicWithTitle, SaveCard, SaveObject } from '../types.js';
 export class EncoderService {
   public isSaveFileExists(path: string): boolean {
     return fs.existsSync(path);
@@ -78,7 +78,7 @@ export class EncoderService {
   public getInjectedSaveObject(
     presetObject: Preset,
     saveObject: SaveObject,
-    cards: CardWithTitle[],
+    cards: GameCard[],
     relics: RelicWithTitle[]
   ): SaveObject {
 
@@ -87,7 +87,9 @@ export class EncoderService {
     });
 
     const cardsToBeInjected: SaveCard[] = presetObject.cards.map((id: number) => {
-      const card = cards.find((c) => c.id === id);
+      const card = cards.find((c) => {
+        return c.title.substring(1).split(']')[0] === id.toString();
+      });
       return {
         id: card.identifier,
         upgrades: 0,
