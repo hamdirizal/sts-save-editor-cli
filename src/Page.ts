@@ -101,22 +101,14 @@ export class Page {
       .then(() => this.showScreen__home(null));
   }
 
-  public showScreen__presetDetailsPage(presetFilename: string) {
-    console.log('PresetFilename', presetFilename);
-    process.exit();
-  }
-
   public showScreen__presetSelection() {
     this.renderAppHeader();
     const allPresets: string[] = this.presetService.getAllPresets();
-    const allPresetsWithNiceName: string[] = allPresets.map((p) =>
-      this.presetService.renderNiceName(p)
-    );
     const colWidth = 30;
     console.info('All presets:');
     term(
       this.utility.renderArrayAsGrid(
-        allPresetsWithNiceName.map((p) => p.substring(0, colWidth - 2)),
+        allPresets.map((p) => p.substring(0, colWidth - 2)),
         colWidth,
         3
       )
@@ -128,7 +120,7 @@ export class Page {
     );
     term.inputField(
       {
-        autoComplete: (input) => this.utility.searchArray(input, allPresetsWithNiceName),
+        autoComplete: (input) => this.utility.searchArray(input, allPresets),
         autoCompleteMenu: true,
         autoCompleteHint: false,
         cancelable: true,
@@ -140,12 +132,12 @@ export class Page {
           return;
         }
         // If input is truthy, but the preset not on the list, reload the screen
-        if (allPresetsWithNiceName.indexOf(input) === -1) {
+        if (allPresets.indexOf(input) === -1) {
           this.showScreen__presetSelection();
           return;
         }
         // At this point, the process is valid, go to the preset details page
-        //todo
+        this.showScreen__presetDetailsPage(input);
       }
     );
   }
@@ -499,51 +491,75 @@ export class Page {
   private showScreen__viewSinglePreset(presetFilename: string) {
     this.renderAppHeader();
     const presetObj = this.presetService.getPresetDataByFilename(presetFilename);
-    console.info(`Name:`, this.presetService.renderNiceName(presetFilename));
-    console.info(`Gold:`, presetObj.gold);
-    console.info(
-      `Cards:`,
-      this.cardService.transformIdsToReadableNames(presetObj.cards).join('  ')
-    );
-    console.info(
-      `Relics:`,
-      this.relicService.transformIdsToReadableNames(presetObj.relics).join('  ')
-    );
-    console.info('What do you want to do? ');
-    console.info('    1) Add cards');
-    console.info('    2) Remove cards');
-    console.info('    3) Add relics');
-    console.info('    4) Remove relics');
-    console.info('    5) Set gold amount');
-    console.info('    6) Delete this preset');
-    console.info('    7) Inject this preset to a save file');
-    console.info('    8) Back to the preset list page');
+    term.cyan('Preset name: ');
+    term(presetFilename + '\n');
+    term.cyan('Gold: ');
+    term(presetObj.gold + '\n');
+    term.cyan('Cards: \n');
+    term(this.cardService.transformIdsToReadableNames(presetObj.cards).join('  ') + '\n');
+    term.cyan('Relics: \n');
+    term(this.relicService.transformIdsToReadableNames(presetObj.relics).join('  ') + '\n\n');
+    term.cyan('What do you want to do with this preset?');
 
-    inquirer
-      .prompt({
-        type: 'input',
-        name: 'action',
-        message: 'Action: ',
-      })
-      .then((answers) => {
-        if (parseInt(answers.action) === 6) {
-          this.showScreen__deletePresetConfirmation(presetFilename);
-        } else if (parseInt(answers.action) === 1) {
-          this.showScreen__addCardsToPreset(presetFilename);
-        } else if (parseInt(answers.action) === 2) {
-          this.showScreen__removeCardsFromPreset(presetFilename);
-        } else if (parseInt(answers.action) === 3) {
-          this.showScreen__addRelicsToPreset(presetFilename);
-        } else if (parseInt(answers.action) === 4) {
-          this.showScreen__removeRelicsFromPreset(presetFilename);
-        } else if (parseInt(answers.action) === 5) {
-          this.showScreen__setGoldToPreset(presetFilename);
-        } else if (parseInt(answers.action) === 7) {
-          this.showScreen__inputSaveFilePath(presetFilename, null);
-        } else {
+    const choices: ListOption[] = [
+      { name: 'Inject this preset to a save file', value: 'inject_preset' },
+      { name: 'Add cards', value: 'add_cards' },
+      { name: 'Remove cards', value: 'remove_cards' },
+      { name: 'Add relics', value: 'add_relics' },
+      { name: 'Remove relics', value: 'remove_relics' },
+      { name: 'Set gold amount', value: 'set_gold' },
+      { name: 'Delete this preset', value: 'delete_preset' },
+      { name: 'Back to the preset list', value: 'back' },
+    ];
+
+    term.singleColumnMenu(
+      choices.map((o) => o.name),
+      { cancelable: true },
+      (error, response) => {
+        if (response?.canceled) {
           this.showScreen__managePresets(null);
+          return;
         }
-      });
+        const obj = choices[response.selectedIndex];
+        if (obj.value === 'inject_preset') {
+          // this.showScreen__presetSelection();
+        } else if (obj.value === 'create_preset') {
+          // this.showScreen__presetNameInput();
+        } else {
+          // this.showScreen__home(null);
+        }
+      }
+    );
+
+    // inquirer
+    //   .prompt({
+    //     type: 'input',
+    //     name: 'action',
+    //     message: 'Action: ',
+    //   })
+    //   .then((answers) => {
+    //     if (parseInt(answers.action) === 6) {
+    //       this.showScreen__deletePresetConfirmation(presetFilename);
+    //     } else if (parseInt(answers.action) === 1) {
+    //       this.showScreen__addCardsToPreset(presetFilename);
+    //     } else if (parseInt(answers.action) === 2) {
+    //       this.showScreen__removeCardsFromPreset(presetFilename);
+    //     } else if (parseInt(answers.action) === 3) {
+    //       this.showScreen__addRelicsToPreset(presetFilename);
+    //     } else if (parseInt(answers.action) === 4) {
+    //       this.showScreen__removeRelicsFromPreset(presetFilename);
+    //     } else if (parseInt(answers.action) === 5) {
+    //       this.showScreen__setGoldToPreset(presetFilename);
+    //     } else if (parseInt(answers.action) === 7) {
+    //       this.showScreen__inputSaveFilePath(presetFilename, null);
+    //     } else {
+    //       this.showScreen__managePresets(null);
+    //     }
+    //   });
+  }
+
+  public showScreen__presetDetailsPage(presetFilename: string) {
+    this.showScreen__viewSinglePreset(presetFilename);
   }
 
   private showScreen__deletePresetConfirmation(presetFilename) {
