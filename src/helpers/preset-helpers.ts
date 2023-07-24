@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { PRESET_FOLDER_NAME } from '../constants.js';
-import { Preset } from '../types.js';
+import { Preset, PresetSchema } from '../types.js';
 
 const DEFAULT_PRESET_CONTENT: Preset = { gold: 99, cards: [], relics: [] };
 
@@ -55,4 +55,23 @@ export const sanitizePresetName = (rawName: string): string => {
 
 export const createDefaultPresetOnDisk = (presetName: string) => {
   fs.writeFileSync(`./${PRESET_FOLDER_NAME}/${presetName}`, JSON.stringify(DEFAULT_PRESET_CONTENT));
+};
+
+export const getPresetDataByFilename = (filename: string): Preset | null => {
+  let fileContent: string;
+  try {
+    fileContent = fs.readFileSync(`./${PRESET_FOLDER_NAME}/${filename}`, 'utf8');
+  } catch (error) {
+    return null;
+  }
+  let presetObj: Preset;
+  try {
+    presetObj = JSON.parse(fileContent);
+  } catch (error) {
+    return null;
+  }
+  if (!PresetSchema.safeParse(presetObj).success) {
+    return null;
+  }
+  return presetObj;
 };
