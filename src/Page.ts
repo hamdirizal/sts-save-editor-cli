@@ -4,7 +4,6 @@ import { Utility } from './Utility.js';
 import { CardService } from './services/CardService.js';
 import {
   GameCard,
-  InquirerListOption,
   ListOption,
   Preset,
   RelicWithTitle,
@@ -113,9 +112,7 @@ export class Page {
     );
     console.info('');
 
-    term.cyan(
-      'Please type preset name to be opened. <TAB> to autocomplete. <ESC> to go back.\n'
-    );
+    term.cyan('Please type preset name to be opened. <TAB> to autocomplete. <ESC> to go back.\n');
     term.inputField(
       {
         autoComplete: (input) => this.utility.searchArray(input, allPresets),
@@ -380,7 +377,7 @@ export class Page {
         // At this point, the process is valid,
         // PUsh card to the preset, then reload the screen
         const newPresetObj = this.presetService.pushCardIdToPreset(
-          input.substring(1).split(']')[0],
+          this.cardService.getCardIdFromTitle(input),
           presetFilename
         );
         this.presetService.writePresetToDisk(presetFilename, newPresetObj);
@@ -516,9 +513,20 @@ export class Page {
    */
   private showScreen__viewSinglePreset(presetFilename: string) {
     this.renderAppHeader();
-    const presetObj = this.presetService.getPresetDataByFilename(presetFilename);
+    const presetObj: Preset | null = this.presetService.getPresetDataByFilename(presetFilename);
+
+
+    console.log('---presetObj', presetObj);
+
+
+    // If preset is invalid, return to the preset list
+    if (!presetObj) {
+      this.showScreen__managePresets(null);
+      return;
+    }
+
     const cardNames = presetObj.cards.map((id: number) => {
-      return this.cardService.getSingleCardById(id).title;
+      return this.cardService.getSingleCardById(id)?.title;
     });
 
     term.cyan('Preset name: ');

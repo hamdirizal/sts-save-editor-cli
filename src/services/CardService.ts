@@ -11,9 +11,21 @@ export class CardService {
   public getSingleCardById(id: number): GameCard {
     const cards = this.readCardsFromFile();
     return cards.find((c) => {
-      return c.title.substring(1).split(']')[0] === id.toString();
+      return this.getCardIdFromTitle(c.title) === id;
     });
   }
+
+  public isCardIdValid(id: number): boolean {
+    const cards = this.getCardList();
+    return cards.some((c) => {
+      return this.getCardIdFromTitle(c.title) === id;
+    });
+  }
+
+  public getCardIdFromTitle(title: string): number {
+    return parseInt(title.substring(1).split(']')[0]);
+  }
+
 
   public getCardList(): GameCard[] {
     return this.readCardsFromFile();

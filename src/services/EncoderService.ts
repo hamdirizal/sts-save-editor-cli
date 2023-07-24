@@ -81,7 +81,6 @@ export class EncoderService {
     cards: GameCard[],
     relics: RelicWithTitle[]
   ): SaveObject {
-
     const relicsToBeInjected: string[] = presetObject.relics.map((id: number) => {
       return relics.find((r) => r.id === id).identifier;
     });
@@ -97,8 +96,13 @@ export class EncoderService {
       };
     });
 
-    const newSaveObject = { ...saveObject, gold: presetObject.gold, relics: relicsToBeInjected, cards: cardsToBeInjected };
-    
+    const newSaveObject = {
+      ...saveObject,
+      gold: presetObject.gold,
+      relics: relicsToBeInjected,
+      cards: cardsToBeInjected,
+    };
+
     return newSaveObject;
   }
 }

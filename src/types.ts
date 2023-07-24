@@ -1,16 +1,11 @@
-export interface AppState {
-  gameSavePath: string;
-}
+import { z } from 'zod';
 
-export interface Person {
-  name: string;
-  age: number;
-}
+export const GameCardSchema = z.object({
+  title: z.string().regex(/\[\d+\] .+/g),
+  identifier: z.string(),
+});
 
-export interface GameCard {
-  title: string;
-  identifier: string;
-}
+export type GameCard = z.infer<typeof GameCardSchema>;
 
 export interface RelicWithTitle {
   id: number;
@@ -18,16 +13,13 @@ export interface RelicWithTitle {
   identifier: string;
 }
 
-export interface Preset {
-  gold: number;
-  cards: number[];
-  relics: number[];
-}
+export const PresetSchema = z.object({
+  gold: z.number(),
+  cards: z.array(z.number()),
+  relics: z.array(z.number()),
+});
 
-export interface InquirerListOption {
-  value: string;
-  name: string;
-}
+export type Preset = z.infer<typeof PresetSchema>;
 
 export interface ListOption {
   value: string;

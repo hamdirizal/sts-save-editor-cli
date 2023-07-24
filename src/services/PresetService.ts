@@ -1,6 +1,7 @@
 import fs from 'fs';
+import { z } from 'zod';
 import { PRESET_FOLDER_NAME } from '../constants.js';
-import { GameCard, Preset, RelicWithTitle } from '../types.js';
+import { GameCard, Preset, PresetSchema, RelicWithTitle } from '../types.js';
 
 export class PresetService {
   private defaultPresetContent: Preset = { gold: 99, cards: [], relics: [] };
@@ -30,11 +31,32 @@ export class PresetService {
     return name;
   }
 
-  private readOnePresetFromDisk(filename: string): any {
-    const fileContent = fs.readFileSync(`./${PRESET_FOLDER_NAME}/${filename}`, 'utf8');
-    return JSON.parse(fileContent);
+  /**
+   * 
+   */
+  private readOnePresetFromDisk(filename: string): Preset | null {
+    console.log('trying to read preset')
+    let fileContent: string;
+    try {
+      fileContent = fs.readFileSync(`./${PRESET_FOLDER_NAME}/${filename}`, 'utf8');
+    } catch (error) {
+      return null;
+    }
+    let parsed: Preset;
+    try {
+      parsed = JSON.parse(fileContent);
+    } catch (error) {
+      return null;
+    }
+    if(!PresetSchema.safeParse(parsed).success) {
+      return null;
+    }
+    return parsed;
   }
 
+  /**
+   * 
+   */
   public getAllPresets() {
     const files = this.readAllPresetNamesFromDisk();
     return files;
@@ -63,7 +85,7 @@ export class PresetService {
     const allPresets: string[] = this.getAllPresets();
 
     // If preset name already exists, then return empty
-    if(allPresets.find((p) => p.split('.')[1] === newName)) {
+    if (allPresets.find((p) => p.split('.')[1] === newName)) {
       return '';
     }
 
@@ -84,10 +106,13 @@ export class PresetService {
     return filename;
   }
 
-  public getPresetDataByFilename(filename: string): Preset {
+  public getPresetDataByFilename(filename: string): Preset | null {
     return this.readOnePresetFromDisk(filename);
   }
 
+  /**
+   *
+   */
   public writePresetToDisk(presetName: string, content: Preset) {
     fs.writeFileSync(`./${PRESET_FOLDER_NAME}/${presetName}`, JSON.stringify(content));
   }
@@ -150,10 +175,7 @@ export class PresetService {
     return newPreset;
   }
 
-  public pushCardIdToPreset(
-    cardId: number,
-    presetFilename: string,
-  ): Preset {
+  public pushCardIdToPreset(cardId: number, presetFilename: string): Preset {
     // Get the preset object data
     const presetObj = this.getPresetDataByFilename(presetFilename);
 
