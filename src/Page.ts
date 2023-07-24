@@ -342,6 +342,40 @@ export class Page {
     this.renderAppHeader();
     const presetObj = this.presetService.getPresetDataByFilename(presetFilename);
     const cards: CardWithTitle[] = this.cardService.getCardList();
+    term.cyan(`Cards in this ${presetFilename} preset (${presetObj.cards.length}): \n`);
+    term(presetObj.cards.map((c) => `-- ${c}`).join('  '));
+    term('\n\n');
+    term.cyan('Please type card name to be added. <TAB> to autocomplete. <ENTER> to confirm \n');
+    term.inputField(
+      {
+        autoComplete: (input) =>
+          this.utility.searchArray(
+            input,
+            cards.map((c) => c.title)
+          ),
+        autoCompleteMenu: true,
+        autoCompleteHint: false,
+        cancelable: true,
+      },
+      (error, input) => {
+        return;
+        // If input is falsy, reload the screen
+        // if (!input || !input.trim()) {
+        //   this.showScreen__managePresets(null);
+        //   return;
+        // }
+        // // If input is truthy, but the preset not on the list, reload the screen
+        // if (cards.indexOf(input) === -1) {
+        //   this.showScreen__presetSelection();
+        //   return;
+        // }
+        // // At this point, the process is valid, go to the preset details page
+        // this.showScreen__presetDetailsPage(input);
+      }
+    );
+
+    //=============hamdi
+    return;
     console.info('Available cards:');
     this.renderCardsAsGrid(cards);
     inquirer
@@ -523,6 +557,8 @@ export class Page {
         const obj = choices[response.selectedIndex];
         if (obj.value === 'inject_preset') {
           this.showScreen__inputSaveFilePath(presetFilename, null);
+        } else if (obj.value === 'add_cards') {
+          this.showScreen__addCardsToPreset(presetFilename);
         } else if (obj.value === 'create_preset') {
           // this.showScreen__presetNameInput();
         } else {
