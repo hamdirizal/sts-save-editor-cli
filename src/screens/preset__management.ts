@@ -2,13 +2,16 @@ import { getAllPresetNames } from '../helpers/preset-helpers.js';
 import { ListOption } from '../types.js';
 import { renderHeader } from '../utils.js';
 import tk from 'terminal-kit';
+import home from './home.js';
+import { preset__add__inputName } from './preset__add__inputName.js';
+
 const term = tk.terminal;
 
-export default () => {
+export const preset__management = () => {
   renderHeader();
   const presetNames: string[] = getAllPresetNames();
   term.cyan('Presets Management\n');
-  const choices: ListOption[] = [];  
+  const choices: ListOption[] = [];
   if (presetNames.length) choices.push({ name: 'Open preset', value: 'open_preset' });
   choices.push({ name: 'Create new preset', value: 'create_preset' });
   choices.push({ name: 'Back to the main page', value: 'back' });
@@ -18,19 +21,16 @@ export default () => {
     { cancelable: true },
     (error, response) => {
       if (response?.canceled) {
-        // this.showScreen__home(null);
-        return;
+        return home();
       }
       const obj = choices[response.selectedIndex];
       if (obj.value === 'open_preset') {
         // this.showScreen__presetSelection();
       } else if (obj.value === 'create_preset') {
-        // this.showScreen__presetNameInput();
+        return preset__add__inputName();
       } else {
-        // this.showScreen__home(null);
+        return home();
       }
     }
   );
-
-  return;
 };

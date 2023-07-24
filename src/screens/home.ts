@@ -1,11 +1,14 @@
 import tk from 'terminal-kit';
 import { renderHeader } from '../utils.js';
 import exit from './exit.js';
-import presetListing from './preset.listing.js';
+import { preset__management } from './preset__management.js';
 import { ListOption } from '../types.js';
+import { createPresetFolderIfNotExists } from '../helpers/preset-helpers.js';
 const term = tk.terminal;
 
 export default () => {
+  createPresetFolderIfNotExists();
+
   renderHeader();
   term.cyan('What do you want to do?\n');
 
@@ -15,7 +18,6 @@ export default () => {
     { value: 'view_relics', name: 'View relics ' },
     { value: 'exit', name: 'Exit ' },
   ];
-  var items = ['Manage presets ', 'View cards ', 'View relics ', 'Exit '];
 
   term.singleColumnMenu(
     choices.map((c) => c.name),
@@ -25,7 +27,7 @@ export default () => {
         return exit();
       }
       if (choices[response.selectedIndex].value === 'manage_presets') {
-        return presetListing();
+        return preset__management();
       } else if (response.selectedIndex === 1) {
         // this.showScreen__cardList();
       } else if (response.selectedIndex === 2) {
