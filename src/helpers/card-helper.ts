@@ -23,3 +23,13 @@ export const getAllCards = (): GameCard[] => {
 
   return cards;
 };
+
+export const getCardNameById = (id: number, allCards: GameCard[]): string => {
+  const card: GameCard = allCards.find((c) => {
+    return c.title.substring(1).split(']')[0] === id.toString();
+  });
+  if (card) {
+    return card.title;
+  }
+  return '';
+};
