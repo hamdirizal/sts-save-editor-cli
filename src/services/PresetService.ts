@@ -60,11 +60,15 @@ export class PresetService {
       return '';
     }
 
-    const timestamp = Date.now();
-    const finalName = `${timestamp}.${newName}`;
+    const allPresets: string[] = this.getAllPresets();
+
+    // If preset name already exists, then return empty
+    if(allPresets.find((p) => p.split('.')[1] === newName)) {
+      return '';
+    }
 
     // Return final name
-    return finalName;
+    return newName;
   }
 
   public getPresetNameById(id: number): string {

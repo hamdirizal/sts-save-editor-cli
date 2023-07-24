@@ -101,6 +101,11 @@ export class Page {
       .then(() => this.showScreen__home(null));
   }
 
+  public showScreen__presetDetailsPage(presetFilename: string) {
+    console.log('PresetFilename', presetFilename);
+    process.exit();
+  }
+
   public showScreen__presetSelection() {
     this.renderAppHeader();
     const allPresets: string[] = this.presetService.getAllPresets();
@@ -129,13 +134,18 @@ export class Page {
         cancelable: true,
       },
       (error, input) => {
-        // If input is falsy, go back to the previous menu
+        // If input is falsy, reload the screen
         if (!input || !input.trim()) {
           this.showScreen__managePresets(null);
           return;
         }
-        term.green("\nYour name is '%s'\n", input);
-        process.exit();
+        // If input is truthy, but the preset not on the list, reload the screen
+        if (allPresetsWithNiceName.indexOf(input) === -1) {
+          this.showScreen__presetSelection();
+          return;
+        }
+        // At this point, the process is valid, go to the preset details page
+        //todo
       }
     );
   }
@@ -217,54 +227,58 @@ export class Page {
 
   private showScreen__confirmPresetName(generatedName: string, errorMessage: string | null) {
     this.renderAppHeader();
-    console.info(
-      `You are going to create a preset called "${this.presetService.renderNiceName(
-        generatedName
-      )}", are you sure?`
-    );
-    console.info('    1) Yes, create it');
-    console.info('    2) No, change the name');
-    console.info('    3) Cancel. Back to the preset list page');
-    inquirer
-      .prompt({
-        type: 'input',
-        name: 'action',
-        message: 'Action: ',
-      })
-      .then((answers) => {
-        if (parseInt(answers.action) === 1) {
-          this.presetService.writeDefaultPresetToDisk(generatedName);
-          this.showScreen__managePresets(null);
-        } else if (parseInt(answers.action) === 2) {
-          this.showScreen__presetNameInput();
-        } else if (parseInt(answers.action) === 3) {
-          this.showScreen__managePresets(null);
-        } else {
-          this.showScreen__confirmPresetName('', null);
-        }
-      });
+    term.cyan('You are going to create a preset called ');
+    term.yellow(generatedName);
+    term.cyan(' are you sure?\n');
+
+    var choices = [
+      'Yes, create the preset ',
+      'No, change name ',
+      'Cancel, Back to the preset list ',
+    ];
+
+    term.singleColumnMenu(choices, { cancelable: true }, (error, response) => {
+      if (response?.canceled) {
+        this.showScreen__managePresets(null);
+        return;
+      }
+      if (response.selectedIndex === 0) {
+        this.presetService.writeDefaultPresetToDisk(generatedName);
+        this.showScreen__managePresets(null);
+        return;
+      } else if (response.selectedIndex === 1) {
+        this.showScreen__presetNameInput();
+        return;
+      } else {
+        this.showScreen__managePresets(null);
+        return;
+      }
+    });
   }
 
   private showScreen__presetNameInput() {
     this.renderAppHeader();
-    term.cyan('Enter the name for the new preset: ');
-    // inquirer
-    //   .prompt({
-    //     type: 'input',
-    //     name: 'action',
-    //     message: 'Enter the preset name: ',
-    //   })
-    //   .then((answers) => {
-    //     // Try to create name
-    //     const generatedName = this.presetService.generatePresetName(answers.action);
-    //     if (!generatedName) {
-    //       this.showScreen__presetNameInput();
-    //       return;
-    //     } else {
-    //       this.showScreen__confirmPresetName(generatedName, null);
-    //       return;
-    //     }
-    //   });
+    term.cyan('Enter a name for the new preset: ');
+    term.inputField({ autoCompleteMenu: false, cancelable: true }, (error, input) => {
+      //If cancelled, return to the preset management page
+      if (input === undefined) {
+        this.showScreen__managePresets(null);
+        return;
+      }
+      // If input is empty, loop back to this page
+      if (!input.trim()) {
+        this.showScreen__presetNameInput();
+        return;
+      }
+      const generatedName = this.presetService.generatePresetName(input);
+      if (!generatedName) {
+        this.showScreen__presetNameInput();
+        return;
+      }
+      // Otherwise, go to the name confirmation page
+      this.showScreen__confirmPresetName(generatedName, null);
+      return;
+    });
   }
 
   /**
@@ -559,33 +573,6 @@ export class Page {
   /** Showing the homepage */
   public showScreen__home(errorMessage: string | null) {
     this.renderAppHeader();
-    var history = ['John', 'Jack', 'Joey', 'Billy', 'Bob'];
-
-    var autoComplete = [
-      'Barack Obama',
-      'George W. Bush',
-      'Bill Clinton',
-      'George Bush',
-      'Ronald W. Reagan',
-      'Jimmy Carter',
-      'Gerald Ford',
-      'Richard Nixon',
-      'Lyndon Johnson',
-      'John F. Kennedy',
-      'Dwight Eisenhower',
-      'Harry Truman',
-      'Franklin Roosevelt',
-    ];
-
-    // term('Please enter your name: ');
-
-    // term.inputField(
-    //   { history: history, autoComplete: autoComplete, autoCompleteMenu: true },
-    //   function (error, input) {
-    //     term.green("\nYour name is '%s'\n", input);
-    //     process.exit();
-    //   }
-    // );
 
     term.cyan('What do you want to do?\n');
 
@@ -606,55 +593,5 @@ export class Page {
         this.showScreen__exit();
       }
     });
-
-    // const cards: CardWithTitle[] = this.cardService.getCardList();
-    // if (errorMessage) console.error(errorMessage);
-    // console.info(`What do you want to do?:
-    // 1) View cards
-    // 2) View relics
-    // 3) Manage presets
-    // 0) Exit`);
-    // inquirer
-    //   .prompt([
-    //     {
-    //       type: 'search-list',
-    //       message: 'Select topping',
-    //       name: 'topping',
-    //       choices: cards.map((c) => c.title),
-    //       validate: function (answer) {
-    //         if (answer === 'Bottle') {
-    //           return `Whoops, ${answer} is not a real topping.`;
-    //         }
-    //         return true;
-    //       },
-    //     },
-    //   ])
-    //   .then(function (answers) {
-    //     console.log(JSON.stringify(answers, null, '  '));
-    //   })
-    //   .catch((e) => console.log(e));
-    // inquirer
-    //   .prompt({
-    //     type: 'input',
-    //     name: 'action',
-    //     message: 'Action: ',
-    //   })
-    //   .then((answers) => {
-    //     if (parseInt(answers.action) === 1) {
-    //       this.showScreen__cardList();
-    //       return;
-    //     } else if (parseInt(answers.action) === 2) {
-    //       this.showScreen__relicList();
-    //       return;
-    //     } else if (parseInt(answers.action) === 3) {
-    //       this.showScreen__managePresets(null);
-    //       return;
-    //     } else if (parseInt(answers.action) === 0) {
-    //       this.showScreen__exit();
-    //     } else {
-    //       this.showScreen__home(`"${answers.action}" is invalid input.`);
-    //       return;
-    //     }
-    //   });
   }
 }
