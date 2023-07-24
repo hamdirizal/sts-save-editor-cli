@@ -431,44 +431,46 @@ export class Page {
       });
   }
 
+  private showScreen__injectionComplete(presetFilename: string) {
+    term.cyan(presetFilename);
+    term.cyan(' has been injected to the savefile\nN');
+    term.cyan('Press <ENTER> or <ESC> to go back to the preset page');
+    term.inputField({ autoCompleteMenu: false }, (error, input) => {
+      this.showScreen__presetDetailsPage(presetFilename);
+    });
+  }
+
   private showScreen__inputSaveFilePath(presetFilename: string, errorMessage: string | null) {
     this.renderAppHeader();
-    if (errorMessage) {
-      console.error(errorMessage);
-    }
-    inquirer
-      .prompt({
-        type: 'input',
-        name: 'action',
-        message: 'Enter the path to the save file',
-        default: this.saveFilePath,
-      })
-      .then((answers) => {
-        this.saveFilePath = answers.action;
-        const isFileExists = this.encoderService.isSaveFileExists(answers.action);
-        if (!isFileExists) {
-          this.showScreen__inputSaveFilePath(
-            presetFilename,
-            'Save file not found. Check the path again.'
-          );
-          return;
-        }
-        const saveDataObject = this.encoderService.readSaveDataFromDisk(answers.action);
-        if (!saveDataObject) {
-          this.showScreen__inputSaveFilePath(presetFilename, 'Invalid save file.');
-          return;
-        }
-        if (!saveDataObject?.name) {
-          this.showScreen__inputSaveFilePath(presetFilename, 'Broken save file.');
-          return;
-        }
+    term.cyan('Enter the path to the save file: ');
+    term.inputField({ autoCompleteMenu: false }, (error, input) => {
+      this.saveFilePath = input;
+      const isFileExists = this.encoderService.isSaveFileExists(input);
+      if (!isFileExists) {
+        this.showScreen__inputSaveFilePath(
+          presetFilename,
+          'Save file not found. Check the path again.'
+        );
+        return;
+      }
+      const saveDataObject = this.encoderService.readSaveDataFromDisk(input);
+      if (!saveDataObject) {
+        this.showScreen__inputSaveFilePath(presetFilename, 'Invalid save file.');
+        return;
+      }
+      if (!saveDataObject?.name) {
+        this.showScreen__inputSaveFilePath(presetFilename, 'Broken save file.');
+        return;
+      }
 
-        this.injectPresetToSaveFile(presetFilename, saveDataObject);
-      });
+      this.injectPresetToSaveFile(presetFilename, saveDataObject);
+
+      // Show injection success message
+      this.showScreen__injectionComplete(presetFilename);
+    });
   }
 
   private injectPresetToSaveFile(presetFilename: string, saveDataObject: SaveObject) {
-    console.info('Injecting...');
     const presetObj = this.presetService.getPresetDataByFilename(presetFilename);
     const cards = this.cardService.getCardList();
     const relics = this.relicService.getRelicList();
@@ -481,8 +483,6 @@ export class Page {
     );
 
     this.encoderService.writeSaveDataToDisk(this.saveFilePath, newSaveObject);
-
-    console.info('Done.');
   }
 
   /**
@@ -522,11 +522,11 @@ export class Page {
         }
         const obj = choices[response.selectedIndex];
         if (obj.value === 'inject_preset') {
-          // this.showScreen__presetSelection();
+          this.showScreen__inputSaveFilePath(presetFilename, null);
         } else if (obj.value === 'create_preset') {
           // this.showScreen__presetNameInput();
         } else {
-          // this.showScreen__home(null);
+          this.showScreen__managePresets(null);
         }
       }
     );
