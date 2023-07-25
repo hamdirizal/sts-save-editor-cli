@@ -103,3 +103,7 @@ export const removeRelicIdFromPresetObj = (relicId: number, presetObj: Preset): 
   presetObj.relics.splice(foundIndex, 1);
   return { ...presetObj, relics: presetObj.relics };
 };
+
+export const setGoldInThePresetObj = (gold: number, presetObj: Preset): Preset => {
+  return { ...presetObj, gold };
+};
