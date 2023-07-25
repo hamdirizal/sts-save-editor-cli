@@ -11,6 +11,7 @@ import { getAllRelics, getRelicNameById } from '../helpers/relic-helper.js';
 import { preset__removeRelic } from './preset__removeRelic.js';
 import { preset__setGold } from './preset__setGold.js';
 import { preset__deleteConfirm } from './preset__deleteConfirm.js';
+import { preset__inject__inputSaveFilePath } from './preset__inject__inputSaveFilePath.js';
 
 const term = tk.terminal;
 
@@ -66,8 +67,7 @@ export const preset__single = (presetName: string) => {
         return preset__management();
       }
       if (choices[response.selectedIndex].value === 'inject_preset') {
-        process.exit();
-        // this.showScreen__inputSaveFilePath(presetName, null);
+        return preset__inject__inputSaveFilePath(presetName, '');
       } else if (choices[response.selectedIndex].value === 'add_card') {
         return preset__addCard(presetName);
       } else if (choices[response.selectedIndex].value === 'remove_card') {

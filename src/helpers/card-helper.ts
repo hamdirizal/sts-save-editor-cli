@@ -24,6 +24,16 @@ export const getAllCards = (): GameCard[] => {
   return cards;
 };
 
+export const getCardById = (id: number, allCards: GameCard[]): GameCard | null => {
+  const card: GameCard | undefined = allCards.find((c) => {
+    return extractIdFromCardName(c.title) === id;
+  });
+  if (card) {
+    return card;
+  }
+  return null;
+};
+
 export const getCardNameById = (id: number, allCards: GameCard[]): string => {
   const card: GameCard = allCards.find((c) => {
     return extractIdFromCardName(c.title) === id;

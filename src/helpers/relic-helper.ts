@@ -24,6 +24,16 @@ export const getAllRelics = (): GameRelic[] => {
   return relics;
 };
 
+export const getRelicById = (id: number, allRelics: GameRelic[]): GameRelic | null => {
+  const relic: GameRelic | undefined = allRelics.find((r) => {
+    return extractIdFromRelicName(r.title) === id;
+  });
+  if (relic) {
+    return relic;
+  }
+  return null;
+};
+
 export const getRelicNameById = (id: number, allRelics: GameRelic[]): string => {
   const relic: GameRelic = allRelics.find((r) => {
     return extractIdFromRelicName(r.title) === id;
