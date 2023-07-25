@@ -1,6 +1,12 @@
+import { APP_TITLE, APP_VERSION } from './constants.js';
+
 export const renderHeader = () => {
   console.clear();
-  console.info('===MY APP===');
+  const title = ` ${APP_TITLE} v.${APP_VERSION} `;
+  const totalLength = 120;
+  const beforeLength = Math.floor((totalLength - title.length) / 2);
+  const afterLength = totalLength - (title.length + beforeLength);
+  console.info(`${'='.repeat(beforeLength)}${title}${'='.repeat(afterLength)}`);
 };
 
 export const renderArrayAsGrid = (arr: string[], colWidth: number, colsCount: number) => {
