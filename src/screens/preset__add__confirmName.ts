@@ -3,7 +3,7 @@ import { renderHeader } from '../utils.js';
 import { ListOption } from '../types.js';
 import { preset__management } from './preset__management.js';
 import { preset__add__inputName } from './preset__add__inputName.js';
-import { createDefaultPresetOnDisk } from '../helpers/preset-helpers.js';
+import { createDefaultPresetOnDisk } from '../helpers/preset-helper.js';
 
 const term = tk.terminal;
 

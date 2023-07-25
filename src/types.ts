@@ -1,7 +1,9 @@
 import { z } from 'zod';
 
+export const CardNameSchema = z.string().regex(/\[\d+\] .+/g);
+
 export const GameCardSchema = z.object({
-  title: z.string().regex(/\[\d+\] .+/g),
+  title: CardNameSchema,
   identifier: z.string(),
 });
 

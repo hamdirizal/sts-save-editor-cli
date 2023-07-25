@@ -1,5 +1,5 @@
 import tk from 'terminal-kit';
-import { getAllPresetNames } from '../helpers/preset-helpers.js';
+import { getAllPresetNames } from '../helpers/preset-helper.js';
 import { ListOption } from '../types.js';
 import { renderHeader } from '../utils.js';
 import home from './home.js';

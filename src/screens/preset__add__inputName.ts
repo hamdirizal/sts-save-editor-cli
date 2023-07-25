@@ -1,6 +1,6 @@
 import tk from 'terminal-kit';
 import { preset__management } from './preset__management.js';
-import { sanitizePresetName } from '../helpers/preset-helpers.js';
+import { sanitizePresetName } from '../helpers/preset-helper.js';
 import { preset__add__confirmName } from './preset__add__confirmName.js';
 import { renderHeader } from '../utils.js';
 

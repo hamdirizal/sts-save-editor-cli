@@ -1,6 +1,6 @@
 import tk from 'terminal-kit';
 import { renderArrayAsGrid2, renderHeader, searchArray } from '../utils.js';
-import { getAllPresetNames } from '../helpers/preset-helpers.js';
+import { getAllPresetNames } from '../helpers/preset-helper.js';
 import { preset__management } from './preset__management.js';
 import { preset__single } from './preset__single.js';
 

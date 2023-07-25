@@ -1,6 +1,6 @@
 import fs from 'fs';
 import z from 'zod';
-import { GameCard, GameCardSchema } from '../types.js';
+import { CardNameSchema, GameCard, GameCardSchema } from '../types.js';
 
 export const getAllCards = (): GameCard[] => {
   let rawdata: any;
@@ -32,4 +32,21 @@ export const getCardNameById = (id: number, allCards: GameCard[]): string => {
     return card.title;
   }
   return '';
+};
+
+export const extractIdFromCardName = (cardName: string): number => {
+  if (!CardNameSchema.safeParse(cardName).success) {
+    return -1;
+  }
+  return parseInt(cardName.substring(1).split(']')[0]);
+};
+
+export const isCardExistsInAllCards = (cardName: string, cards: GameCard[]) => {
+  const card = cards.find((c) => {
+    return c.title === cardName;
+  });
+  if (card) {
+    return true;
+  }
+  return false;
 };

@@ -57,6 +57,10 @@ export const createDefaultPresetOnDisk = (presetName: string) => {
   fs.writeFileSync(`./${PRESET_FOLDER_NAME}/${presetName}`, JSON.stringify(DEFAULT_PRESET_CONTENT));
 };
 
+export const writePresetObjToDisk = (presetName: string, presetObj: Preset) => {
+  fs.writeFileSync(`./${PRESET_FOLDER_NAME}/${presetName}`, JSON.stringify(presetObj));
+};
+
 export const getPresetDataByFilename = (filename: string): Preset | null => {
   let fileContent: string;
   try {
@@ -73,5 +77,20 @@ export const getPresetDataByFilename = (filename: string): Preset | null => {
   if (!PresetSchema.safeParse(presetObj).success) {
     return null;
   }
+
+  // Order cards by name
+  presetObj.cards = presetObj.cards.sort((a, b) => a - b);
+
   return presetObj;
+};
+
+export const addCardToPresetObj = (cardName: string, presetObj: Preset): Preset => {
+  const cardId = parseInt(cardName.substring(1).split(']')[0]);
+  return { ...presetObj, cards: [...presetObj.cards, cardId] };
+};
+
+export const removeCardIdFromPresetObj = (cardId: number, presetObj: Preset): Preset => {
+  const foundIndex: number = presetObj.cards.indexOf(cardId);
+  presetObj.cards.splice(foundIndex, 1)
+  return { ...presetObj, cards: presetObj.cards };
 };
