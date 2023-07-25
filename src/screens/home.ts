@@ -14,8 +14,8 @@ export default () => {
 
   const choices: ListOption[] = [
     { value: 'manage_presets', name: 'Manage presets ' },
-    { value: 'view_cards', name: 'View cards ' },
-    { value: 'view_relics', name: 'View relics ' },
+    // { value: 'view_cards', name: 'View cards ' },
+    // { value: 'view_relics', name: 'View relics ' },
     { value: 'exit', name: 'Exit ' },
   ];
 
@@ -28,11 +28,7 @@ export default () => {
       }
       if (choices[response.selectedIndex].value === 'manage_presets') {
         return preset__management();
-      } else if (response.selectedIndex === 1) {
-        // this.showScreen__cardList();
-      } else if (response.selectedIndex === 2) {
-        // this.showScreen__relicList();
-      }
+      } 
       return exit();
     }
   );
