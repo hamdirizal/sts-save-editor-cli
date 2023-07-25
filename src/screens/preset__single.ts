@@ -8,6 +8,7 @@ import { preset__addCard } from './preset__addCard.js';
 import { preset__removeCard } from './preset__removeCard.js';
 import { preset__addRelic } from './preset__addRelic.js';
 import { getAllRelics, getRelicNameById } from '../helpers/relic-helper.js';
+import { preset__removeRelic } from './preset__removeRelic.js';
 
 const term = tk.terminal;
 
@@ -71,6 +72,8 @@ export const preset__single = (presetName: string) => {
         return preset__removeCard(presetName);
       } else if (choices[response.selectedIndex].value === 'add_relic') {
         return preset__addRelic(presetName);
+      } else if (choices[response.selectedIndex].value === 'remove_relic') {
+        return preset__removeRelic(presetName);
       } else {
         return preset__management();
       }
