@@ -49,12 +49,12 @@ export const preset__single = (presetName: string) => {
   term.cyan('What do you want to do with this preset?');
 
   const choices: ListOption[] = [
-    { name: 'Inject this preset to a save file', value: 'inject_preset' },
     { name: 'Add card', value: 'add_card' },
     { name: 'Remove card', value: 'remove_card' },
     { name: 'Add relic', value: 'add_relic' },
     { name: 'Remove relic', value: 'remove_relic' },
     { name: 'Set gold amount', value: 'set_gold' },
+    { name: 'Inject this preset to a save file', value: 'inject_preset' },
     { name: 'Delete this preset', value: 'delete_preset' },
     { name: 'Back to the preset list', value: 'back' },
   ];
