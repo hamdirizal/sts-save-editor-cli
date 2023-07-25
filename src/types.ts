@@ -9,6 +9,15 @@ export const GameCardSchema = z.object({
 
 export type GameCard = z.infer<typeof GameCardSchema>;
 
+export const RelicNameSchema = z.string().regex(/\[\d+\] .+/g);
+
+export const GameRelicSchema = z.object({
+  title: RelicNameSchema,
+  identifier: z.string(),
+});
+
+export type GameRelic = z.infer<typeof GameRelicSchema>;
+
 export interface RelicWithTitle {
   id: number;
   title: string;
