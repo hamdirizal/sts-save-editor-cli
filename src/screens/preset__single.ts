@@ -6,6 +6,8 @@ import { preset__management } from './preset__management.js';
 import { getAllCards, getCardNameById } from '../helpers/card-helper.js';
 import { preset__addCard } from './preset__addCard.js';
 import { preset__removeCard } from './preset__removeCard.js';
+import { preset__addRelic } from './preset__addRelic.js';
+import { getAllRelics, getRelicNameById } from '../helpers/relic-helper.js';
 
 const term = tk.terminal;
 
@@ -16,21 +18,29 @@ export const preset__single = (presetName: string) => {
 
   const allCards = getAllCards();
 
+  const allRelics = getAllRelics();
+
   const cardNamesInThisPreset: string[] = presetObj.cards
     .map((id) => {
       return getCardNameById(id, allCards);
     })
     .filter((name) => name !== '');
 
-  term.cyan('Preset name: ');
+  const relicNamesInThisPreset: string[] = presetObj.relics
+    .map((id) => {
+      return getRelicNameById(id, allRelics);
+    })
+    .filter((name) => name !== '');
+
+  term.cyan('Preset: ');
   term(presetName + '\n\n');
   term.cyan('Gold: ');
   term(presetObj.gold + '\n\n');
   term.cyan(`Cards (${cardNamesInThisPreset.length}): \n`);
   renderArrayAsGrid2(cardNamesInThisPreset, 120);
   term('\n');
-  term.cyan('Relics: \n');
-  // term(this.relicService.transformIdsToReadableNames(presetObj.relics).join('  ') + '\n\n');
+  term.cyan(`Relics (${relicNamesInThisPreset.length}): \n`);
+  renderArrayAsGrid2(relicNamesInThisPreset, 120);
   term('\n');
   term.cyan('What do you want to do with this preset?');
 
@@ -59,6 +69,8 @@ export const preset__single = (presetName: string) => {
         return preset__addCard(presetName);
       } else if (choices[response.selectedIndex].value === 'remove_card') {
         return preset__removeCard(presetName);
+      } else if (choices[response.selectedIndex].value === 'add_relic') {
+        return preset__addRelic(presetName);
       } else {
         return preset__management();
       }

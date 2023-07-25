@@ -93,3 +93,13 @@ export const removeCardIdFromPresetObj = (cardId: number, presetObj: Preset): Pr
   presetObj.cards.splice(foundIndex, 1);
   return { ...presetObj, cards: presetObj.cards };
 };
+
+export const addRelicIdToPresetObj = (relicId: number, presetObj: Preset): Preset => {
+  return { ...presetObj, relics: [...presetObj.relics, relicId] };
+};
+
+export const removeRelicIdFromPresetObj = (relicId: number, presetObj: Preset): Preset => {
+  const foundIndex: number = presetObj.relics.indexOf(relicId);
+  presetObj.relics.splice(foundIndex, 1);
+  return { ...presetObj, relics: presetObj.relics };
+};
