@@ -107,3 +107,12 @@ export const removeRelicIdFromPresetObj = (relicId: number, presetObj: Preset): 
 export const setGoldInThePresetObj = (gold: number, presetObj: Preset): Preset => {
   return { ...presetObj, gold };
 };
+
+export const deletePresetFromDisk = (presetName: string): boolean => {
+  try {
+    fs.unlinkSync(`./${PRESET_FOLDER_NAME}/${presetName}`);
+    return true;
+  } catch (error) {
+    return false;
+  }
+}
