@@ -2,9 +2,9 @@ import tk from 'terminal-kit';
 import { renderArrayAsGrid2, renderHeader, searchArray } from '../utils.js';
 import { GameCard, ListOption, Preset } from '../types.js';
 import { preset__single } from './preset__single.js';
-import { getAllCards, getCardNameById, isCardExistsInAllCards } from '../helpers/card-helper.js';
+import { extractIdFromCardName, getAllCards, getCardNameById } from '../helpers/card-helper.js';
 import {
-  addCardToPresetObj,
+  addCardIdToPresetObj,
   getPresetDataByFilename,
   writePresetObjToDisk,
 } from '../helpers/preset-helper.js';
@@ -47,14 +47,16 @@ export const preset__addCard = (presetName: string) => {
       if (!input.trim()) {
         return preset__addCard(presetName);
       }
-      // If input is not a valid card, loop back to this page
-      if (!isCardExistsInAllCards(input, allCards)) {
+
+      // Input must available in the cardnames
+      if (allCardNames.indexOf(input) === -1) {
         return preset__addCard(presetName);
       }
 
       // Otherwise, card is valid,
       // Push the card id to the preset, then loop back to this page
-      const updatedPresetObj: Preset = addCardToPresetObj(input, presetObj);
+      const cardId: number = extractIdFromCardName(input);
+      const updatedPresetObj: Preset = addCardIdToPresetObj(cardId, presetObj);
       writePresetObjToDisk(presetName, updatedPresetObj);
       return preset__addCard(presetName);
     }

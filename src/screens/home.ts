@@ -32,10 +32,8 @@ export default () => {
         // this.showScreen__cardList();
       } else if (response.selectedIndex === 2) {
         // this.showScreen__relicList();
-      } else {
-        // this.showScreen__exit();
       }
-      process.exit();
+      return exit();
     }
   );
 };

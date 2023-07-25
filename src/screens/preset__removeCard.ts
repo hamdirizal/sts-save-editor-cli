@@ -2,9 +2,8 @@ import tk from 'terminal-kit';
 import { renderArrayAsGrid2, renderHeader, searchArray } from '../utils.js';
 import { GameCard, ListOption, Preset } from '../types.js';
 import { preset__single } from './preset__single.js';
-import { extractIdFromCardName, getAllCards, getCardNameById, isCardExistsInAllCards } from '../helpers/card-helper.js';
+import { extractIdFromCardName, getAllCards, getCardNameById } from '../helpers/card-helper.js';
 import {
-  addCardToPresetObj,
   getPresetDataByFilename,
   removeCardIdFromPresetObj,
   writePresetObjToDisk,
@@ -45,6 +44,10 @@ export const preset__removeCard = (presetName: string) => {
       }
       // If input is empty, loop back to this page
       if (!input.trim()) {
+        return preset__removeCard(presetName);
+      }
+      // Input value must be available in the cardnames
+      if (cardNamesInThisPreset.indexOf(input) === -1) {
         return preset__removeCard(presetName);
       }
 

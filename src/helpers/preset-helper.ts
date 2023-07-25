@@ -84,13 +84,12 @@ export const getPresetDataByFilename = (filename: string): Preset | null => {
   return presetObj;
 };
 
-export const addCardToPresetObj = (cardName: string, presetObj: Preset): Preset => {
-  const cardId = parseInt(cardName.substring(1).split(']')[0]);
+export const addCardIdToPresetObj = (cardId: number, presetObj: Preset): Preset => {
   return { ...presetObj, cards: [...presetObj.cards, cardId] };
 };
 
 export const removeCardIdFromPresetObj = (cardId: number, presetObj: Preset): Preset => {
   const foundIndex: number = presetObj.cards.indexOf(cardId);
-  presetObj.cards.splice(foundIndex, 1)
+  presetObj.cards.splice(foundIndex, 1);
   return { ...presetObj, cards: presetObj.cards };
 };

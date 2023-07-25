@@ -40,13 +40,3 @@ export const extractIdFromCardName = (cardName: string): number => {
   }
   return parseInt(cardName.substring(1).split(']')[0]);
 };
-
-export const isCardExistsInAllCards = (cardName: string, cards: GameCard[]) => {
-  const card = cards.find((c) => {
-    return c.title === cardName;
-  });
-  if (card) {
-    return true;
-  }
-  return false;
-};
