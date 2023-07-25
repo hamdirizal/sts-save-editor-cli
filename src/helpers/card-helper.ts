@@ -26,7 +26,7 @@ export const getAllCards = (): GameCard[] => {
 
 export const getCardNameById = (id: number, allCards: GameCard[]): string => {
   const card: GameCard = allCards.find((c) => {
-    return c.title.substring(1).split(']')[0] === id.toString();
+    return extractIdFromCardName(c.title) === id;
   });
   if (card) {
     return card.title;
