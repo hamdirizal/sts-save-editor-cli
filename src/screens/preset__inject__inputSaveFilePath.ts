@@ -1,19 +1,12 @@
 import tk from 'terminal-kit';
-import { renderArrayAsGrid2, renderHeader } from '../utils.js';
+import { renderHeader } from '../utils.js';
 import { getPresetDataByFilename } from '../helpers/preset-helper.js';
-import { GameCard, GameRelic, ListOption, Preset, SaveCard, SaveObject } from '../types.js';
+import { GameCard, GameRelic, Preset, SaveCard, SaveObject } from '../types.js';
 import { preset__management } from './preset__management.js';
-import { getAllCards, getCardById, getCardNameById } from '../helpers/card-helper.js';
-import { preset__addCard } from './preset__addCard.js';
-import { preset__removeCard } from './preset__removeCard.js';
-import { preset__addRelic } from './preset__addRelic.js';
-import { getAllRelics, getRelicById, getRelicNameById } from '../helpers/relic-helper.js';
-import { preset__removeRelic } from './preset__removeRelic.js';
-import { preset__setGold } from './preset__setGold.js';
-import { preset__deleteConfirm } from './preset__deleteConfirm.js';
+import { getAllCards, getCardById } from '../helpers/card-helper.js';
+import { getAllRelics, getRelicById } from '../helpers/relic-helper.js';
 import { readSaveDataFromDisk, writeSaveDataToDisk } from '../helpers/save-helper.js';
 import { preset__inject__success } from './preset__inject__success.js';
-import { existsSync } from 'fs';
 
 const term = tk.terminal;
 

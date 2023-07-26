@@ -6,7 +6,7 @@ import { ListOption } from '../types.js';
 import { createPresetFolderIfNotExists } from '../helpers/preset-helper.js';
 const term = tk.terminal;
 
-export default () => {
+export const home = () => {
   createPresetFolderIfNotExists();
 
   renderHeader();
@@ -28,7 +28,7 @@ export default () => {
       }
       if (choices[response.selectedIndex].value === 'manage_presets') {
         return preset__management();
-      } 
+      }
       return exit();
     }
   );

@@ -2,7 +2,7 @@ import tk from 'terminal-kit';
 import { getAllPresetNames } from '../helpers/preset-helper.js';
 import { ListOption } from '../types.js';
 import { renderHeader } from '../utils.js';
-import home from './home.js';
+import { home } from './home.js';
 import { preset__add__inputName } from './preset__add__inputName.js';
 import { preset__open__inputName } from './preset__open__inputName.js';
 

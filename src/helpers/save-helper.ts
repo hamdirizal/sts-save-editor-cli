@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { GameCard, GameRelic, Preset, SaveCard, SaveObject } from '../types.js';
+import { SaveObject } from '../types.js';
 import { ENCRYPTION_KEY } from '../constants.js';
 
 export const isSaveFileExists = (path: string): boolean => {

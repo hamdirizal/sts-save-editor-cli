@@ -1,6 +1,6 @@
 import tk from 'terminal-kit';
 import { renderArrayAsGrid2, renderHeader, searchArray } from '../utils.js';
-import { GameRelic, ListOption, Preset } from '../types.js';
+import { GameRelic, Preset } from '../types.js';
 import { preset__single } from './preset__single.js';
 import {
   addRelicIdToPresetObj,

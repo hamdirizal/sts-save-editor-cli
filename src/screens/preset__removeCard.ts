@@ -1,6 +1,6 @@
 import tk from 'terminal-kit';
 import { renderArrayAsGrid2, renderHeader, searchArray } from '../utils.js';
-import { GameCard, ListOption, Preset } from '../types.js';
+import { GameCard, Preset } from '../types.js';
 import { preset__single } from './preset__single.js';
 import { extractIdFromCardName, getAllCards, getCardNameById } from '../helpers/card-helper.js';
 import {
