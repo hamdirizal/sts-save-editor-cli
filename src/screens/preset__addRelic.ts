@@ -48,7 +48,7 @@ export const preset__addRelic = (presetName: string) => {
         return preset__addRelic(presetName);
       }
       const isRelicAvailable = allRelicNames.indexOf(input) >= 0;
-      if (isRelicAvailable) {
+      if (!isRelicAvailable) {
         return preset__addRelic(presetName);
       }
       const relicIdToBeAdded: number = extractIdFromRelicName(input);
