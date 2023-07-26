@@ -75,3 +75,12 @@ export const decode = (s: string, key: string): string => {
   const decodedBytes: Uint8Array = xorWithKey(base64Decode(s), stringToByteArray(key));
   return byteArrayToString(decodedBytes);
 };
+
+export const isDirectory = (path: string): boolean => {
+  try {
+    return fs.statSync(path).isDirectory();
+  }
+  catch (err) {
+    return false;
+  }
+}

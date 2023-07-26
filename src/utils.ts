@@ -69,3 +69,7 @@ export const readAppDataFromDisk = () => {
 
   return obj;
 }
+
+export const writeAppDataToDisk = (obj: any) => {
+  fs.writeFileSync(`./${APP_DATA_FILENAME}`, JSON.stringify(obj));
+}
