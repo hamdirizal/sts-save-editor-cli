@@ -9,6 +9,7 @@ import { getAllRelics, getRelicById } from '../helpers/relic-helper.js';
 import { isDirectory, readSaveDataFromDisk, writeSaveDataToDisk } from '../helpers/save-helper.js';
 import { preset__inject__success } from './preset__inject__success.js';
 import { preset__single } from './preset__single.js';
+import { preset__inject__chooseFile } from './preset__inject__chooseFile.js';
 
 const term = tk.terminal;
 
@@ -16,60 +17,33 @@ export const preset__inject__inputSaveFilePath = (presetName: string, errorMessa
   renderHeader();
   if (errorMessage) {
     term.red(errorMessage + '\n');
-  }  
+  }
   const appDataObj = readAppDataFromDisk();
   term.cyan('Enter the path to the save folder. \n<ENTER> to confirm. <ESC> to go back. \n');
-  term.inputField({ autoCompleteMenu: false, cancelable: true, default: appDataObj.saveFilePath }, (error, input) => {
-    const isCanceled = input === undefined;
-    if (input === undefined) {
-      return preset__single(presetName);
+  term.inputField(
+    { autoCompleteMenu: false, cancelable: true, default: appDataObj.saveFilePath },
+    (error, input) => {
+      const isCanceled = input === undefined;
+      if (input === undefined) {
+        return preset__single(presetName);
+      }
+      const path: string = input.trim();
+
+      const isEmpty = path === '';
+      if (isEmpty) {
+        return preset__inject__inputSaveFilePath(
+          presetName,
+          'Please enter path to the save folder.'
+        );
+      }
+
+      if (!isDirectory(path)) {
+        return preset__inject__inputSaveFilePath(presetName, 'Please enter a valid path.');
+      }
+      appDataObj.saveFilePath = path;
+      writeAppDataToDisk(appDataObj);
+
+      return preset__inject__chooseFile(presetName, '');
     }
-    const path: string = input.trim();
-
-    const isEmpty = path === '';
-    if (isEmpty) {
-      return preset__inject__inputSaveFilePath(presetName, 'Please enter path to the save folder.');
-    }
-
-    if (!isDirectory(path)) {
-      return preset__inject__inputSaveFilePath(presetName, 'Please enter a valid path.');
-    }
-    appDataObj.saveFilePath = path;
-    writeAppDataToDisk(appDataObj);
-
-    const saveDataObject: SaveObject | null = readSaveDataFromDisk(path);
-
-    if (!saveDataObject) {
-      return preset__inject__inputSaveFilePath(presetName, 'Failed to read save file from disk.');
-    }
-    if (!saveDataObject?.name) {
-      return preset__inject__inputSaveFilePath(presetName, 'Invalid save file.');
-    }
-
-    const allCards: GameCard[] = getAllCards();
-    const allRelics: GameRelic[] = getAllRelics();
-
-    const presetObj: Preset = getPresetDataByFilename(presetName);
-
-    const cardsToBeSaved: SaveCard[] = presetObj.cards.map((cid) => {
-      return {
-        id: getCardById(cid, allCards).identifier,
-        upgrades: 0,
-        misc: 0,
-      };
-    });
-
-    const relicIdentifiers: string[] = presetObj.relics.map((rid) => {
-      return getRelicById(rid, allRelics).identifier;
-    });
-
-    const newSaveDataObject: SaveObject = {
-      ...saveDataObject,
-      gold: presetObj.gold,
-      cards: cardsToBeSaved,
-      relics: relicIdentifiers,
-    };
-    writeSaveDataToDisk(path, newSaveDataObject);
-    return preset__inject__success(presetName);
-  });
+  );
 };

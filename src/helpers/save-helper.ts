@@ -1,6 +1,7 @@
 import fs from 'fs';
 import { SaveObject } from '../types.js';
 import { ENCRYPTION_KEY } from '../constants.js';
+import { readAppDataFromDisk } from '../utils.js';
 
 export const isSaveFileExists = (path: string): boolean => {
   return fs.existsSync(path);
@@ -83,4 +84,14 @@ export const isDirectory = (path: string): boolean => {
   catch (err) {
     return false;
   }
+}
+
+export const readFilesInSaveDirectory = (): string[] => {
+  const appDataObj = readAppDataFromDisk();
+  let files;
+  try {
+    files = fs.readdirSync(`${appDataObj.saveFilePath}`);
+  } catch (error) {    
+  }
+  return files || [];
 }
