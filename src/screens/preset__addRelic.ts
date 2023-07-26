@@ -39,24 +39,20 @@ export const preset__addRelic = (presetName: string) => {
       cancelable: true,
     },
     (error, input) => {
-      //If cancelled, return to the preset management page
-      if (input === undefined) {
+      const isCanceled = input === undefined;
+      if (isCanceled) {
         return preset__single(presetName);
       }
-      // If input is empty, loop back to this page
-      if (!input.trim()) {
+      const isEmpty = input.trim() === '';
+      if (isEmpty) {
         return preset__addRelic(presetName);
       }
-
-      // Input must available in the relic names
-      if (allRelicNames.indexOf(input) === -1) {
+      const isRelicAvailable = allRelicNames.indexOf(input) >= 0;
+      if (isRelicAvailable) {
         return preset__addRelic(presetName);
       }
-
-      // Otherwise, relic is valid,
-      // Push the relic id to the preset, then loop back to this page
-      const relicId: number = extractIdFromRelicName(input);
-      const updatedPresetObj: Preset = addRelicIdToPresetObj(relicId, presetObj);
+      const relicIdToBeAdded: number = extractIdFromRelicName(input);
+      const updatedPresetObj: Preset = addRelicIdToPresetObj(relicIdToBeAdded, presetObj);
       writePresetObjToDisk(presetName, updatedPresetObj);
       return preset__addRelic(presetName);
     }

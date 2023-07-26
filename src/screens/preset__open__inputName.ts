@@ -22,19 +22,18 @@ export const preset__open__inputName = () => {
       cancelable: true,
     },
     (error, input) => {
-      if (input === undefined) {
+      const isCanceled = input === undefined;
+      if (isCanceled) {
         return preset__management();
       }
-      // If input is falsy, reload the screen
-      if (!input || !input.trim()) {
+      const isEmpty = input.trim() === '';
+      if (isEmpty) {
         return preset__management();
       }
-      // If input is truthy, but the preset not on the list, reload the screen
-      if (allPresetNames.indexOf(input) === -1) {
+      const isPresetAvailable = allPresetNames.indexOf(input) >= 0;
+      if (!isPresetAvailable) {
         return preset__open__inputName();
       }
-
-      // At this point, the process is valid, go to the preset details page
       return preset__single(input);
     }
   );

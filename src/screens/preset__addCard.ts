@@ -39,24 +39,20 @@ export const preset__addCard = (presetName: string) => {
       cancelable: true,
     },
     (error, input) => {
-      //If cancelled, return to the preset management page
-      if (input === undefined) {
+      const isCanceled = input === undefined;
+      if (isCanceled) {
         return preset__single(presetName);
       }
-      // If input is empty, loop back to this page
-      if (!input.trim()) {
+      const isInputEmpty = input.trim() === '';
+      if (isInputEmpty) {
         return preset__addCard(presetName);
       }
-
-      // Input must available in the cardnames
-      if (allCardNames.indexOf(input) === -1) {
+      const isCardNameAvailable = allCardNames.indexOf(input) >= 0;
+      if (!isCardNameAvailable) {
         return preset__addCard(presetName);
       }
-
-      // Otherwise, card is valid,
-      // Push the card id to the preset, then loop back to this page
-      const cardId: number = extractIdFromCardName(input);
-      const updatedPresetObj: Preset = addCardIdToPresetObj(cardId, presetObj);
+      const cardIdToBeAdded: number = extractIdFromCardName(input);
+      const updatedPresetObj: Preset = addCardIdToPresetObj(cardIdToBeAdded, presetObj);
       writePresetObjToDisk(presetName, updatedPresetObj);
       return preset__addCard(presetName);
     }

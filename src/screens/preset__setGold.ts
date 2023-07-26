@@ -28,27 +28,24 @@ export const preset__setGold = (presetName: string) => {
       cancelable: true,
     },
     (error, input) => {
-      //If cancelled, return to the preset management page
-      if (input === undefined) {
+      const isCanceled: boolean = input === undefined;
+      if (isCanceled) {
         return preset__single(presetName);
       }
-      // If input is empty, loop back to this page
-      if (!input.trim()) {
+      const isEmpty: boolean = input.trim() === '';
+      if (isEmpty) {
+        return preset__setGold(presetName);
+      }
+      const goldAmountToBeSet: number = parseInt(input);
+
+      if (isNaN(goldAmountToBeSet)) {
         return preset__setGold(presetName);
       }
 
-      // Input must be a valid gold amount
-      const parsedValue: number = parseInt(input);
-      if (isNaN(parsedValue)) {
+      if (goldAmountToBeSet < 0 || goldAmountToBeSet > 9999) {
         return preset__setGold(presetName);
       }
-
-      if (parsedValue < 0 || parsedValue > 9999) {
-        return preset__setGold(presetName);
-      }
-
-      // Otherwise, value is valid, back to the preset details page
-      const updatedPresetObj: Preset = setGoldInThePresetObj(parsedValue, presetObj);
+      const updatedPresetObj: Preset = setGoldInThePresetObj(goldAmountToBeSet, presetObj);
       writePresetObjToDisk(presetName, updatedPresetObj);
       return preset__single(presetName);
     }

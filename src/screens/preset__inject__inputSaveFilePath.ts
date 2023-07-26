@@ -17,13 +17,13 @@ export const preset__inject__inputSaveFilePath = (presetName: string, errorMessa
   }
   term.cyan('Enter the path to the save file. \n<ENTER> to confirm. <ESC> to go back. \n');
   term.inputField({ autoCompleteMenu: false, cancelable: true }, (error, input) => {
-    //If cancelled, return to the preset management page
+    const isCanceled = input === undefined;
     if (input === undefined) {
       return preset__management();
     }
     const path: string = input.trim();
-    // If input is empty, loop back to this page
-    if (!path) {
+    const isEmpty = path === '';
+    if (isEmpty) {
       return preset__inject__inputSaveFilePath(presetName, 'Please enter a valid path.');
     }
 
@@ -60,8 +60,6 @@ export const preset__inject__inputSaveFilePath = (presetName: string, errorMessa
       relics: relicIdentifiers,
     };
     writeSaveDataToDisk(path, newSaveDataObject);
-
-    // Show injection success message
     return preset__inject__success(presetName);
   });
 };

@@ -38,23 +38,21 @@ export const preset__removeRelic = (presetName: string) => {
       cancelable: true,
     },
     (error, input) => {
-      //If cancelled, return to the preset management page
-      if (input === undefined) {
+      const isCanceled: boolean = input === undefined;
+      if (isCanceled) {
         return preset__single(presetName);
       }
-      // If input is empty, loop back to this page
-      if (!input.trim()) {
+      const isEmpty: boolean = input.trim() === '';
+      if (isEmpty) {
         return preset__removeRelic(presetName);
       }
-      // Input value must be available in the relic names
-      if (relicNamesInThisPreset.indexOf(input) === -1) {
+      const isCardNameAvailable: boolean = relicNamesInThisPreset.indexOf(input) >= 0;
+      if (!isCardNameAvailable) {
         return preset__removeRelic(presetName);
       }
 
-      // Otherwise, relic is valid,
-      // Push the relic id to the preset, then loop back to this page
-      const relicId: number = extractIdFromRelicName(input);
-      const updatedPresetObj: Preset = removeRelicIdFromPresetObj(relicId, presetObj);
+      const relicIdToBeRemoved: number = extractIdFromRelicName(input);
+      const updatedPresetObj: Preset = removeRelicIdFromPresetObj(relicIdToBeRemoved, presetObj);
       writePresetObjToDisk(presetName, updatedPresetObj);
       return preset__removeRelic(presetName);
     }
