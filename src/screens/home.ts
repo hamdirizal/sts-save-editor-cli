@@ -14,8 +14,6 @@ export const home = () => {
 
   const choices: ListOption[] = [
     { value: 'manage_presets', name: 'Manage presets ' },
-    // { value: 'view_cards', name: 'View cards ' },
-    // { value: 'view_relics', name: 'View relics ' },
     { value: 'exit', name: 'Exit ' },
   ];
 
