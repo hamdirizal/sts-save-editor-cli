@@ -1,4 +1,5 @@
-import { APP_TITLE, APP_VERSION } from './constants.js';
+import fs from 'fs'
+import { APP_DATA_FILENAME, APP_TITLE, APP_VERSION } from './constants.js';
 
 export const renderHeader = () => {
   console.clear();
@@ -41,3 +42,30 @@ export const searchArray = (keyword: string, items: string[]): string | string[]
     return matchingItems;
   }
 };
+
+export const readAppDataFromDisk = () => {
+  const defaultAppData = {
+    saveFilePath: ''
+  }
+  
+  if(!fs.existsSync(`./${APP_DATA_FILENAME}`)){
+    fs.writeFileSync(`./${APP_DATA_FILENAME}`, JSON.stringify(defaultAppData));
+    return defaultAppData;
+  }
+
+  let content;
+  try {
+    content = fs.readFileSync(`./${APP_DATA_FILENAME}`, 'utf8');
+  } catch (error) {
+    return defaultAppData;
+  }
+
+  let obj;
+  try {
+    obj = JSON.parse(content);
+  } catch (error) {
+    return defaultAppData;
+  }
+
+  return obj;
+}

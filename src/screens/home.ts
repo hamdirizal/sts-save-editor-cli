@@ -3,12 +3,9 @@ import { renderHeader } from '../utils.js';
 import exit from './exit.js';
 import { preset__management } from './preset__management.js';
 import { ListOption } from '../types.js';
-import { createPresetFolderIfNotExists } from '../helpers/preset-helper.js';
 const term = tk.terminal;
 
 export const home = () => {
-  createPresetFolderIfNotExists();
-
   renderHeader();
   term.cyan('What do you want to do?\n');
 

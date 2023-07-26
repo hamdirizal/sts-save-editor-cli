@@ -2,6 +2,7 @@
 .presets/
 .data.json
 .app-state.json
+.appdata
 
 
 # Logs
