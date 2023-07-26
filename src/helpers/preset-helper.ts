@@ -77,8 +77,7 @@ export const getPresetDataByFilename = (filename: string): Preset | null => {
   if (!PresetSchema.safeParse(presetObj).success) {
     return null;
   }
-
-  // Order cards by name
+  
   presetObj.cards = presetObj.cards.sort((a, b) => a - b);
 
   return presetObj;
